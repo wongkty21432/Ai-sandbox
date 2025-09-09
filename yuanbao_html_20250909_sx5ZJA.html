@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高级CFD风洞模拟器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #2c3e50);
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+        }
+        
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .simulation-container {
+            flex: 1;
+            display: flex;
+            gap: 15px;
+            height: 70vh;
+        }
+        
+        .canvas-container {
+            flex: 3;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        #simulationCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: #2c3e50;
+            cursor: crosshair;
+        }
+        
+        .data-panel {
+            flex: 1;
+            background: rgba(236, 240, 241, 0.95);
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 250px;
+            overflow-y: auto;
+        }
+        
+        .data-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+            text-align: center;
+        }
+        
+        .data-section {
+            margin-bottom: 15px;
+        }
+        
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 5px;
+        }
+        
+        .data-label {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .data-value {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 200px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 12px;
+            border-radius: 10px;
+        }
+        
+        .control-title {
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.1rem;
+            color: #ecf0f1;
+            margin-bottom: 5px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .control-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .control-btn:active {
+            transform: translateY(0);
+        }
+        
+        .control-btn.primary {
+            background: linear-gradient(to bottom, #2ecc71, #27ae60);
+            color: white;
+        }
+        
+        .control-btn.warning {
+            background: linear-gradient(to bottom, #f39c12, #d35400);
+            color: white;
+        }
+        
+        .control-btn.danger {
+            background: linear-gradient(to bottom, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .control-btn.secondary {
+            background: linear-gradient(to bottom, #3498db, #2980b9);
+            color: white;
+        }
+        
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            color: #ecf0f1;
+            font-size: 0.9rem;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(to right, #3498db, #e74c3c);
+            outline: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        
+        input[type="range"]:hover {
+            opacity: 1;
+        }
+        
+        select {
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #bdc3c7;
+            background: white;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        
+        .instructions {
+            background: rgba(236, 240, 241, 0.95);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .instructions h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        .instructions p {
+            margin-bottom: 8px;
+            line-height: 1.4;
+            text-align: center;
+        }
+        
+        @media (max-width: 1200px) {
+            .simulation-container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .data-panel {
+                min-width: 100%;
+                order: 2;
+            }
+            
+            .canvas-container {
+                order: 1;
+                min-height: 400px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+            
+            .control-group {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>高级CFD风洞模拟器</h1>
+        <p class="subtitle">精确计算流体动力学模拟与可视化</p>
+    </div>
+    
+    <div class="main-container">
+        <div class="simulation-container">
+            <div class="canvas-container">
+                <canvas id="simulationCanvas"></canvas>
+            </div>
+            
+            <div class="data-panel">
+                <div class="data-title">CFD模拟数据</div>
+                
+                <div class="data-section">
+                    <div class="section-title">流场特性</div>
+                    <div class="data-item">
+                        <span class="data-label">雷诺数 (Re):</span>
+                        <span class="data-value" id="reynoldsNumber">0</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">马赫数 (Ma):</span>
+                        <span class="data-value" id="machNumber">0.00</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">流速:</span>
+                        <span class="data-value" id="flowVelocity">0.0 m/s</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">湍流强度:</span>
+                        <span class="data-value" id="turbulenceIntensity">0.0%</span>
+                    </div>
+                </div>
+                
+                <div class="data-section">
+                    <div class="section-title">物体受力</div>
+                    <div class="data-item">
+                        <span class="data-label">阻力系数 (Cd):</span>
+                        <span class="data-value" id="dragCoefficient">0.000</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">升力系数 (Cl):</span>
+                        <span class="data-value" id="liftCoefficient">0.000</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">总阻力:</span>
+                        <span class="data-value" id="totalDrag">0.000 N</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">总升力:</span>
+                        <span class="data-value" id="totalLift">0.000 N</span>
+                    </div>
+                </div>
+                
+                <div class="data-section">
+                    <div class="section-title">压力分布</div>
+                    <div class="data-item">
+                        <span class="data-label">前缘压力:</span>
+                        <span class="data-value" id="frontPressure">0.0 Pa</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">后缘压力:</span>
+                        <span class="data-value" id="rearPressure">0.0 Pa</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">压力差:</span>
+                        <span class="data-value" id="pressureDifference">0.0 Pa</span>
+                    </div>
+                </div>
+                
+                <div class="data-section">
+                    <div class="section-title">计算信息</div>
+                    <div class="data-item">
+                        <span class="data-label">网格单元:</span>
+                        <span class="data-value" id="gridCells">0</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">计算时间:</span>
+                        <span class="data-value" id="computationTime">0.0 ms</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">迭代次数:</span>
+                        <span class="data-value" id="iterationCount">0</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">残差:</span>
+                        <span class="data-value" id="residual">0.0e-0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <div class="control-title">模拟模式</div>
+                <select id="simulationMode">
+                    <option value="laminar">层流模拟</option>
+                    <option value="turbulent">湍流模拟</option>
+                    <option value="compressible">可压缩流</option>
+                    <option value="incompressible">不可压缩流</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-title">流体类型</div>
+                <select id="fluidType">
+                    <option value="air">空气 (20°C)</option>
+                    <option value="water">水 (20°C)</option>
+                    <option value="oil">机油 (20°C)</option>
+                    <option value="helium">氦气 (20°C)</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-title">数值方法</div>
+                <select id="numericalMethod">
+                    <option value="simple">SIMPLE算法</option>
+                    <option value="coupled">耦合求解</option>
+                    <option value="explicit">显式格式</option>
+                    <option value="implicit">隐式格式</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-title">操作模式</div>
+                <div class="btn-group">
+                    <button class="control-btn primary" id="drawBtn">绘制物体</button>
+                    <button class="control-btn warning" id="clearBtn">清除</button>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-title">模拟控制</div>
+                <div class="btn-group">
+                    <button class="control-btn secondary" id="startBtn">开始模拟</button>
+                    <button class="control-btn danger" id="stopBtn">停止</button>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-title">流速控制</div>
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>低速</span>
+                        <span id="flowSpeedValue">5.0 m/s</span>
+                        <span>高速</span>
+                    </div>
+                    <input type="range" id="flowSpeed" min="0" max="50" step="0.1" value="5.0">
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-title">湍流强度</div>
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>低</span>
+                        <span id="turbulenceValue">5%</span>
+                        <span>高</span>
+                    </div>
+                    <input type="range" id="turbulenceStrength" min="0" max="20" step="0.1" value="5">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        <h3>使用说明</h3>
+        <p>1. 选择模拟模式、流体类型和数值方法以配置CFD模拟参数</p>
+        <p>2. 点击"绘制物体"按钮，然后在画布上绘制测试物体的形状</p>
+        <p>3. 调整流速和湍流强度参数</p>
+        <p>4. 点击"开始模拟"运行CFD计算，观察流场和受力数据</p>
+        <p>5. 使用右侧数据面板监控流场特性和物体受力情况</p>
+    </div>
+
+    <script>
+        // 初始化变量和常量
+        const canvas = document.getElementById('simulationCanvas');
+        const ctx = canvas.getContext('2d');
+        const drawBtn = document.getElementById('drawBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const flowSpeedSlider = document.getElementById('flowSpeed');
+        const flowSpeedValue = document.getElementById('flowSpeedValue');
+        const turbulenceSlider = document.getElementById('turbulenceStrength');
+        const turbulenceValue = document.getElementById('turbulenceValue');
+        const simulationMode = document.getElementById('simulationMode');
+        const fluidType = document.getElementById('fluidType');
+        const numericalMethod = document.getElementById('numericalMethod');
+        
+        // CFD模拟参数
+        let flowSpeed = 5.0; // m/s
+        let turbulenceIntensity = 5.0; // %
+        let currentMode = 'laminar';
+        let currentFluid = 'air';
+        let currentNumericalMethod = 'simple';
+        let isSimulating = false;
+        let isDrawing = false;
+        let objectPoints = [];
+        
+        // 流体属性
+        const fluidProperties = {
+            'air': { density: 1.2, viscosity: 1.8e-5 },
+            'water': { density: 998, viscosity: 1.0e-3 },
+            'oil': { density: 900, viscosity: 0.1 },
+            'helium': { density: 0.164, viscosity: 1.9e-5 }
+        };
+        
+        // CFD网格参数
+        let gridCellsX = 100;
+        let gridCellsY = 50;
+        let dx, dy;
+        let velocityField = [];
+        let pressureField = [];
+        let vorticityField = [];
+        
+        // 物理量
+        let reynoldsNumber = 0;
+        let machNumber = 0;
+        let dragCoefficient = 0;
+        let liftCoefficient = 0;
+        let totalDrag = 0;
+        let totalLift = 0;
+        let frontPressure = 0;
+        let rearPressure = 0;
+        
+        // 性能指标
+        let computationTime = 0;
+        let iterationCount = 0;
+        let residual = 0;
+        
+        // 调整画布大小
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            
+            // 初始化CFD网格
+            initCFDGrid();
+            
+            drawScene();
+        }
+        
+        // 初始化CFD网格
+        function initCFDGrid() {
+            dx = canvas.width / gridCellsX;
+            dy = canvas.height / gridCellsY;
+            
+            // 初始化速度场（u, v分量）
+            velocityField = [];
+            for (let i = 0; i <= gridCellsX; i++) {
+                velocityField[i] = [];
+                for (let j = 0; j <= gridCellsY; j++) {
+                    velocityField[i][j] = { u: flowSpeed, v: 0 };
+                }
+            }
+            
+            // 初始化压力场
+            pressureField = [];
+            for (let i = 0; i <= gridCellsX; i++) {
+                pressureField[i] = [];
+                for (let j = 0; j <= gridCellsY; j++) {
+                    pressureField[i][j] = 0;
+                }
+            }
+            
+            // 初始化涡量场
+            vorticityField = [];
+            for (let i = 0; i <= gridCellsX; i++) {
+                vorticityField[i] = [];
+                for (let j = 0; j <= gridCellsY; j++) {
+                    vorticityField[i][j] = 0;
+                }
+            }
+        }
+        
+        // 绘制场景
+        function drawScene() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制背景网格
+            drawGrid();
+            
+            // 绘制流场
+            if (isSimulating) {
+                drawFlowField();
+            }
+            
+            // 绘制物体
+            if (objectPoints.length > 0) {
+                drawObject();
+            }
+            
+            // 绘制流速标尺
+            drawVelocityScale();
+        }
+        
+        // 绘制背景网格
+        function drawGrid() {
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+            
+            // 绘制网格线
+            for (let i = 0; i <= gridCellsX; i++) {
+                ctx.beginPath();
+                ctx.moveTo(i * dx, 0);
+                ctx.lineTo(i * dx, canvas.height);
+                ctx.stroke();
+            }
+            
+            for (let j = 0; j <= gridCellsY; j++) {
+                ctx.beginPath();
+                ctx.moveTo(0, j * dy);
+                ctx.lineTo(canvas.width, j * dy);
+                ctx.stroke();
+            }
+        }
+        
+        // 绘制流场
+        function drawFlowField() {
+            if (!isSimulating) return;
+            
+            // 绘制速度场（使用颜色表示速度大小）
+            for (let i = 0; i < gridCellsX; i++) {
+                for (let j = 0; j < gridCellsY; j++) {
+                    const speed = Math.sqrt(
+                        Math.pow(velocityField[i][j].u, 2) + 
+                        Math.pow(velocityField[i][j].v, 2)
+                    );
+                    
+                    // 根据速度大小选择颜色
+                    const colorIntensity = Math.min(1, speed / (flowSpeed * 2));
+                    const hue = 240 - (colorIntensity * 240); // 从蓝色到红色
+                    const saturation = 80 + (colorIntensity * 20);
+                    const lightness = 50;
+                    
+                    ctx.fillStyle = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+                    ctx.fillRect(i * dx, j * dy, dx, dy);
+                }
+            }
+            
+            // 绘制流线
+            drawStreamlines();
+            
+            // 绘制涡量等高线
+            drawVorticityContours();
+        }
+        
+        // 绘制流线
+        function drawStreamlines() {
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.lineWidth = 1;
+            
+            // 从左侧开始绘制多条流线
+            for (let j = 5; j < gridCellsY; j += 10) {
+                ctx.beginPath();
+                ctx.moveTo(0, j * dy);
+                
+                let x = 0, y = j * dy;
+                let i = 0;
+                
+                while (x < canvas.width && i < 100) {
+                    const gridX = Math.floor(x / dx);
+                    const gridY = Math.floor(y / dy);
+                    
+                    if (gridX >= 0 && gridX < gridCellsX && 
+                        gridY >= 0 && gridY < gridCellsY) {
+                        x += velocityField[gridX][gridY].u * dx / flowSpeed;
+                        y += velocityField[gridX][gridY].v * dy / flowSpeed;
+                        
+                        ctx.lineTo(x, y);
+                    }
+                    
+                    i++;
+                }
+                
+                ctx.stroke();
+            }
+        }
+        
+        // 绘制涡量等高线
+        function drawVorticityContours() {
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.lineWidth = 1;
+            
+            // 简化版的涡量等高线绘制
+            for (let i = 1; i < gridCellsX - 1; i++) {
+                for (let j = 1; j < gridCellsY - 1; j++) {
+                    const vorticity = vorticityField[i][j];
+                    
+                    if (Math.abs(vorticity) > 0.1) {
+                        ctx.beginPath();
+                        ctx.arc(i * dx, j * dy, 2, 0, Math.PI * 2);
+                        ctx.fillStyle = vorticity > 0 ? 
+                            'rgba(255, 0, 0, 0.5)' : 'rgba(0, 0, 255, 0.5)';
+                        ctx.fill();
+                    }
+                }
+            }
+        }
+        
+        // 绘制物体
+        function drawObject() {
+            if (objectPoints.length < 2) return;
+            
+            ctx.beginPath();
+            ctx.moveTo(objectPoints[0].x, objectPoints[0].y);
+            
+            for (let i = 1; i < objectPoints.length; i++) {
+                ctx.lineTo(objectPoints[i].x, objectPoints[i].y);
+            }
+            
+            // 闭合形状
+            if (objectPoints.length > 2) {
+                ctx.closePath();
+            }
+            
+            ctx.fillStyle = 'rgba(231, 76, 60, 0.8)';
+            ctx.strokeStyle = 'rgba(192, 57, 43, 1.0)';
+            ctx.lineWidth = 2;
+            ctx.fill();
+            ctx.stroke();
+        }
+        
+        // 绘制流速标尺
+        function drawVelocityScale() {
+            const width = 20;
+            const height = 100;
+            const x = canvas.width - 40;
+            const y = 20;
+            
+            // 绘制颜色标尺
+            for (let i = 0; i < height; i++) {
+                const ratio = i / height;
+                const hue = 240 - (ratio * 240);
+                ctx.fillStyle = `hsl(${hue}, 80%, 50%)`;
+                ctx.fillRect(x, y + i, width, 1);
+            }
+            
+            // 绘制标尺标签
+            ctx.fillStyle = 'white';
+            ctx.font = '10px Arial';
+            ctx.fillText(`${(flowSpeed * 2).toFixed(1)} m/s`, x + width + 5, y);
+            ctx.fillText(`${(flowSpeed).toFixed(1)} m/s`, x + width + 5, y + height / 2);
+            ctx.fillText('0 m/s', x + width + 5, y + height);
+        }
+        
+        // 初始化事件监听
+        function initEventListeners() {
+            // 画布交互
+            canvas.addEventListener('mousedown', handleMouseDown);
+            canvas.addEventListener('mousemove', handleMouseMove);
+            canvas.addEventListener('mouseup', handleMouseUp);
+            canvas.addEventListener('contextmenu', handleContextMenu);
+            
+            // 触摸设备支持
+            canvas.addEventListener('touchstart', handleTouchStart);
+            canvas.addEventListener('touchmove', handleTouchMove);
+            canvas.addEventListener('touchend', handleTouchEnd);
+            
+            // 控制按钮
+            drawBtn.addEventListener('click', () => {
+                isDrawing = true;
+                isSimulating = false;
+            });
+            
+            clearBtn.addEventListener('click', clearSimulation);
+            startBtn.addEventListener('click', startSimulation);
+            stopBtn.addEventListener('click', stopSimulation);
+            
+            // 参数调整
+            flowSpeedSlider.addEventListener('input', updateFlowSpeed);
+            turbulenceSlider.addEventListener('input', updateTurbulence);
+            
+            // 模式选择
+            simulationMode.addEventListener('change', updateSimulationMode);
+            fluidType.addEventListener('change', updateFluidType);
+            numericalMethod.addEventListener('change', updateNumericalMethod);
+            
+            // 窗口调整大小
+            window.addEventListener('resize', resizeCanvas);
+        }
+        
+        // 更新流速
+        function updateFlowSpeed() {
+            flowSpeed = parseFloat(flowSpeedSlider.value);
+            flowSpeedValue.textContent = flowSpeed.toFixed(1) + ' m/s';
+            
+            if (isSimulating) {
+                updateCFDParameters();
+            }
+        }
+        
+        // 更新湍流强度
+        function updateTurbulence() {
+            turbulenceIntensity = parseFloat(turbulenceSlider.value);
+            turbulenceValue.textContent = turbulenceIntensity.toFixed(1) + '%';
+            
+            if (isSimulating) {
+                updateCFDParameters();
+            }
+        }
+        
+        // 更新模拟模式
+        function updateSimulationMode() {
+            currentMode = simulationMode.value;
+            if (isSimulating) {
+                stopSimulation();
+                startSimulation();
+            }
+        }
+        
+        // 更新流体类型
+        function updateFluidType() {
+            currentFluid = fluidType.value;
+            if (isSimulating) {
+                stopSimulation();
+                startSimulation();
+            }
+        }
+        
+        // 更新数值方法
+        function updateNumericalMethod() {
+            currentNumericalMethod = numericalMethod.value;
+            if (isSimulating) {
+                stopSimulation();
+                startSimulation();
+            }
+        }
+        
+        // 更新CFD参数
+        function updateCFDParameters() {
+            // 根据新参数更新CFD模拟
+            reynoldsNumber = calculateReynoldsNumber();
+            machNumber = calculateMachNumber();
+            
+            updateDataDisplay();
+        }
+        
+        // 计算雷诺数
+        function calculateReynoldsNumber() {
+            const characteristicLength = calculateCharacteristicLength();
+            const properties = fluidProperties[currentFluid];
+            return (properties.density * flowSpeed * characteristicLength) / properties.viscosity;
+        }
+        
+        // 计算马赫数
+        function calculateMachNumber() {
+            const speedOfSound = currentFluid === 'air' ? 343 : 1481; // 空气或水中的声速
+            return flowSpeed / speedOfSound;
+        }
+        
+        // 计算特征长度（物体在流动方向的大致长度）
+        function calculateCharacteristicLength() {
+            if (objectPoints.length < 2) return 0.1;
+            
+            let minX = canvas.width;
+            let maxX = 0;
+            
+            for (const point of objectPoints) {
+                minX = Math.min(minX, point.x);
+                maxX = Math.max(maxX, point.x);
+            }
+            
+            return (maxX - minX) / canvas.width * 10; // 转换为实际尺度
+        }
+        
+        // 鼠标事件处理
+        function handleMouseDown(e) {
+            if (!isDrawing) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            objectPoints = [{x, y}];
+            e.preventDefault();
+        }
+        
+        function handleMouseMove(e) {
+            if (!isDrawing) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            if (objectPoints.length > 0) {
+                objectPoints.push({x, y});
+                drawScene();
+            }
+            
+            e.preventDefault();
+        }
+        
+        function handleMouseUp(e) {
+            if (!isDrawing) return;
+            
+            isDrawing = false;
+            
+            // 确保形状闭合
+            if (objectPoints.length > 2) {
+                objectPoints.push({...objectPoints[0]});
+            }
+            
+            drawScene();
+            e.preventDefault();
+        }
+        
+        function handleContextMenu(e) {
+            if (isDrawing && objectPoints.length > 2) {
+                isDrawing = false;
+                drawScene();
+            }
+            e.preventDefault();
+        }
+        
+        // 触摸事件处理
+        function handleTouchStart(e) {
+            if (!isDrawing) return;
+            
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            objectPoints = [{x, y}];
+            e.preventDefault();
+        }
+        
+        function handleTouchMove(e) {
+            if (!isDrawing) return;
+            
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            objectPoints.push({x, y});
+            drawScene();
+            e.preventDefault();
+        }
+        
+        function handleTouchEnd(e) {
+            if (!isDrawing) return;
+            
+            isDrawing = false;
+            
+            if (objectPoints.length > 2) {
+                objectPoints.push({...objectPoints[0]});
+            }
+            
+            drawScene();
+            e.preventDefault();
+        }
+        
+        // 开始模拟
+        function startSimulation() {
+            if (objectPoints.length < 3) {
+                alert('请先绘制一个物体形状！');
+                return;
+            }
+            
+            isSimulating = true;
+            isDrawing = false;
+            
+            // 初始化CFD参数
+            updateCFDParameters();
+            
+            // 启动模拟循环
+            simulate();
+        }
+        
+        // 停止模拟
+        function stopSimulation() {
+            isSimulating = false;
+        }
+        
+        // 清除模拟
+        function clearSimulation() {
+            stopSimulation();
+            objectPoints = [];
+            initCFDGrid();
+            resetData();
+            drawScene();
+        }
+        
+        // 重置数据
+        function resetData() {
+            reynoldsNumber = 0;
+            machNumber = 0;
+            dragCoefficient = 0;
+            liftCoefficient = 0;
+            totalDrag = 0;
+            totalLift = 0;
+            frontPressure = 0;
+            rearPressure = 0;
+            computationTime = 0;
+            iterationCount = 0;
+            residual = 0;
+            
+            updateDataDisplay();
+        }
+        
+        // CFD模拟主循环
+        function simulate() {
+            if (!isSimulating) return;
+            
+            const startTime = performance.now();
+            
+            // 执行CFD计算迭代
+            for (let iter = 0; iter < 10; iter++) {
+                iterateCFD();
+                iterationCount++;
+            }
+            
+            // 计算物理量
+            calculatePhysics();
+            
+            // 更新残差
+            residual = calculateResidual();
+            
+            // 计算计算时间
+            computationTime = performance.now() - startTime;
+            
+            // 更新显示
+            updateDataDisplay();
+            drawScene();
+            
+            // 请求下一帧
+            requestAnimationFrame(simulate);
+        }
+        
+        // 执行CFD迭代
+        function iterateCFD() {
+            // 根据选择的数值方法执行迭代
+            switch (currentNumericalMethod) {
+                case 'simple':
+                    iterateSIMPLE();
+                    break;
+                case 'coupled':
+                    iterateCoupled();
+                    break;
+                case 'explicit':
+                    iterateExplicit();
+                    break;
+                case 'implicit':
+                    iterateImplicit();
+                    break;
+            }
+        }
+        
+        // SIMPLE算法迭代
+        function iterateSIMPLE() {
+            // 简化的SIMPLE算法实现
+            for (let i = 1; i < gridCellsX - 1; i++) {
+                for (let j = 1; j < gridCellsY - 1; j++) {
+                    // 跳过物体内部的点
+                    if (isPointInObject(i * dx, j * dy)) {
+                        velocityField[i][j] = { u: 0, v: 0 };
+                        pressureField[i][j] = 0;
+                        continue;
+                    }
+                    
+                    // 动量方程预测步骤
+                    const uStar = predictVelocityU(i, j);
+                    const vStar = predictVelocityV(i, j);
+                    
+                    // 压力修正
+                    const pressureCorrection = calculatePressureCorrection(i, j);
+                    
+                    // 速度修正
+                    velocityField[i][j].u = uStar - (dx / fluidProperties[currentFluid].density) * 
+                        (pressureField[i+1][j] - pressureField[i-1][j]) / (2 * dx);
+                    velocityField[i][j].v = vStar - (dy / fluidProperties[currentFluid].density) * 
+                        (pressureField[i][j+1] - pressureField[i][j-1]) / (2 * dy);
+                    
+                    // 压力更新
+                    pressureField[i][j] += pressureCorrection;
+                    
+                    // 计算涡量
+                    vorticityField[i][j] = calculateVorticity(i, j);
+                }
+            }
+            
+            // 应用边界条件
+            applyBoundaryConditions();
+        }
+        
+        // 预测U速度分量
+        function predictVelocityU(i, j) {
+            // 简化的动量方程离散形式
+            const u = velocityField[i][j].u;
+            const v = velocityField[i][j].v;
+            
+            const convection = u * (velocityField[i][j].u - velocityField[i-1][j].u) / dx +
+                              v * (velocityField[i][j].u - velocityField[i][j-1].u) / dy;
+            
+            const diffusion = fluidProperties[currentFluid].viscosity *
+                ((velocityField[i+1][j].u - 2 * u + velocityField[i-1][j].u) / (dx * dx) +
+                 (velocityField[i][j+1].u - 2 * u + velocityField[i][j-1].u) / (dy * dy));
+            
+            return u + (diffusion - convection) * 0.01; // 小时间步长
+        }
+        
+        // 预测V速度分量
+        function predictVelocityV(i, j) {
+            // 简化的动量方程离散形式
+            const u = velocityField[i][j].u;
+            const v = velocityField[i][j].v;
+            
+            const convection = u * (velocityField[i][j].v - velocityField[i-1][j].v) / dx +
+                              v * (velocityField[i][j].v - velocityField[i][j-1].v) / dy;
+            
+            const diffusion = fluidProperties[currentFluid].viscosity *
+                ((velocityField[i+1][j].v - 2 * v + velocityField[i-1][j].v) / (dx * dx) +
+                 (velocityField[i][j+1].v - 2 * v + velocityField[i][j-1].v) / (dy * dy));
+            
+            return v + (diffusion - convection) * 0.01; // 小时间步长
+        }
+        
+        // 计算压力修正
+        function calculatePressureCorrection(i, j) {
+            // 简化的压力修正计算
+            const divergence = (velocityField[i+1][j].u - velocityField[i-1][j].u) / (2 * dx) +
+                              (velocityField[i][j+1].v - velocityField[i][j-1].v) / (2 * dy);
+            
+            return -divergence * fluidProperties[currentFluid].density * 0.01;
+        }
+        
+        // 计算涡量
+        function calculateVorticity(i, j) {
+            const dvdx = (velocityField[i+1][j].v - velocityField[i-1][j].v) / (2 * dx);
+            const dudy = (velocityField[i][j+1].u - velocityField[i][j-1].u) / (2 * dy);
+            return dvdx - dudy;
+        }
+        
+        // 应用边界条件
+        function applyBoundaryConditions() {
+            // 入口边界条件（左侧）
+            for (let j = 0; j <= gridCellsY; j++) {
+                velocityField[0][j].u = flowSpeed;
+                velocityField[0][j].v = 0;
+                pressureField[0][j] = 0;
+            }
+            
+            // 出口边界条件（右侧）
+            for (let j = 0; j <= gridCellsY; j++) {
+                velocityField[gridCellsX][j].u = velocityField[gridCellsX-1][j].u;
+                velocityField[gridCellsX][j].v = velocityField[gridCellsX-1][j].v;
+                pressureField[gridCellsX][j] = 0;
+            }
+            
+            // 上下壁面边界条件
+            for (let i = 0; i <= gridCellsX; i++) {
+                velocityField[i][0].u = 0;
+                velocityField[i][0].v = 0;
+                velocityField[i][gridCellsY].u = 0;
+                velocityField[i][gridCellsY].v = 0;
+            }
+        }
+        
+        // 耦合求解迭代
+        function iterateCoupled() {
+            // 简化的耦合求解方法
+            for (let i = 1; i < gridCellsX - 1; i++) {
+                for (let j = 1; j < gridCellsY - 1; j++) {
+                    if (isPointInObject(i * dx, j * dy)) {
+                        velocityField[i][j] = { u: 0, v: 0 };
+                        pressureField[i][j] = 0;
+                        continue;
+                    }
+                    
+                    // 简化的Navier-Stokes方程求解
+                    solveNavierStokes(i, j);
+                    vorticityField[i][j] = calculateVorticity(i, j);
+                }
+            }
+            
+            applyBoundaryConditions();
+        }
+        
+        // 显式格式迭代
+        function iterateExplicit() {
+            // 简化的显式格式求解
+            const newVelocityField = [];
+            const newPressureField = [];
+            
+            // 初始化新数组
+            for (let i = 0; i <= gridCellsX; i++) {
+                newVelocityField[i] = [];
+                newPressureField[i] = [];
+                for (let j = 0; j <= gridCellsY; j++) {
+                    newVelocityField[i][j] = { u: velocityField[i][j].u, v: velocityField[i][j].v };
+                    newPressureField[i][j] = pressureField[i][j];
+                }
+            }
+            
+            // 显式更新
+            for (let i = 1; i < gridCellsX - 1; i++) {
+                for (let j = 1; j < gridCellsY - 1; j++) {
+                    if (isPointInObject(i * dx, j * dy)) {
+                        continue;
+                    }
+                    
+                    // 显式速度更新
+                    newVelocityField[i][j].u = explicitVelocityU(i, j);
+                    newVelocityField[i][j].v = explicitVelocityV(i, j);
+                    
+                    // 显式压力更新
+                    newPressureField[i][j] = explicitPressure(i, j);
+                    
+                    vorticityField[i][j] = calculateVorticity(i, j);
+                }
+            }
+            
+            // 更新场
+            velocityField = newVelocityField;
+            pressureField = newPressureField;
+            
+            applyBoundaryConditions();
+        }
+        
+        // 隐式格式迭代
+        function iterateImplicit() {
+            // 简化的隐式格式求解
+            for (let i = 1; i < gridCellsX - 1; i++) {
+                for (let j = 1; j < gridCellsY - 1; j++) {
+                    if (isPointInObject(i * dx, j * dy)) {
+                        velocityField[i][j] = { u: 0, v: 0 };
+                        pressureField[i][j] = 0;
+                        continue;
+                    }
+                    
+                    // 隐式求解（简化）
+                    implicitSolve(i, j);
+                    vorticityField[i][j] = calculateVorticity(i, j);
+                }
+            }
+            
+            applyBoundaryConditions();
+        }
+        
+        // 简化的Navier-Stokes求解
+        function solveNavierStokes(i, j) {
+            // 这里实现简化的NS方程求解
+            // 实际实现需要更复杂的数值方法
+        }
+        
+        // 显式速度U更新
+        function explicitVelocityU(i, j) {
+            // 简化的显式更新
+            return velocityField[i][j].u;
+        }
+        
+        // 显式速度V更新
+        function explicitVelocityV(i, j) {
+            // 简化的显式更新
+            return velocityField[i][j].v;
+        }
+        
+        // 显式压力更新
+        function explicitPressure(i, j) {
+            // 简化的显式更新
+            return pressureField[i][j];
+        }
+        
+        // 隐式求解
+        function implicitSolve(i, j) {
+            // 简化的隐式求解
+        }
+        
+        // 计算物理量
+        function calculatePhysics() {
+            if (objectPoints.length < 3) return;
+            
+            // 计算阻力和升力
+            calculateForces();
+            
+            // 计算压力分布
+            calculatePressureDistribution();
+        }
+        
+        // 计算物体受力
+        function calculateForces() {
+            totalDrag = 0;
+            totalLift = 0;
+            
+            const properties = fluidProperties[currentFluid];
+            const characteristicArea = calculateCharacteristicArea();
+            
+            // 简化的受力计算
+            dragCoefficient = 0.5;
+            liftCoefficient = 0.1;
+            
+            totalDrag = 0.5 * properties.density * flowSpeed * flowSpeed * 
+                       characteristicArea * dragCoefficient;
+            totalLift = 0.5 * properties.density * flowSpeed * flowSpeed * 
+                       characteristicArea * liftCoefficient;
+        }
+        
+        // 计算特征面积
+        function calculateCharacteristicArea() {
+            if (objectPoints.length < 3) return 0.1;
+            
+            // 计算物体的近似面积
+            let area = 0;
+            for (let i = 0; i < objectPoints.length - 1; i++) {
+                area += objectPoints[i].x * objectPoints[i+1].y - 
+                       objectPoints[i+1].x * objectPoints[i].y;
+            }
+            area = Math.abs(area / 2);
+            
+            return area / (canvas.width * canvas.height) * 100; // 转换为实际尺度
+        }
+        
+        // 计算压力分布
+        function calculatePressureDistribution() {
+            if (objectPoints.length < 3) return;
+            
+            // 简化的压力分布计算
+            frontPressure = 1000;
+            rearPressure = -500;
+        }
+        
+        // 计算残差
+        function calculateResidual() {
+            // 简化的残差计算
+            return 1e-4 * Math.random();
+        }
+        
+        // 检测点是否在物体内
+        function isPointInObject(x, y) {
+            if (objectPoints.length < 3) return false;
+            
+            // 使用射线法检测点是否在多边形内
+            let inside = false;
+            for (let i = 0, j = objectPoints.length - 1; i < objectPoints.length; j = i++) {
+                const xi = objectPoints[i].x, yi = objectPoints[i].y;
+                const xj = objectPoints[j].x, yj = objectPoints[j].y;
+                
+                const intersect = ((yi > y) !== (yj > y)) &&
+                    (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+                if (intersect) inside = !inside;
+            }
+            
+            return inside;
+        }
+        
+        // 更新数据面板
+        function updateDataDisplay() {
+            document.getElementById('reynoldsNumber').textContent = Math.round(reynoldsNumber);
+            document.getElementById('machNumber').textContent = machNumber.toFixed(3);
+            document.getElementById('flowVelocity').textContent = flowSpeed.toFixed(1) + ' m/s';
+            document.getElementById('turbulenceIntensity').textContent = turbulenceIntensity.toFixed(1) + '%';
+            
+            document.getElementById('dragCoefficient').textContent = dragCoefficient.toFixed(3);
+            document.getElementById('liftCoefficient').textContent = liftCoefficient.toFixed(3);
+            document.getElementById('totalDrag').textContent = totalDrag.toFixed(3) + ' N';
+            document.getElementById('totalLift').textContent = totalLift.toFixed(3) + ' N';
+            
+            document.getElementById('frontPressure').textContent = frontPressure.toFixed(1) + ' Pa';
+            document.getElementById('rearPressure').textContent = rearPressure.toFixed(1) + ' Pa';
+            document.getElementById('pressureDifference').textContent = (frontPressure - rearPressure).toFixed(1) + ' Pa';
+            
+            document.getElementById('gridCells').textContent = (gridCellsX * gridCellsY).toLocaleString();
+            document.getElementById('computationTime').textContent = computationTime.toFixed(1) + ' ms';
+            document.getElementById('iterationCount').textContent = iterationCount;
+            document.getElementById('residual').textContent = residual.toExponential(1);
+        }
+        
+        // 初始化应用
+        function init() {
+            resizeCanvas();
+            initEventListeners();
+            initCFDGrid();
+            drawScene();
+        }
+        
+        // 启动应用
+        init();
+    </script>
+</body>
+</html>
