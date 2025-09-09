@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>高级水动力模拟系统</title>
+    <title>船体物理模拟与设计系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -16,7 +17,7 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #1a2a6c, #2c3e50);
-            color: #333;
+            color: #fff;
             overflow: hidden;
             height: 100vh;
             display: flex;
@@ -217,6 +218,34 @@
             line-height: 1.4;
         }
         
+        .drawing-tools {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .draw-tool-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: linear-gradient(to bottom, #9b59b6, #8e44ad);
+            color: white;
+            font-weight: bold;
+            flex: 1;
+            transition: all 0.2s;
+        }
+        
+        .draw-tool-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .draw-tool-btn.active {
+            background: linear-gradient(to bottom, #e67e22, #d35400);
+            transform: translateY(0);
+        }
+        
         @media (max-width: 768px) {
             .main-container {
                 flex-direction: column;
@@ -232,28 +261,56 @@
 </head>
 <body>
     <div class="header">
-        <h1>高级水动力模拟系统</h1>
-        <p class="subtitle">实时水体物理模拟与船体设计</p>
+        <h1>船体物理模拟与设计系统</h1>
+        <p class="subtitle">绘制船体 · 物理模拟 · 实时交互</p>
     </div>
     
     <div class="main-container">
         <div class="design-panel">
             <div class="control-section">
-                <div class="control-title">绘制模式</div>
-                <div class="physics-controls">
-                    <button class="action-btn" id="drawModeBtn">绘制船体</button>
-                    <button class="action-btn" id="waveModeBtn">创建波浪</button>
+                <div class="control-title">绘图工具</div>
+                <div class="drawing-tools">
+                    <button class="draw-tool-btn active" id="pencilTool"><i class="fas fa-pencil-alt"></i> 铅笔</button>
+                    <button class="draw-tool-btn" id="shapeTool"><i class="fas fa-vector-square"></i> 形状</button>
+                    <button class="draw-tool-btn" id="eraseTool"><i class="fas fa-eraser"></i> 擦除</button>
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <div class="control-title">画笔设置</div>
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>画笔大小: </span>
+                        <span id="brushSizeValue">5px</span>
+                    </div>
+                    <input type="range" id="brushSize" min="1" max="20" step="1" value="5">
+                </div>
+                
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>压感强度: </span>
+                        <span id="pressureValue">0.5</span>
+                    </div>
+                    <input type="range" id="pressureSensitivity" min="0" max="1" step="0.1" value="0.5">
+                </div>
+                
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>平滑度: </span>
+                        <span id="smoothnessValue">0.7</span>
+                    </div>
+                    <input type="range" id="smoothness" min="0" max="1" step="0.1" value="0.7">
                 </div>
             </div>
             
             <div class="control-section">
                 <div class="control-title">船体材质选择</div>
                 <div class="material-grid">
-                    <button class="material-btn steel" data-type="steel" data-density="7.8">钢铁</button>
-                    <button class="material-btn wood" data-type="wood" data-density="0.8">木材</button>
-                    <button class="material-btn aluminum" data-type="aluminum" data-density="2.7">铝材</button>
-                    <button class="material-btn fiberglass" data-type="fiberglass" data-density="1.8">玻璃钢</button>
-                    <button class="material-btn foam" data-type="foam" data-density="0.2">泡沫</button>
+                    <button class="material-btn steel" data-density="7.8">钢铁</button>
+                    <button class="material-btn wood" data-density="0.8">木材</button>
+                    <button class="material-btn aluminum" data-density="2.7">铝材</button>
+                    <button class="material-btn fiberglass" data-density="1.8">玻璃钢</button>
+                    <button class="material-btn foam" data-density="0.2">泡沫</button>
                 </div>
             </div>
             
@@ -340,10 +397,10 @@
     
     <div class="instructions">
         <h3>使用说明</h3>
-        <p>1. <strong>绘制船体</strong> - 点击"绘制船体"按钮，然后在画布上点击创建多边形顶点，右键完成绘制</p>
-        <p>2. <strong>创建波浪</strong> - 点击"创建波浪"按钮，然后在画布上点击创建波浪源</p>
+        <p>1. <strong>绘制船体</strong> - 使用绘图工具在画布上设计船体形状。铅笔工具提供自由绘制，形状工具可创建几何图形</p>
+        <p>2. <strong>调整画笔</strong> - 设置画笔大小、压感强度和平滑度，获得iPad般的绘图体验</p>
         <p>3. <strong>选择材质</strong> - 不同材质具有不同密度，影响船体浮力和稳定性</p>
-        <p>4. <strong>调整参数</strong> - 修改水体密度、重力、波浪强度等物理参数</p>
+        <p>4. <strong>调整物理参数</strong> - 修改水体密度、重力、波浪强度等物理参数</p>
         <p>5. <strong>开始模拟</strong> - 点击"开始模拟"观察船体在水中的物理行为</p>
         <p>6. <strong>实时数据</strong> - 查看右侧数据面板获取实时物理参数和船体特性</p>
     </div>
@@ -355,8 +412,15 @@
         const startSimBtn = document.getElementById('startSim');
         const resetSimBtn = document.getElementById('resetSim');
         const clearHullBtn = document.getElementById('clearHull');
-        const drawModeBtn = document.getElementById('drawModeBtn');
-        const waveModeBtn = document.getElementById('waveModeBtn');
+        const pencilToolBtn = document.getElementById('pencilTool');
+        const shapeToolBtn = document.getElementById('shapeTool');
+        const eraseToolBtn = document.getElementById('eraseTool');
+        const brushSizeSlider = document.getElementById('brushSize');
+        const brushSizeValue = document.getElementById('brushSizeValue');
+        const pressureSlider = document.getElementById('pressureSensitivity');
+        const pressureValue = document.getElementById('pressureValue');
+        const smoothnessSlider = document.getElementById('smoothness');
+        const smoothnessValue = document.getElementById('smoothnessValue');
         
         // 物理参数
         let waterDensity = 1.025; // g/cm³ (海水密度)
@@ -366,19 +430,15 @@
         let selectedMaterial = 'steel';
         let materialDensity = 7.8; // g/cm³
         
-        // 船体设计变量
+        // 绘图变量
         let hullPoints = [];
-        let isDrawingHull = false;
-        let isDrawingWave = false;
+        let isDrawing = false;
         let isSimulating = false;
-        let currentMode = 'draw'; // 'draw' 或 'wave'
-        
-        // 水体模拟变量
-        let waveSources = [];
-        let waterGrid = [];
-        let waterWidth = 0;
-        let waterHeight = 0;
-        let cellSize = 4;
+        let currentTool = 'pencil';
+        let brushSize = 5;
+        let pressureSensitivity = 0.5;
+        let smoothness = 0.7;
+        let lastX, lastY;
         
         // 物理计算变量
         let displacement = 0;
@@ -394,29 +454,7 @@
             const container = canvas.parentElement;
             canvas.width = container.clientWidth;
             canvas.height = container.clientHeight;
-            
-            // 初始化水体网格
-            initWaterGrid();
-            
             drawScene();
-        }
-        
-        // 初始化水体网格
-        function initWaterGrid() {
-            waterWidth = Math.ceil(canvas.width / cellSize);
-            waterHeight = Math.ceil(canvas.height / cellSize);
-            
-            waterGrid = [];
-            for (let x = 0; x < waterWidth; x++) {
-                waterGrid[x] = [];
-                for (let y = 0; y < waterHeight; y++) {
-                    waterGrid[x][y] = {
-                        height: 0,
-                        velocity: 0,
-                        acceleration: 0
-                    };
-                }
-            }
         }
         
         // 绘制场景
@@ -433,64 +471,24 @@
             
             // 绘制网格和参考线
             drawGrid();
-            
-            // 绘制重心和浮心
-            if (isSimulating) {
-                drawCenters();
-            }
         }
         
         // 绘制水面
         function drawWater() {
             const waterLevel = canvas.height * 0.7;
             
-            // 绘制水体背景
             ctx.beginPath();
-            ctx.rect(0, waterLevel, canvas.width, canvas.height - waterLevel);
-            ctx.fillStyle = getWaterColor();
-            ctx.fill();
+            ctx.moveTo(0, waterLevel);
             
-            // 绘制水面线和水波效果
-            if (isSimulating) {
-                drawWaterWaves(waterLevel);
-            } else {
-                ctx.beginPath();
-                ctx.moveTo(0, waterLevel);
-                ctx.lineTo(canvas.width, waterLevel);
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-                ctx.stroke();
-            }
-        }
-        
-        // 获取水体颜色（基于深度）
-        function getWaterColor() {
-            return 'rgba(52, 152, 219, 0.6)';
-        }
-        
-        // 绘制水波
-        function drawWaterWaves(baseLevel) {
-            ctx.beginPath();
-            
-            for (let x = 0; x < canvas.width; x += 2) {
-                let waveHeight = 0;
-                
-                // 计算所有波源在该点的叠加效果
-                for (const source of waveSources) {
-                    const distance = Math.sqrt(Math.pow(x - source.x, 2) + 
-                                              Math.pow(baseLevel - source.y, 2));
-                    const intensity = source.strength * Math.exp(-distance / 100);
-                    const timeFactor = Date.now() / 1000;
-                    
-                    waveHeight += intensity * Math.sin(distance / 20 - timeFactor * 2);
-                }
-                
-                const y = baseLevel + waveHeight * waveStrength;
-                
-                if (x === 0) {
-                    ctx.moveTo(x, y);
-                } else {
+            // 添加波浪效果
+            if (isSimulating && waveStrength > 0) {
+                const now = Date.now() / 1000;
+                for (let x = 0; x < canvas.width; x += 5) {
+                    const y = waterLevel + Math.sin(x / 30 + now) * 5 * waveStrength;
                     ctx.lineTo(x, y);
                 }
+            } else {
+                ctx.lineTo(canvas.width, waterLevel);
             }
             
             ctx.lineTo(canvas.width, canvas.height);
@@ -500,22 +498,11 @@
             ctx.fillStyle = 'rgba(52, 152, 219, 0.6)';
             ctx.fill();
             
-            // 绘制水面线
+            // 水面线
             ctx.beginPath();
-            ctx.moveTo(0, baseLevel);
-            for (let x = 0; x < canvas.width; x += 2) {
-                let waveHeight = 0;
-                for (const source of waveSources) {
-                    const distance = Math.sqrt(Math.pow(x - source.x, 2) + 
-                                              Math.pow(baseLevel - source.y, 2));
-                    const intensity = source.strength * Math.exp(-distance / 100);
-                    const timeFactor = Date.now() / 1000;
-                    
-                    waveHeight += intensity * Math.sin(distance / 20 - timeFactor * 2);
-                }
-                ctx.lineTo(x, baseLevel + waveHeight * waveStrength);
-            }
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.moveTo(0, waterLevel);
+            ctx.lineTo(canvas.width, waterLevel);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
             ctx.stroke();
         }
         
@@ -527,7 +514,14 @@
             ctx.moveTo(hullPoints[0].x, hullPoints[0].y);
             
             for (let i = 1; i < hullPoints.length; i++) {
-                ctx.lineTo(hullPoints[i].x, hullPoints[i].y);
+                // 使用二次贝塞尔曲线平滑路径
+                if (i < hullPoints.length - 1) {
+                    const xc = (hullPoints[i].x + hullPoints[i + 1].x) / 2;
+                    const yc = (hullPoints[i].y + hullPoints[i + 1].y) / 2;
+                    ctx.quadraticCurveTo(hullPoints[i].x, hullPoints[i].y, xc, yc);
+                } else {
+                    ctx.lineTo(hullPoints[i].x, hullPoints[i].y);
+                }
             }
             
             // 闭合船体
@@ -547,6 +541,11 @@
                 ctx.arc(point.x, point.y, 4, 0, Math.PI * 2);
                 ctx.fillStyle = '#e74c3c';
                 ctx.fill();
+            }
+            
+            // 绘制重心和浮心
+            if (isSimulating) {
+                drawCenters();
             }
         }
         
@@ -744,10 +743,10 @@
         // 初始化事件监听
         function initEventListeners() {
             // 画布交互
-            canvas.addEventListener('mousedown', handleMouseDown);
-            canvas.addEventListener('mousemove', handleMouseMove);
-            canvas.addEventListener('mouseup', handleMouseUp);
-            canvas.addEventListener('contextmenu', handleContextMenu);
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', endDrawing);
+            canvas.addEventListener('mouseleave', endDrawing);
             
             // 触摸设备支持
             canvas.addEventListener('touchstart', handleTouchStart);
@@ -788,17 +787,33 @@
                 document.getElementById('viscosityValue').textContent = waterViscosity.toFixed(3);
             });
             
-            // 模式选择
-            drawModeBtn.addEventListener('click', () => {
-                currentMode = 'draw';
-                drawModeBtn.style.opacity = '0.8';
-                waveModeBtn.style.opacity = '0.5';
+            // 绘图工具选择
+            pencilToolBtn.addEventListener('click', () => {
+                setActiveTool('pencil');
             });
             
-            waveModeBtn.addEventListener('click', () => {
-                currentMode = 'wave';
-                drawModeBtn.style.opacity = '0.5';
-                waveModeBtn.style.opacity = '0.8';
+            shapeToolBtn.addEventListener('click', () => {
+                setActiveTool('shape');
+            });
+            
+            eraseToolBtn.addEventListener('click', () => {
+                setActiveTool('erase');
+            });
+            
+            // 画笔设置
+            brushSizeSlider.addEventListener('input', () => {
+                brushSize = parseInt(brushSizeSlider.value);
+                brushSizeValue.textContent = brushSize + 'px';
+            });
+            
+            pressureSlider.addEventListener('input', () => {
+                pressureSensitivity = parseFloat(pressureSlider.value);
+                pressureValue.textContent = pressureSensitivity.toFixed(1);
+            });
+            
+            smoothnessSlider.addEventListener('input', () => {
+                smoothness = parseFloat(smoothnessSlider.value);
+                smoothnessValue.textContent = smoothness.toFixed(1);
             });
             
             // 模拟控制
@@ -810,61 +825,96 @@
             window.addEventListener('resize', resizeCanvas);
         }
         
-        // 鼠标事件处理
-        function handleMouseDown(e) {
+        // 设置当前工具
+        function setActiveTool(tool) {
+            currentTool = tool;
+            document.querySelectorAll('.draw-tool-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            switch(tool) {
+                case 'pencil':
+                    pencilToolBtn.classList.add('active');
+                    canvas.style.cursor = 'crosshair';
+                    break;
+                case 'shape':
+                    shapeToolBtn.classList.add('active');
+                    canvas.style.cursor = 'crosshair';
+                    break;
+                case 'erase':
+                    eraseToolBtn.classList.add('active');
+                    canvas.style.cursor = 'url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'10\' fill=\'%23e74c3c\'/></svg>") 12 12, auto';
+                    break;
+            }
+        }
+        
+        // 开始绘制
+        function startDrawing(e) {
+            isDrawing = true;
             const rect = canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             
-            if (currentMode === 'draw') {
-                if (e.button === 0) { // 左键
+            lastX = x;
+            lastY = y;
+            
+            if (currentTool === 'pencil') {
+                hullPoints.push({x, y});
+            } else if (currentTool === 'erase') {
+                erasePoint(x, y);
+            }
+            
+            drawScene();
+            e.preventDefault();
+        }
+        
+        // 绘制
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            if (currentTool === 'pencil') {
+                // 应用平滑度
+                const dist = Math.sqrt(Math.pow(x - lastX, 2) + Math.pow(y - lastY, 2));
+                if (dist > brushSize * (1 - smoothness)) {
                     hullPoints.push({x, y});
-                    isDrawingHull = true;
+                    lastX = x;
+                    lastY = y;
                 }
-            } else if (currentMode === 'wave') {
-                waveSources.push({
-                    x, 
-                    y: canvas.height * 0.7,
-                    strength: 10,
-                    time: Date.now()
-                });
-                isDrawingWave = true;
+            } else if (currentTool === 'erase') {
+                erasePoint(x, y);
             }
             
             drawScene();
             e.preventDefault();
         }
         
-        function handleMouseMove(e) {
-            if (!isDrawingHull && !isDrawingWave) return;
+        // 结束绘制
+        function endDrawing(e) {
+            isDrawing = false;
             
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            if (isDrawingHull && hullPoints.length > 0) {
-                // 实时更新最后一个点的位置（预览）
-                hullPoints[hullPoints.length - 1] = {x, y};
+            // 确保形状闭合
+            if (currentTool === 'pencil' && hullPoints.length > 2) {
+                hullPoints.push({...hullPoints[0]});
             }
             
             drawScene();
             e.preventDefault();
         }
         
-        function handleMouseUp(e) {
-            isDrawingHull = false;
-            isDrawingWave = false;
-            e.preventDefault();
-        }
-        
-        function handleContextMenu(e) {
-            if (currentMode === 'draw' && hullPoints.length > 2) {
-                // 右键完成绘制
-                hullPoints.push({...hullPoints[0]}); // 闭合多边形
-                isDrawingHull = false;
-                drawScene();
+        // 擦除点
+        function erasePoint(x, y) {
+            const eraseRadius = brushSize * 2;
+            for (let i = hullPoints.length - 1; i >= 0; i--) {
+                const point = hullPoints[i];
+                const distance = Math.sqrt(Math.pow(point.x - x, 2) + Math.pow(point.y - y, 2));
+                if (distance < eraseRadius) {
+                    hullPoints.splice(i, 1);
+                }
             }
-            e.preventDefault();
         }
         
         // 触摸事件处理
@@ -875,17 +925,14 @@
                 const x = touch.clientX - rect.left;
                 const y = touch.clientY - rect.top;
                 
-                if (currentMode === 'draw') {
+                isDrawing = true;
+                lastX = x;
+                lastY = y;
+                
+                if (currentTool === 'pencil') {
                     hullPoints.push({x, y});
-                    isDrawingHull = true;
-                } else if (currentMode === 'wave') {
-                    waveSources.push({
-                        x, 
-                        y: canvas.height * 0.7,
-                        strength: 10,
-                        time: Date.now()
-                    });
-                    isDrawingWave = true;
+                } else if (currentTool === 'erase') {
+                    erasePoint(x, y);
                 }
                 
                 drawScene();
@@ -894,7 +941,7 @@
         }
         
         function handleTouchMove(e) {
-            if (!isDrawingHull && !isDrawingWave) return;
+            if (!isDrawing) return;
             
             if (e.touches.length === 1) {
                 const touch = e.touches[0];
@@ -902,8 +949,15 @@
                 const x = touch.clientX - rect.left;
                 const y = touch.clientY - rect.top;
                 
-                if (isDrawingHull && hullPoints.length > 0) {
-                    hullPoints[hullPoints.length - 1] = {x, y};
+                if (currentTool === 'pencil') {
+                    const dist = Math.sqrt(Math.pow(x - lastX, 2) + Math.pow(y - lastY, 2));
+                    if (dist > brushSize * (1 - smoothness)) {
+                        hullPoints.push({x, y});
+                        lastX = x;
+                        lastY = y;
+                    }
+                } else if (currentTool === 'erase') {
+                    erasePoint(x, y);
                 }
                 
                 drawScene();
@@ -913,11 +967,10 @@
         
         function handleTouchEnd(e) {
             if (e.touches.length === 0) {
-                isDrawingHull = false;
-                isDrawingWave = false;
+                isDrawing = false;
                 
-                if (currentMode === 'draw' && hullPoints.length > 2) {
-                    hullPoints.push({...hullPoints[0]}); // 闭合多边形
+                if (currentTool === 'pencil' && hullPoints.length > 2) {
+                    hullPoints.push({...hullPoints[0]});
                 }
                 
                 drawScene();
@@ -949,7 +1002,6 @@
         function resetSimulation() {
             stopSimulation();
             hullPoints = [];
-            waveSources = [];
             displacement = 0;
             buoyancyForce = 0;
             draft = 0;
@@ -977,11 +1029,10 @@
         function init() {
             resizeCanvas();
             initEventListeners();
+            animate();
             
             // 设置默认选中的材质
             document.querySelector('.material-btn.steel').classList.add('selected');
-            drawModeBtn.style.opacity = '0.8';
-            waveModeBtn.style.opacity = '0.5';
         }
         
         // 启动应用
