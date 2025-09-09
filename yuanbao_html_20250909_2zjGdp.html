@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>iPad平面沙盒游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+        }
+        
+        .game-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        #gameCanvas {
+            flex: 1;
+            background: #3498db;
+            display: block;
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(52, 73, 94, 0.9);
+            border-radius: 15px;
+            margin-top: 15px;
+        }
+        
+        .material-btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            min-width: 100px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .material-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .sand { background: linear-gradient(to bottom, #f1c40f, #e2b607); color: #34495e; }
+        .water { background: linear-gradient(to bottom, #3498db, #2980b9); color: white; }
+        .stone { background: linear-gradient(to bottom, #95a5a6, #7f8c8d); color: white; }
+        .grass { background: linear-gradient(to bottom, #2ecc71, #27ae60); color: white; }
+        .wood { background: linear-gradient(to bottom, #e67e22, #d35400); color: white; }
+        .clear { background: linear-gradient(to bottom, #e74c3c, #c0392b); color: white; }
+        
+        .info-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: rgba(236, 240, 241, 0.95);
+            border-radius: 12px;
+            margin-top: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .current-material {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .particle-count {
+            font-size: 1rem;
+            color: #7f8c8d;
+        }
+        
+        .instructions {
+            background: rgba(236, 240, 241, 0.95);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .instructions h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .instructions p {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        @media (max-width: 768px) {
+            .material-btn {
+                padding: 12px 16px;
+                min-width: 80px;
+                font-size: 1rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>iPad平面沙盒游戏</h1>
+        <p class="subtitle">触摸或拖动来创建你的世界</p>
+    </div>
+    
+    <div class="game-container">
+        <canvas id="gameCanvas"></canvas>
+    </div>
+    
+    <div class="controls">
+        <button class="material-btn sand" data-type="sand">沙子</button>
+        <button class="material-btn water" data-type="water">水</button>
+        <button class="material-btn stone" data-type="stone">石头</button>
+        <button class="material-btn grass" data-type="grass">草地</button>
+        <button class="material-btn wood" data-type="wood">木头</button>
+        <button class="material-btn clear" id="clearBtn">清除</button>
+    </div>
+    
+    <div class="info-panel">
+        <div class="current-material">当前选择: <span id="currentMaterial">沙子</span></div>
+        <div class="particle-count">粒子数量: <span id="particleCount">0</span></div>
+    </div>
+    
+    <div class="instructions">
+        <h3>游戏说明</h3>
+        <p>点击或拖动画布放置材料。使用不同材料创建地形和结构。</p>
+        <p>沙子 - 受重力影响，会堆积 | 水 - 会流动，寻找最低点 | 石头 - 坚固，不受重力影响</p>
+        <p>草地 - 装饰性表面 | 木头 - 坚固，可用于建造结构 | 清除 - 擦除材料</p>
+    </div>
+
+    <script>
+        // 游戏主要变量
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const currentMaterialEl = document.getElementById('currentMaterial');
+        const particleCountEl = document.getElementById('particleCount');
+        
+        // 设置画布尺寸
+        function resizeCanvas() {
+            const maxWidth = window.innerWidth - 40;
+            const maxHeight = window.innerHeight - 300;
+            
+            canvas.width = maxWidth;
+            canvas.height = maxHeight;
+            
+            cellSize = Math.max(6, Math.min(10, Math.floor(maxWidth / 100)));
+            cols = Math.floor(canvas.width / cellSize);
+            rows = Math.floor(canvas.height / cellSize);
+            
+            initializeGrid();
+            generateTerrain();
+        }
+        
+        // 初始化游戏变量
+        let cellSize = 8;
+        let cols = Math.floor(canvas.width / cellSize);
+        let rows = Math.floor(canvas.height / cellSize);
+        let grid = [];
+        let currentMaterial = 'sand';
+        let isDrawing = false;
+        let particleCount = 0;
+        
+        // 材料颜色映射
+        const materials = {
+            'sand': '#f1c40f',
+            'water': '#3498db',
+            'stone': '#95a5a6',
+            'grass': '#2ecc71',
+            'wood': '#e67e22',
+            'empty': '#3498db',
+            'dirt': '#8B4513'
+        };
+        
+        // 初始化网格
+        function initializeGrid() {
+            grid = [];
+            for (let x = 0; x < cols; x++) {
+                grid[x] = [];
+                for (let y = 0; y < rows; y++) {
+                    grid[x][y] = 'empty';
+                }
+            }
+            particleCount = 0;
+            updateParticleCount();
+        }
+        
+        // 更新粒子数量显示
+        function updateParticleCount() {
+            particleCountEl.textContent = particleCount;
+        }
+        
+        // 生成基本地形
+        function generateTerrain() {
+            // 创建地面
+            const groundLevel = rows - 5;
+            for (let x = 0; x < cols; x++) {
+                for (let y = groundLevel; y < rows; y++) {
+                    if (y === groundLevel) {
+                        grid[x][y] = 'grass';
+                    } else if (y < groundLevel + 3) {
+                        grid[x][y] = Math.random() > 0.7 ? 'stone' : 'dirt';
+                    } else {
+                        grid[x][y] = 'stone';
+                    }
+                    particleCount++;
+                }
+            }
+            
+            // 添加一些树
+            for (let i = 0; i < 3; i++) {
+                const x = Math.floor(Math.random() * (cols - 10)) + 5;
+                const y = groundLevel - 1;
+                addTree(x, y);
+            }
+            
+            updateParticleCount();
+        }
+        
+        // 添加一棵树
+        function addTree(x, y) {
+            // 树干
+            for (let i = 0; i < 4; i++) {
+                if (y - i >= 0) {
+                    grid[x][y - i] = 'wood';
+                    particleCount++;
+                }
+            }
+            
+            // 树叶
+            for (let i = -2; i <= 2; i++) {
+                for (let j = -3; j < 0; j++) {
+                    if (x + i >= 0 && x + i < cols && y + j >= 0) {
+                        grid[x + i][y + j] = 'grass';
+                        particleCount++;
+                    }
+                }
+            }
+        }
+        
+        // 绘制网格
+        function drawGrid() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let x = 0; x < cols; x++) {
+                for (let y = 0; y < rows; y++) {
+                    if (grid[x][y] !== 'empty') {
+                        ctx.fillStyle = materials[grid[x][y]];
+                        ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                        
+                        // 添加纹理效果
+                        if (grid[x][y] === 'sand' || grid[x][y] === 'stone') {
+                            ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+                            ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                        }
+                    }
+                }
+            }
+        }
+        
+        // 更新物理效果
+        function updatePhysics() {
+            // 从底部向上更新以便正确模拟堆叠
+            for (let y = rows - 2; y >= 0; y--) {
+                for (let x = 0; x < cols; x++) {
+                    // 沙子的物理特性
+                    if (grid[x][y] === 'sand') {
+                        if (y < rows - 1 && grid[x][y + 1] === 'empty') {
+                            grid[x][y + 1] = 'sand';
+                            grid[x][y] = 'empty';
+                        } else if (y < rows - 1 && x > 0 && grid[x - 1][y + 1] === 'empty') {
+                            grid[x - 1][y + 1] = 'sand';
+                            grid[x][y] = 'empty';
+                        } else if (y < rows - 1 && x < cols - 1 && grid[x + 1][y + 1] === 'empty') {
+                            grid[x + 1][y + 1] = 'sand';
+                            grid[x][y] = 'empty';
+                        } else if (y < rows - 1 && grid[x][y + 1] === 'water') {
+                            // 沙子和水交换位置
+                            grid[x][y + 1] = 'sand';
+                            grid[x][y] = 'water';
+                        }
+                    }
+                    
+                    // 水的物理特性
+                    if (grid[x][y] === 'water') {
+                        // 水向下流动
+                        if (y < rows - 1 && grid[x][y + 1] === 'empty') {
+                            grid[x][y + 1] = 'water';
+                            grid[x][y] = 'empty';
+                        } else {
+                            // 水向两侧流动
+                            const dir = Math.random() > 0.5 ? 1 : -1;
+                            if (x + dir >= 0 && x + dir < cols && grid[x + dir][y] === 'empty') {
+                                grid[x + dir][y] = 'water';
+                                grid[x][y] = 'empty';
+                            } else if (x - dir >= 0 && x - dir < cols && grid[x - dir][y] === 'empty') {
+                                grid[x - dir][y] = 'water';
+                                grid[x][y] = 'empty';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        // 游戏主循环
+        function gameLoop() {
+            updatePhysics();
+            drawGrid();
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // 处理画布交互
+        function handleCanvasInteraction(e) {
+            e.preventDefault();
+            isDrawing = true;
+            
+            const rect = canvas.getBoundingClientRect();
+            let x, y;
+            
+            if (e.type.includes('touch')) {
+                x = Math.floor((e.touches[0].clientX - rect.left) / cellSize);
+                y = Math.floor((e.touches[0].clientY - rect.top) / cellSize);
+            } else {
+                x = Math.floor((e.clientX - rect.left) / cellSize);
+                y = Math.floor((e.clientY - rect.top) / cellSize);
+            }
+            
+            if (x >= 0 && x < cols && y >= 0 && y < rows) {
+                if (currentMaterial === 'clear') {
+                    if (grid[x][y] !== 'empty') {
+                        grid[x][y] = 'empty';
+                        particleCount--;
+                    }
+                } else {
+                    if (grid[x][y] === 'empty') {
+                        particleCount++;
+                    }
+                    grid[x][y] = currentMaterial;
+                }
+                updateParticleCount();
+            }
+        }
+        
+        // 设置事件监听器
+        canvas.addEventListener('mousedown', handleCanvasInteraction);
+        canvas.addEventListener('touchstart', handleCanvasInteraction);
+        
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDrawing) {
+                handleCanvasInteraction(e);
+            }
+        });
+        
+        canvas.addEventListener('touchmove', (e) => {
+            if (isDrawing) {
+                handleCanvasInteraction(e);
+            }
+        });
+        
+        document.addEventListener('mouseup', () => {
+            isDrawing = false;
+        });
+        
+        document.addEventListener('touchend', () => {
+            isDrawing = false;
+        });
+        
+        // 材料按钮事件
+        document.querySelectorAll('.material-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn.id === 'clearBtn') {
+                    currentMaterial = 'clear';
+                    currentMaterialEl.textContent = '清除';
+                } else {
+                    currentMaterial = btn.dataset.type;
+                    currentMaterialEl.textContent = btn.textContent;
+                }
+            });
+        });
+        
+        // 防止滚动和缩放
+        document.addEventListener('touchstart', function(e) {
+            if (e.target === canvas) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        document.addEventListener('touchmove', function(e) {
+            if (e.target === canvas) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        // 窗口调整大小时重设画布
+        window.addEventListener('resize', resizeCanvas);
+        
+        // 初始化游戏
+        resizeCanvas();
+        gameLoop();
+    </script>
+</body>
+</html>
