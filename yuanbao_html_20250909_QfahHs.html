@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>船体水动力模拟系统</title>
+    <title>高级水动力模拟系统</title>
     <style>
         * {
             margin: 0;
@@ -76,6 +76,7 @@
             width: 100%;
             height: 100%;
             background: #3498db;
+            cursor: crosshair;
         }
         
         .control-section {
@@ -231,20 +232,28 @@
 </head>
 <body>
     <div class="header">
-        <h1>船体水动力模拟系统</h1>
-        <p class="subtitle">设计、模拟与分析船体水动力性能</p>
+        <h1>高级水动力模拟系统</h1>
+        <p class="subtitle">实时水体物理模拟与船体设计</p>
     </div>
     
     <div class="main-container">
         <div class="design-panel">
             <div class="control-section">
+                <div class="control-title">绘制模式</div>
+                <div class="physics-controls">
+                    <button class="action-btn" id="drawModeBtn">绘制船体</button>
+                    <button class="action-btn" id="waveModeBtn">创建波浪</button>
+                </div>
+            </div>
+            
+            <div class="control-section">
                 <div class="control-title">船体材质选择</div>
                 <div class="material-grid">
-                    <button class="material-btn steel" data-density="7.8">钢铁</button>
-                    <button class="material-btn wood" data-density="0.8">木材</button>
-                    <button class="material-btn aluminum" data-density="2.7">铝材</button>
-                    <button class="material-btn fiberglass" data-density="1.8">玻璃钢</button>
-                    <button class="material-btn foam" data-density="0.2">泡沫</button>
+                    <button class="material-btn steel" data-type="steel" data-density="7.8">钢铁</button>
+                    <button class="material-btn wood" data-type="wood" data-density="0.8">木材</button>
+                    <button class="material-btn aluminum" data-type="aluminum" data-density="2.7">铝材</button>
+                    <button class="material-btn fiberglass" data-type="fiberglass" data-density="1.8">玻璃钢</button>
+                    <button class="material-btn foam" data-type="foam" data-density="0.2">泡沫</button>
                 </div>
             </div>
             
@@ -274,12 +283,21 @@
                         </div>
                         <input type="range" id="waveStrength" min="0" max="2" step="0.1" value="0.5">
                     </div>
+                    
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>水体粘度: </span>
+                            <span id="viscosityValue">0.01</span>
+                        </div>
+                        <input type="range" id="viscosity" min="0.001" max="0.1" step="0.001" value="0.01">
+                    </div>
                 </div>
             </div>
             
             <div class="control-section">
                 <button class="action-btn" id="startSim">开始模拟</button>
                 <button class="action-btn reset" id="resetSim">重置模拟</button>
+                <button class="action-btn" id="clearHull">清除船体</button>
             </div>
         </div>
         
@@ -287,7 +305,7 @@
             <canvas id="simulationCanvas"></canvas>
             
             <div class="data-panel">
-                <div class="data-title">实时数据</div>
+                <div class="data-title">实时物理数据</div>
                 <div class="data-item">
                     <span>排水量:</span>
                     <span class="data-value" id="displacement">0.0 t</span>
@@ -301,7 +319,7 @@
                     <span class="data-value" id="draft">0.0 m</span>
                 </div>
                 <div class="data-item">
-                    <span>稳定性:</span>
+                    <span>稳定性系数:</span>
                     <span class="data-value" id="stability">0.0</span>
                 </div>
                 <div class="data-item">
@@ -312,17 +330,22 @@
                     <span>浮心高度:</span>
                     <span class="data-value" id="centerOfBuoyancy">0.0 m</span>
                 </div>
+                <div class="data-item">
+                    <span>横摇周期:</span>
+                    <span class="data-value" id="rollPeriod">0.0 s</span>
+                </div>
             </div>
         </div>
     </div>
     
     <div class="instructions">
         <h3>使用说明</h3>
-        <p>1. 选择船体材质 - 不同材质具有不同密度，影响船体浮力和稳定性。</p>
-        <p>2. 调整物理参数 - 可以修改水体密度、重力加速度和波浪强度。</p>
-        <p>3. 在画布上绘制船体形状 - 使用鼠标拖动创建自定义船体外形。</p>
-        <p>4. 点击"开始模拟"观察船体在水中的物理行为。</p>
-        <p>5. 实时数据面板显示排水量、浮力、吃水深度等关键参数。</p>
+        <p>1. <strong>绘制船体</strong> - 点击"绘制船体"按钮，然后在画布上点击创建多边形顶点，右键完成绘制</p>
+        <p>2. <strong>创建波浪</strong> - 点击"创建波浪"按钮，然后在画布上点击创建波浪源</p>
+        <p>3. <strong>选择材质</strong> - 不同材质具有不同密度，影响船体浮力和稳定性</p>
+        <p>4. <strong>调整参数</strong> - 修改水体密度、重力、波浪强度等物理参数</p>
+        <p>5. <strong>开始模拟</strong> - 点击"开始模拟"观察船体在水中的物理行为</p>
+        <p>6. <strong>实时数据</strong> - 查看右侧数据面板获取实时物理参数和船体特性</p>
     </div>
 
     <script>
@@ -331,40 +354,69 @@
         const ctx = canvas.getContext('2d');
         const startSimBtn = document.getElementById('startSim');
         const resetSimBtn = document.getElementById('resetSim');
-        const waterDensitySlider = document.getElementById('waterDensity');
-        const gravitySlider = document.getElementById('gravity');
-        const waveStrengthSlider = document.getElementById('waveStrength');
-        const waterDensityValue = document.getElementById('waterDensityValue');
-        const gravityValue = document.getElementById('gravityValue');
-        const waveValue = document.getElementById('waveValue');
+        const clearHullBtn = document.getElementById('clearHull');
+        const drawModeBtn = document.getElementById('drawModeBtn');
+        const waveModeBtn = document.getElementById('waveModeBtn');
         
         // 物理参数
         let waterDensity = 1.025; // g/cm³ (海水密度)
         let gravity = 9.81; // m/s²
         let waveStrength = 0.5;
+        let waterViscosity = 0.01; // 水体粘度
         let selectedMaterial = 'steel';
         let materialDensity = 7.8; // g/cm³
         
         // 船体设计变量
         let hullPoints = [];
-        let isDesigning = true;
+        let isDrawingHull = false;
+        let isDrawingWave = false;
         let isSimulating = false;
-        let currentHull = [];
+        let currentMode = 'draw'; // 'draw' 或 'wave'
         
-        // 模拟变量
+        // 水体模拟变量
+        let waveSources = [];
+        let waterGrid = [];
+        let waterWidth = 0;
+        let waterHeight = 0;
+        let cellSize = 4;
+        
+        // 物理计算变量
         let displacement = 0;
         let buoyancyForce = 0;
         let draft = 0;
         let stabilityValue = 0;
-        let centerOfGravity = 0;
-        let centerOfBuoyancy = 0;
+        let centerOfGravity = {x: 0, y: 0};
+        let centerOfBuoyancy = {x: 0, y: 0};
+        let rollPeriod = 0;
         
         // 调整画布大小
         function resizeCanvas() {
             const container = canvas.parentElement;
             canvas.width = container.clientWidth;
             canvas.height = container.clientHeight;
+            
+            // 初始化水体网格
+            initWaterGrid();
+            
             drawScene();
+        }
+        
+        // 初始化水体网格
+        function initWaterGrid() {
+            waterWidth = Math.ceil(canvas.width / cellSize);
+            waterHeight = Math.ceil(canvas.height / cellSize);
+            
+            waterGrid = [];
+            for (let x = 0; x < waterWidth; x++) {
+                waterGrid[x] = [];
+                for (let y = 0; y < waterHeight; y++) {
+                    waterGrid[x][y] = {
+                        height: 0,
+                        velocity: 0,
+                        acceleration: 0
+                    };
+                }
+            }
         }
         
         // 绘制场景
@@ -381,24 +433,64 @@
             
             // 绘制网格和参考线
             drawGrid();
+            
+            // 绘制重心和浮心
+            if (isSimulating) {
+                drawCenters();
+            }
         }
         
         // 绘制水面
         function drawWater() {
             const waterLevel = canvas.height * 0.7;
             
+            // 绘制水体背景
             ctx.beginPath();
-            ctx.moveTo(0, waterLevel);
+            ctx.rect(0, waterLevel, canvas.width, canvas.height - waterLevel);
+            ctx.fillStyle = getWaterColor();
+            ctx.fill();
             
-            // 添加波浪效果
-            if (isSimulating && waveStrength > 0) {
-                const now = Date.now() / 1000;
-                for (let x = 0; x < canvas.width; x += 5) {
-                    const y = waterLevel + Math.sin(x / 30 + now) * 5 * waveStrength;
+            // 绘制水面线和水波效果
+            if (isSimulating) {
+                drawWaterWaves(waterLevel);
+            } else {
+                ctx.beginPath();
+                ctx.moveTo(0, waterLevel);
+                ctx.lineTo(canvas.width, waterLevel);
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.stroke();
+            }
+        }
+        
+        // 获取水体颜色（基于深度）
+        function getWaterColor() {
+            return 'rgba(52, 152, 219, 0.6)';
+        }
+        
+        // 绘制水波
+        function drawWaterWaves(baseLevel) {
+            ctx.beginPath();
+            
+            for (let x = 0; x < canvas.width; x += 2) {
+                let waveHeight = 0;
+                
+                // 计算所有波源在该点的叠加效果
+                for (const source of waveSources) {
+                    const distance = Math.sqrt(Math.pow(x - source.x, 2) + 
+                                              Math.pow(baseLevel - source.y, 2));
+                    const intensity = source.strength * Math.exp(-distance / 100);
+                    const timeFactor = Date.now() / 1000;
+                    
+                    waveHeight += intensity * Math.sin(distance / 20 - timeFactor * 2);
+                }
+                
+                const y = baseLevel + waveHeight * waveStrength;
+                
+                if (x === 0) {
+                    ctx.moveTo(x, y);
+                } else {
                     ctx.lineTo(x, y);
                 }
-            } else {
-                ctx.lineTo(canvas.width, waterLevel);
             }
             
             ctx.lineTo(canvas.width, canvas.height);
@@ -408,11 +500,22 @@
             ctx.fillStyle = 'rgba(52, 152, 219, 0.6)';
             ctx.fill();
             
-            // 水面线
+            // 绘制水面线
             ctx.beginPath();
-            ctx.moveTo(0, waterLevel);
-            ctx.lineTo(canvas.width, waterLevel);
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.moveTo(0, baseLevel);
+            for (let x = 0; x < canvas.width; x += 2) {
+                let waveHeight = 0;
+                for (const source of waveSources) {
+                    const distance = Math.sqrt(Math.pow(x - source.x, 2) + 
+                                              Math.pow(baseLevel - source.y, 2));
+                    const intensity = source.strength * Math.exp(-distance / 100);
+                    const timeFactor = Date.now() / 1000;
+                    
+                    waveHeight += intensity * Math.sin(distance / 20 - timeFactor * 2);
+                }
+                ctx.lineTo(x, baseLevel + waveHeight * waveStrength);
+            }
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
             ctx.stroke();
         }
         
@@ -428,7 +531,9 @@
             }
             
             // 闭合船体
-            ctx.lineTo(hullPoints[0].x, hullPoints[0].y);
+            if (hullPoints.length > 2) {
+                ctx.closePath();
+            }
             
             ctx.fillStyle = getMaterialColor(selectedMaterial);
             ctx.strokeStyle = '#2c3e50';
@@ -436,9 +541,12 @@
             ctx.fill();
             ctx.stroke();
             
-            // 绘制重心和浮心
-            if (isSimulating) {
-                drawCenters();
+            // 绘制顶点
+            for (const point of hullPoints) {
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#e74c3c';
+                ctx.fill();
             }
         }
         
@@ -458,21 +566,36 @@
         function drawCenters() {
             // 绘制重心
             ctx.beginPath();
-            ctx.arc(canvas.width/2, canvas.height/2 - centerOfGravity * 10, 5, 0, Math.PI * 2);
+            ctx.arc(centerOfGravity.x, centerOfGravity.y, 6, 0, Math.PI * 2);
             ctx.fillStyle = '#e74c3c';
             ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
             
             // 绘制浮心
             ctx.beginPath();
-            ctx.arc(canvas.width/2, canvas.height/2 - centerOfBuoyancy * 10, 5, 0, Math.PI * 2);
+            ctx.arc(centerOfBuoyancy.x, centerOfBuoyancy.y, 6, 0, Math.PI * 2);
             ctx.fillStyle = '#3498db';
             ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // 绘制连接线
+            ctx.beginPath();
+            ctx.moveTo(centerOfGravity.x, centerOfGravity.y);
+            ctx.lineTo(centerOfBuoyancy.x, centerOfBuoyancy.y);
+            ctx.strokeStyle = '#f1c40f';
+            ctx.lineWidth = 2;
+            ctx.stroke();
             
             // 绘制图例
+            ctx.font = '12px Arial';
             ctx.fillStyle = '#e74c3c';
-            ctx.fillText('重心', canvas.width - 60, 30);
+            ctx.fillText('重心', centerOfGravity.x + 10, centerOfGravity.y);
             ctx.fillStyle = '#3498db';
-            ctx.fillText('浮心', canvas.width - 60, 50);
+            ctx.fillText('浮心', centerOfBuoyancy.x + 10, centerOfBuoyancy.y);
         }
         
         // 绘制网格和参考线
@@ -495,37 +618,114 @@
                 ctx.lineTo(canvas.width, y);
                 ctx.stroke();
             }
+            
+            // 绘制水位线标记
+            const waterLevel = canvas.height * 0.7;
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(0, waterLevel);
+            ctx.lineTo(canvas.width, waterLevel);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.fillText('水位线', 10, waterLevel - 5);
         }
         
         // 计算物理特性
         function calculatePhysics() {
             if (hullPoints.length < 3) return;
             
-            // 计算船体面积 (简化计算)
+            // 计算船体面积和质心
             let area = 0;
+            let centerX = 0;
+            let centerY = 0;
+            
             for (let i = 0; i < hullPoints.length; i++) {
                 const j = (i + 1) % hullPoints.length;
-                area += hullPoints[i].x * hullPoints[j].y;
-                area -= hullPoints[j].x * hullPoints[i].y;
+                const cross = hullPoints[i].x * hullPoints[j].y - hullPoints[j].x * hullPoints[i].y;
+                area += cross;
+                centerX += (hullPoints[i].x + hullPoints[j].x) * cross;
+                centerY += (hullPoints[i].y + hullPoints[j].y) * cross;
             }
+            
             area = Math.abs(area / 2);
+            centerX = centerX / (6 * area);
+            centerY = centerY / (6 * area);
             
             // 计算排水量 (阿基米德原理)
-            displacement = area * 0.01; // 简化计算
+            const waterLevel = canvas.height * 0.7;
+            const submergedArea = calculateSubmergedArea(waterLevel);
+            displacement = submergedArea * 0.01 * materialDensity;
+            
+            // 计算浮力
             buoyancyForce = displacement * waterDensity * gravity * 1000;
             
             // 计算吃水深度
-            draft = Math.sqrt(area) * 0.2;
+            draft = calculateDraft(waterLevel);
             
-            // 计算稳定性 (简化)
-            stabilityValue = (materialDensity / waterDensity) * 10;
+            // 计算重心和浮心
+            centerOfGravity = {x: centerX, y: centerY};
+            centerOfBuoyancy = calculateCenterOfBuoyancy(waterLevel);
             
-            // 计算重心和浮心 (简化)
-            centerOfGravity = canvas.height / 2 - (50 / materialDensity);
-            centerOfBuoyancy = canvas.height / 2 - (30 / waterDensity);
+            // 计算稳定性
+            stabilityValue = calculateStability();
+            
+            // 计算横摇周期
+            rollPeriod = calculateRollPeriod();
             
             // 更新数据显示
             updateDataDisplay();
+        }
+        
+        // 计算水下部分面积
+        function calculateSubmergedArea(waterLevel) {
+            let submergedArea = 0;
+            for (let i = 0; i < hullPoints.length; i++) {
+                const j = (i + 1) % hullPoints.length;
+                const p1 = hullPoints[i];
+                const p2 = hullPoints[j];
+                
+                // 简单估算水下面积
+                if (p1.y > waterLevel || p2.y > waterLevel) {
+                    submergedArea += Math.abs((p1.x - p2.x) * (waterLevel - Math.min(p1.y, p2.y))) / 2;
+                }
+            }
+            return Math.max(0, submergedArea);
+        }
+        
+        // 计算吃水深度
+        function calculateDraft(waterLevel) {
+            let maxDepth = 0;
+            for (const point of hullPoints) {
+                const depth = Math.max(0, point.y - waterLevel);
+                maxDepth = Math.max(maxDepth, depth);
+            }
+            return maxDepth;
+        }
+        
+        // 计算浮心位置
+        function calculateCenterOfBuoyancy(waterLevel) {
+            // 简化计算：浮心位于重心下方一定位置
+            return {
+                x: centerOfGravity.x,
+                y: centerOfGravity.y + draft / 2
+            };
+        }
+        
+        // 计算稳定性
+        function calculateStability() {
+            // 稳定性系数：浮心与重心的垂直距离
+            const verticalDistance = Math.abs(centerOfBuoyancy.y - centerOfGravity.y);
+            return verticalDistance / draft;
+        }
+        
+        // 计算横摇周期
+        function calculateRollPeriod() {
+            // 简化的横摇周期计算公式
+            if (stabilityValue <= 0) return 0;
+            return 2 * Math.PI * Math.sqrt(draft / (gravity * stabilityValue));
         }
         
         // 更新数据面板
@@ -534,16 +734,20 @@
             document.getElementById('buoyancy').textContent = buoyancyForce.toFixed(2) + ' N';
             document.getElementById('draft').textContent = draft.toFixed(2) + ' m';
             document.getElementById('stability').textContent = stabilityValue.toFixed(2);
-            document.getElementById('centerOfGravity').textContent = centerOfGravity.toFixed(2) + ' m';
-            document.getElementById('centerOfBuoyancy').textContent = centerOfBuoyancy.toFixed(2) + ' m';
+            document.getElementById('centerOfGravity').textContent = 
+                centerOfGravity.x.toFixed(1) + ', ' + centerOfGravity.y.toFixed(1);
+            document.getElementById('centerOfBuoyancy').textContent = 
+                centerOfBuoyancy.x.toFixed(1) + ', ' + centerOfBuoyancy.y.toFixed(1);
+            document.getElementById('rollPeriod').textContent = rollPeriod.toFixed(2) + ' s';
         }
         
         // 初始化事件监听
         function initEventListeners() {
-            // 画布交互 - 设计船体
-            canvas.addEventListener('mousedown', startDesign);
-            canvas.addEventListener('mousemove', designHull);
-            canvas.addEventListener('mouseup', endDesign);
+            // 画布交互
+            canvas.addEventListener('mousedown', handleMouseDown);
+            canvas.addEventListener('mousemove', handleMouseMove);
+            canvas.addEventListener('mouseup', handleMouseUp);
+            canvas.addEventListener('contextmenu', handleContextMenu);
             
             // 触摸设备支持
             canvas.addEventListener('touchstart', handleTouchStart);
@@ -562,124 +766,182 @@
             });
             
             // 物理参数调整
-            waterDensitySlider.addEventListener('input', () => {
-                waterDensity = parseFloat(waterDensitySlider.value);
-                waterDensityValue.textContent = waterDensity.toFixed(3) + ' g/cm³';
+            document.getElementById('waterDensity').addEventListener('input', () => {
+                waterDensity = parseFloat(document.getElementById('waterDensity').value);
+                document.getElementById('waterDensityValue').textContent = waterDensity.toFixed(3) + ' g/cm³';
                 if (isSimulating) calculatePhysics();
             });
             
-            gravitySlider.addEventListener('input', () => {
-                gravity = parseFloat(gravitySlider.value);
-                gravityValue.textContent = gravity.toFixed(2) + ' m/s²';
+            document.getElementById('gravity').addEventListener('input', () => {
+                gravity = parseFloat(document.getElementById('gravity').value);
+                document.getElementById('gravityValue').textContent = gravity.toFixed(2) + ' m/s²';
                 if (isSimulating) calculatePhysics();
             });
             
-            waveStrengthSlider.addEventListener('input', () => {
-                waveStrength = parseFloat(waveStrengthSlider.value);
-                waveValue.textContent = waveStrength.toFixed(1);
+            document.getElementById('waveStrength').addEventListener('input', () => {
+                waveStrength = parseFloat(document.getElementById('waveStrength').value);
+                document.getElementById('waveValue').textContent = waveStrength.toFixed(1);
+            });
+            
+            document.getElementById('viscosity').addEventListener('input', () => {
+                waterViscosity = parseFloat(document.getElementById('viscosity').value);
+                document.getElementById('viscosityValue').textContent = waterViscosity.toFixed(3);
+            });
+            
+            // 模式选择
+            drawModeBtn.addEventListener('click', () => {
+                currentMode = 'draw';
+                drawModeBtn.style.opacity = '0.8';
+                waveModeBtn.style.opacity = '0.5';
+            });
+            
+            waveModeBtn.addEventListener('click', () => {
+                currentMode = 'wave';
+                drawModeBtn.style.opacity = '0.5';
+                waveModeBtn.style.opacity = '0.8';
             });
             
             // 模拟控制
             startSimBtn.addEventListener('click', startSimulation);
             resetSimBtn.addEventListener('click', resetSimulation);
+            clearHullBtn.addEventListener('click', clearHull);
             
             // 窗口调整大小
             window.addEventListener('resize', resizeCanvas);
         }
         
-        // 设计船体
-        let isDrawing = false;
-        
-        function startDesign(e) {
-            if (!isDesigning) return;
-            isDrawing = true;
-            hullPoints = [];
+        // 鼠标事件处理
+        function handleMouseDown(e) {
             const rect = canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            hullPoints.push({x, y});
-            e.preventDefault();
-        }
-        
-        function designHull(e) {
-            if (!isDrawing || !isDesigning) return;
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            hullPoints.push({x, y});
-            drawScene();
-            e.preventDefault();
-        }
-        
-        function endDesign(e) {
-            if (!isDrawing) return;
-            isDrawing = false;
             
-            // 确保船体闭合
-            if (hullPoints.length > 2) {
-                hullPoints.push({...hullPoints[0]});
+            if (currentMode === 'draw') {
+                if (e.button === 0) { // 左键
+                    hullPoints.push({x, y});
+                    isDrawingHull = true;
+                }
+            } else if (currentMode === 'wave') {
+                waveSources.push({
+                    x, 
+                    y: canvas.height * 0.7,
+                    strength: 10,
+                    time: Date.now()
+                });
+                isDrawingWave = true;
             }
             
             drawScene();
+            e.preventDefault();
+        }
+        
+        function handleMouseMove(e) {
+            if (!isDrawingHull && !isDrawingWave) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            if (isDrawingHull && hullPoints.length > 0) {
+                // 实时更新最后一个点的位置（预览）
+                hullPoints[hullPoints.length - 1] = {x, y};
+            }
+            
+            drawScene();
+            e.preventDefault();
+        }
+        
+        function handleMouseUp(e) {
+            isDrawingHull = false;
+            isDrawingWave = false;
+            e.preventDefault();
+        }
+        
+        function handleContextMenu(e) {
+            if (currentMode === 'draw' && hullPoints.length > 2) {
+                // 右键完成绘制
+                hullPoints.push({...hullPoints[0]}); // 闭合多边形
+                isDrawingHull = false;
+                drawScene();
+            }
             e.preventDefault();
         }
         
         // 触摸事件处理
         function handleTouchStart(e) {
-            if (!isDesigning) return;
-            isDrawing = true;
-            const rect = canvas.getBoundingClientRect();
-            const touch = e.touches[0];
-            const x = touch.clientX - rect.left;
-            const y = touch.clientY - rect.top;
-            hullPoints = [{x, y}];
+            if (e.touches.length === 1) {
+                const touch = e.touches[0];
+                const rect = canvas.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+                
+                if (currentMode === 'draw') {
+                    hullPoints.push({x, y});
+                    isDrawingHull = true;
+                } else if (currentMode === 'wave') {
+                    waveSources.push({
+                        x, 
+                        y: canvas.height * 0.7,
+                        strength: 10,
+                        time: Date.now()
+                    });
+                    isDrawingWave = true;
+                }
+                
+                drawScene();
+            }
             e.preventDefault();
         }
         
         function handleTouchMove(e) {
-            if (!isDrawing || !isDesigning) return;
-            const rect = canvas.getBoundingClientRect();
-            const touch = e.touches[0];
-            const x = touch.clientX - rect.left;
-            const y = touch.clientY - rect.top;
-            hullPoints.push({x, y});
-            drawScene();
+            if (!isDrawingHull && !isDrawingWave) return;
+            
+            if (e.touches.length === 1) {
+                const touch = e.touches[0];
+                const rect = canvas.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+                
+                if (isDrawingHull && hullPoints.length > 0) {
+                    hullPoints[hullPoints.length - 1] = {x, y};
+                }
+                
+                drawScene();
+            }
             e.preventDefault();
         }
         
         function handleTouchEnd(e) {
-            if (!isDrawing) return;
-            isDrawing = false;
-            
-            if (hullPoints.length > 2) {
-                hullPoints.push({...hullPoints[0]});
+            if (e.touches.length === 0) {
+                isDrawingHull = false;
+                isDrawingWave = false;
+                
+                if (currentMode === 'draw' && hullPoints.length > 2) {
+                    hullPoints.push({...hullPoints[0]}); // 闭合多边形
+                }
+                
+                drawScene();
             }
-            
-            drawScene();
             e.preventDefault();
         }
         
         // 开始模拟
         function startSimulation() {
             if (hullPoints.length < 3) {
-                alert('请先设计船体形状！');
+                alert('请先绘制船体形状！');
                 return;
             }
             
-            isDesigning = false;
             isSimulating = true;
             startSimBtn.textContent = '停止模拟';
             
             calculatePhysics();
-            
-            // 保存当前船体
-            currentHull = [...hullPoints];
+            animate();
         }
         
         // 停止模拟
         function stopSimulation() {
             isSimulating = false;
-            isDesigning = true;
             startSimBtn.textContent = '开始模拟';
         }
         
@@ -687,6 +949,7 @@
         function resetSimulation() {
             stopSimulation();
             hullPoints = [];
+            waveSources = [];
             displacement = 0;
             buoyancyForce = 0;
             draft = 0;
@@ -695,23 +958,30 @@
             drawScene();
         }
         
+        // 清除船体
+        function clearHull() {
+            hullPoints = [];
+            drawScene();
+        }
+        
         // 动画循环
         function animate() {
             if (isSimulating) {
                 calculatePhysics();
                 drawScene();
+                requestAnimationFrame(animate);
             }
-            requestAnimationFrame(animate);
         }
         
         // 初始化
         function init() {
             resizeCanvas();
             initEventListeners();
-            animate();
             
             // 设置默认选中的材质
             document.querySelector('.material-btn.steel').classList.add('selected');
+            drawModeBtn.style.opacity = '0.8';
+            waveModeBtn.style.opacity = '0.5';
         }
         
         // 启动应用
