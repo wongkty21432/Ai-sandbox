@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的GitHub Pages中心</title>
+    <style>
+        :root {
+            --primary-color: #0366d6;
+            --secondary-color: #f6f8fa;
+            --text-color: #24292e;
+            --border-color: #e1e4e8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            color: var(--text-color);
+            background-color: #fafbfc;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .branch-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .branch-card {
+            background-color: var(--secondary-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .branch-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .branch-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+        
+        .branch-description {
+            font-size: 14px;
+            color: #586069;
+            margin-bottom: 12px;
+        }
+        
+        .branch-link {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        
+        .branch-link:hover {
+            background-color: #0356b4;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #586069;
+            font-size: 14px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        @media (max-width: 600px) {
+            .branch-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>我的GitHub Pages中心</h1>
+            <p class="description">从这里导航到我的所有项目分支</p>
+        </header>
+        
+        <div class="content">
+            <h2 class="section-title">项目分支</h2>
+            <div class="branch-list">
+                <!-- 分支卡片示例 - 请根据您的实际项目修改 -->
+                <div class="branch-card">
+                    <h3 class="branch-title">项目文档</h3>
+                    <p class="branch-description">项目详细文档和使用指南</p>
+                    <a href="docs/" class="branch-link">访问文档</a>
+                </div>
+                
+                <div class="branch-card">
+                    <h3 class="branch-title">演示示例</h3>
+                    <p class="branch-description">项目功能演示和示例代码</p>
+                    <a href="demo/" class="branch-link">查看演示</a>
+                </div>
+                
+                <div class="branch-card">
+                    <h3 class="branch-title">API参考</h3>
+                    <p class="branch-description">项目API接口文档</p>
+                    <a href="api/" class="branch-link">查看API</a>
+                </div>
+                
+                <div class="branch-card">
+                    <h3 class="branch-title">教程资源</h3>
+                    <p class="branch-description">学习资源和教程指南</p>
+                    <a href="tutorials/" class="branch-link">学习教程</a>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 我的GitHub Pages | 最后更新于 <span id="current-date"></span></p>
+        </footer>
+    </div>
+    
+    <script>
+        // 显示当前日期
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString();
+        
+        // 示例：添加更多功能
+        // 这里可以添加JavaScript功能，如动态加载分支列表等
+    </script>
+</body>
+</html>
