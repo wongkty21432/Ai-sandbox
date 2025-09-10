@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floating Sandbox 模拟器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #2c3e50);
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+        }
+        
+        .main-container {
+            flex: 1;
+            display: flex;
+            gap: 15px;
+            height: calc(100vh - 200px);
+        }
+        
+        .design-panel {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            overflow-y: auto;
+        }
+        
+        .simulation-container {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        #gameCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: #3498db;
+            cursor: crosshair;
+        }
+        
+        .control-section {
+            margin-bottom: 15px;
+        }
+        
+        .control-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .material-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        
+        .material-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .material-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .material-btn:active, .material-btn.selected {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .material-btn i {
+            font-size: 1.5rem;
+        }
+        
+        .sand { background: linear-gradient(to bottom, #f1c40f, #e2b607); color: #34495e; }
+        .water { background: linear-gradient(to bottom, #3498db, #2980b9); color: white; }
+        .stone { background: linear-gradient(to bottom, #95a5a6, #7f8c8d); color: white; }
+        .grass { background: linear-gradient(to bottom, #2ecc71, #27ae60); color: white; }
+        .wood { background: linear-gradient(to bottom, #e67e22, #d35400); color: white; }
+        .lava { background: linear-gradient(to bottom, #e74c3c, #c0392b); color: white; }
+        .snow { background: linear-gradient(to bottom, #ecf0f1, #bdc3c7); color: #2c3e50; }
+        .ice { background: linear-gradient(to bottom, #81ecec, #00cec9); color: white; }
+        .metal { background: linear-gradient(to bottom, #7f8c8d, #636e72); color: white; }
+        .explosive { background: linear-gradient(to bottom, #ff9ff3, #f368e0); color: white; }
+        
+        .physics-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(to right, #3498db, #e74c3c);
+            outline: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        
+        input[type="range"]:hover {
+            opacity: 1;
+        }
+        
+        .action-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            background: linear-gradient(to bottom, #2ecc71, #27ae60);
+            color: white;
+            transition: all 0.2s;
+            margin-bottom: 8px;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .action-btn:active {
+            transform: translateY(0);
+        }
+        
+        .action-btn.reset {
+            background: linear-gradient(to bottom, #e74c3c, #c0392b);
+        }
+        
+        .action-btn.secondary {
+            background: linear-gradient(to bottom, #3498db, #2980b9);
+        }
+        
+        .data-panel {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(236, 240, 241, 0.95);
+            padding: 15px;
+            border-radius: 12px;
+            min-width: 200px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .data-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .data-label {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .data-value {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .instructions {
+            background: rgba(236, 240, 241, 0.95);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .instructions h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .instructions p {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .design-panel {
+                width: 100%;
+                margin-bottom: 15px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .material-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .action-btn {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Floating Sandbox 模拟器</h1>
+        <p class="subtitle">设计、建造、破坏 - 物理沙盒游戏</p>
+    </div>
+    
+    <div class="main-container">
+        <div class="design-panel">
+            <div class="control-section">
+                <div class="control-title">材料选择</div>
+                <div class="material-grid">
+                    <button class="material-btn sand" data-type="sand"><i class="fas fa-square"></i> 沙子</button>
+                    <button class="material-btn water" data-type="water"><i class="fas fa-tint"></i> 水</button>
+                    <button class="material-btn stone" data-type="stone"><i class="fas fa-gem"></i> 石头</button>
+                    <button class="material-btn grass" data-type="grass"><i class="fas fa-leaf"></i> 草地</button>
+                    <button class="material-btn wood" data-type="wood"><i class="fas fa-tree"></i> 木头</button>
+                    <button class="material-btn lava" data-type="lava"><i class="fas fa-fire"></i> 岩浆</button>
+                    <button class="material-btn snow" data-type="snow"><i class="fas fa-snowflake"></i> 雪</button>
+                    <button class="material-btn ice" data-type="ice"><i class="fas fa-icicles"></i> 冰</button>
+                    <button class="material-btn metal" data-type="metal"><i class="fas fa-cog"></i> 金属</button>
+                    <button class="material-btn explosive" data-type="explosive"><i class="fas fa-bomb"></i> 炸药</button>
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <div class="control-title">物理参数</div>
+                <div class="physics-controls">
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>重力: </span>
+                            <span id="gravityValue">9.81 m/s²</span>
+                        </div>
+                        <input type="range" id="gravity" min="1" max="20" step="0.1" value="9.81">
+                    </div>
+                    
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>水体密度: </span>
+                            <span id="waterDensityValue">1.025 g/cm³</span>
+                        </div>
+                        <input type="range" id="waterDensity" min="0.8" max="1.2" step="0.005" value="1.025">
+                    </div>
+                    
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>波浪强度: </span>
+                            <span id="waveValue">0.5</span>
+                        </div>
+                        <input type="range" id="waveStrength" min="0" max="2" step="0.1" value="0.5">
+                    </div>
+                    
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>粘度: </span>
+                            <span id="viscosityValue">0.01</span>
+                        </div>
+                        <input type="range" id="viscosity" min="0.001" max="0.1" step="0.001" value="0.01">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <div class="control-title">游戏控制</div>
+                <button class="action-btn" id="startSim">开始模拟</button>
+                <button class="action-btn secondary" id="pauseSim">暂停模拟</button>
+                <button class="action-btn reset" id="resetSim">重置世界</button>
+                <button class="action-btn" id="clearBtn">清除材料</button>
+                <button class="action-btn" id="saveBtn">保存设计</button>
+                <button class="action-btn secondary" id="loadBtn">加载设计</button>
+            </div>
+            
+            <div class="control-section">
+                <div class="control-title">高级功能</div>
+                <button class="action-btn" id="designBtn">船体设计</button>
+                <button class="action-btn secondary" id="destructBtn">破坏模式</button>
+                <button class="action-btn" id="weatherBtn">天气效果</button>
+                <button class="action-btn secondary" id="timeBtn">时间控制</button>
+            </div>
+        </div>
+        
+        <div class="simulation-container">
+            <canvas id="gameCanvas"></canvas>
+            
+            <div class="data-panel">
+                <div class="data-title">物理数据</div>
+                <div class="data-item">
+                    <span class="data-label">粒子数量:</span>
+                    <span class="data-value" id="particleCount">0</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">FPS:</span>
+                    <span class="data-value" id="fpsCounter">0</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">重力:</span>
+                    <span class="data-value" id="gravityDisplay">9.81 m/s²</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">水体密度:</span>
+                    <span class="data-value" id="waterDensityDisplay">1.025 g/cm³</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        <h3>游戏说明</h3>
+        <p>1. <strong>材料放置</strong> - 选择材料，点击或拖动画布放置</p>
+        <p>2. <strong>物理模拟</strong> - 点击"开始模拟"观察物理效果（重力、浮力、流体动力学）</p>
+        <p>3. <strong>船体设计</strong> - 使用"船体设计"模式创建自定义船只</p>
+        <p>4. <strong>破坏模式</strong> - 启用破坏模式点击物体产生爆炸效果</p>
+        <p>5. <strong>环境控制</strong> - 调整重力、水体密度等参数改变物理行为</p>
+    </div>
+
+    <script>
+        // 游戏主要变量
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const startSimBtn = document.getElementById('startSim');
+        const pauseSimBtn = document.getElementById('pauseSim');
+        const resetSimBtn = document.getElementById('resetSim');
+        const clearBtn = document.getElementById('clearBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const loadBtn = document.getElementById('loadBtn');
+        const designBtn = document.getElementById('designBtn');
+        const destructBtn = document.getElementById('destructBtn');
+        const weatherBtn = document.getElementById('weatherBtn');
+        const timeBtn = document.getElementById('timeBtn');
+        
+        // 物理参数
+        let gravity = 9.81;
+        let waterDensity = 1.025;
+        let waveStrength = 0.5;
+        let viscosity = 0.01;
+        let selectedMaterial = 'sand';
+        let isSimulating = false;
+        let isDesigning = false;
+        let isDestructing = false;
+        let particleCount = 0;
+        let fps = 0;
+        
+        // 设置画布尺寸
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            
+            // 重新生成地形
+            generateTerrain();
+        }
+        
+        // 初始化游戏变量
+        let cellSize = 8;
+        let cols = Math.floor(canvas.width / cellSize);
+        let rows = Math.floor(canvas.height / cellSize);
+        let grid = [];
+        let isDrawing = false;
+        
+        // 材料颜色映射
+        const materials = {
+            'sand': '#f1c40f',
+            'water': '#3498db',
+            'stone': '#95a5a6',
+            'grass': '#2ecc71',
+            'wood': '#e67e22',
+            'lava': '#e74c3c',
+            'snow': '#ecf0f1',
+            'ice': '#81ecec',
+            'metal': '#7f8c8d',
+            'explosive': '#ff9ff3',
+            'empty': '#3498db',
+            'dirt': '#8B4513'
+        };
+        
+        // 材料密度
+        const densities = {
+            'sand': 1.6,
+            'water': 1.0,
+            'stone': 2.5,
+            'grass': 0.8,
+            'wood': 0.9,
+            'lava': 2.3,
+            'snow': 0.1,
+            'ice': 0.9,
+            'metal': 7.8,
+            'explosive': 0.5,
+            'empty': 0,
+            'dirt': 1.4
+        };
+        
+        // 初始化网格
+        function initializeGrid() {
+            grid = [];
+            for (let x = 0; x < cols; x++) {
+                grid[x] = [];
+                for (let y = 0; y < rows; y++) {
+                    grid[x][y] = 'empty';
+                }
+            }
+            particleCount = 0;
+            updateParticleCount();
+        }
+        
+        // 更新粒子数量显示
+        function updateParticleCount() {
+            document.getElementById('particleCount').textContent = particleCount;
+        }
+        
+        // 生成基本地形
+        function generateTerrain() {
+            cols = Math.ceil(canvas.width / cellSize);
+            rows = Math.ceil(canvas.height / cellSize);
+            
+            initializeGrid();
+            
+            // 创建地面
+            const groundLevel = rows - 5;
+            for (let x = 0; x < cols; x++) {
+                for (let y = groundLevel; y < rows; y++) {
+                    if (y === groundLevel) {
+                        grid[x][y] = 'grass';
+                    } else if (y < groundLevel + 3) {
+                        grid[x][y] = Math.random() > 0.7 ? 'stone' : 'dirt';
+                    } else {
+                        grid[x][y] = 'stone';
+                    }
+                    particleCount++;
+                }
+            }
+            
+            // 添加一些树
+            for (let i = 0; i < 3; i++) {
+                const x = Math.floor(Math.random() * (cols - 10)) + 5;
+                const y = groundLevel - 1;
+                addTree(x, y);
+            }
+            
+            // 添加水域
+            addWaterPool(Math.floor(cols * 0.3), groundLevel + 1, 5, 3);
+            addWaterPool(Math.floor(cols * 0.7), groundLevel + 1, 5, 3);
+            
+            updateParticleCount();
+        }
+        
+        // 添加一棵树
+        function addTree(x, y) {
+            // 树干
+            for (let i = 0; i < 4; i++) {
+                if (y - i >= 0) {
+                    grid[x][y - i] = 'wood';
+                    particleCount++;
+                }
+            }
+            
+            // 树叶
+            for (let i = -2; i <= 2; i++) {
+                for (let j = -3; j < 0; j++) {
+                    if (x + i >= 0 && x + i < cols && y + j >= 0) {
+                        grid[x + i][y + j] = 'grass';
+                        particleCount++;
+                    }
+                }
+            }
+        }
+        
+        // 添加水池
+        function addWaterPool(x, y, width, height) {
+            for (let i = x; i < x + width; i++) {
+                for (let j = y; j < y + height; j++) {
+                    if (i < cols && j < rows) {
+                        grid[i][j] = 'water';
+                        particleCount++;
+                    }
+                }
+            }
+        }
+        
+        // 绘制网格
+        function drawGrid() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let x = 0; x < cols; x++) {
+                for (let y = 0; y < rows; y++) {
+                    if (grid[x][y] !== 'empty') {
+                        ctx.fillStyle = materials[grid[x][y]];
+                        ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                        
+                        // 添加一些纹理效果
+                        if (grid[x][y] === 'sand' || grid[x][y] === 'stone' || grid[x][y] === 'grass') {
+                            ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+                            ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                        }
+                    }
+                }
+            }
+        }
+        
+        // 更新物理效果
+        function updatePhysics() {
+            // 从底部向上更新以便正确模拟堆叠
+            for (let y = rows - 2; y >= 0; y--) {
+                for (let x = 0; x < cols; x++) {
+                    // 沙子的物理特性
+                    if (grid[x][y] === 'sand') {
+                        if (y < rows - 1 && grid[x][y + 1] === 'empty') {
+                            grid[x][y + 1] = 'sand';
+                            grid[x][y] = 'empty';
+                        } else if (y < rows - 1 && grid[x][y + 1] === 'water') {
+                            // 沙子和水交换位置
+                            grid[x][y + 1] = 'sand';
+                            grid[x][y] = 'water';
+                        } else if (y < rows - 1 && x > 0 && grid[x - 1][y + 1] === 'empty') {
+                            grid[x - 1][y + 1] = 'sand';
+                            grid[x][y] = 'empty';
+                        } else if (y < rows - 1 && x < cols - 1 && grid[x + 1][y + 1] === 'empty') {
+                            grid[x + 1][y + 1] = 'sand';
+                            grid[x][y] = 'empty';
+                        }
+                    }
+                    
+                    // 水的物理特性
+                    if (grid[x][y] === 'water') {
+                        // 水向下流动
+                        if (y < rows - 1 && grid[x][y + 1] === 'empty') {
+                            grid[x][y + 1] = 'water';
+                            grid[x][y] = 'empty';
+                        } else {
+                            // 水向两侧流动
+                            const dir = Math.random() > 0.5 ? 1 : -1;
+                            if (x + dir >= 0 && x + dir < cols && grid[x + dir][y] === 'empty') {
+                                grid[x + dir][y] = 'water';
+                                grid[x][y] = 'empty';
+                            } else if (x - dir >= 0 && x - dir < cols && grid[x - dir][y] === 'empty') {
+                                grid[x - dir][y] = 'water';
+                                grid[x][y] = 'empty';
+                            }
+                        }
+                    }
+                    
+                    // 熔岩的物理特性
+                    if (grid[x][y] === 'lava') {
+                        // 熔岩向下流动
+                        if (y < rows - 1 && grid[x][y + 1] === 'empty') {
+                            grid[x][y + 1] = 'lava';
+                            grid[x][y] = 'empty';
+                        } else if (y < rows - 1 && grid[x][y + 1] === 'water') {
+                            // 熔岩和水接触变成石头
+                            grid[x][y + 1] = 'stone';
+                            grid[x][y] = 'stone';
+                        }
+                    }
+                    
+                    // 炸药的物理特性
+                    if (grid[x][y] === 'explosive') {
+                        // 随机爆炸
+                        if (Math.random() < 0.0005) {
+                            createExplosion(x, y);
+                        }
+                    }
+                }
+            }
+        }
+        
+        // 创建爆炸效果
+        function createExplosion(x, y) {
+            const explosionRadius = 5;
+            const explosionPower = 10;
+            
+            for (let dx = -explosionRadius; dx <= explosionRadius; dx++) {
+                for (let dy = -explosionRadius; dy <= explosionRadius; dy++) {
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist <= explosionRadius) {
+                        const nx = x + dx;
+                        const ny = y + dy;
+                        
+                        if (nx >= 0 && nx < cols && ny >= 0 && ny < rows) {
+                            // 清除爆炸范围内的材料
+                            grid[nx][ny] = 'empty';
+                            particleCount--;
+                        }
+                    }
+                }
+            }
+            
+            updateParticleCount();
+        }
+        
+        // 游戏主循环
+        function gameLoop() {
+            if (isSimulating) {
+                updatePhysics();
+            }
+            drawGrid();
+            
+            // 计算FPS
+            calculateFPS();
+            
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // 计算FPS
+        let lastTime = 0;
+        let frameCount = 0;
+        
+        function calculateFPS() {
+            const now = performance.now();
+            frameCount++;
+            
+            if (now >= lastTime + 1000) {
+                fps = frameCount;
+                frameCount = 0;
+                lastTime = now;
+                
+                document.getElementById('fpsCounter').textContent = fps;
+            }
+        }
+        
+        // 处理画布交互
+        function handleCanvasInteraction(e) {
+            e.preventDefault();
+            isDrawing = true;
+            
+            const rect = canvas.getBoundingClientRect();
+            let x, y;
+            
+            if (e.type.includes('touch')) {
+                x = Math.floor((e.touches[0].clientX - rect.left) / cellSize);
+                y = Math.floor((e.touches[0].clientY - rect.top) / cellSize);
+            } else {
+                x = Math.floor((e.clientX - rect.left) / cellSize);
+                y = Math.floor((e.clientY - rect.top) / cellSize);
+            }
+            
+            if (x >= 0 && x < cols && y >= 0 && y < rows) {
+                if (selectedMaterial === 'clear') {
+                    if (grid[x][y] !== 'empty') {
+                        grid[x][y] = 'empty';
+                        particleCount--;
+                    }
+                } else {
+                    if (grid[x][y] === 'empty') {
+                        particleCount++;
+                    }
+                    grid[x][y] = selectedMaterial;
+                }
+                updateParticleCount();
+            }
+        }
+        
+        // 设置事件监听器
+        canvas.addEventListener('mousedown', handleCanvasInteraction);
+        canvas.addEventListener('touchstart', handleCanvasInteraction);
+        
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDrawing) {
+                handleCanvasInteraction(e);
+            }
+        });
+        
+        canvas.addEventListener('touchmove', (e) => {
+            if (isDrawing) {
+                handleCanvasInteraction(e);
+            }
+        });
+        
+        document.addEventListener('mouseup', () => {
+            isDrawing = false;
+        });
+        
+        document.addEventListener('touchend', () => {
+            isDrawing = false;
+        });
+        
+        // 材料按钮事件
+        document.querySelectorAll('.material-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.material-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedMaterial = btn.dataset.type;
+            });
+        });
+        
+        // 物理参数调整
+        document.getElementById('gravity').addEventListener('input', () => {
+            gravity = parseFloat(document.getElementById('gravity').value);
+            document.getElementById('gravityValue').textContent = gravity.toFixed(2) + ' m/s²';
+            document.getElementById('gravityDisplay').textContent = gravity.toFixed(2) + ' m/s²';
+        });
+        
+        document.getElementById('waterDensity').addEventListener('input', () => {
+            waterDensity = parseFloat(document.getElementById('waterDensity').value);
+            document.getElementById('waterDensityValue').textContent = waterDensity.toFixed(3) + ' g/cm³';
+            document.getElementById('waterDensityDisplay').textContent = waterDensity.toFixed(3) + ' g/cm³';
+        });
+        
+        document.getElementById('waveStrength').addEventListener('input', () => {
+            waveStrength = parseFloat(document.getElementById('waveStrength').value);
+            document.getElementById('waveValue').textContent = waveStrength.toFixed(1);
+        });
+        
+        document.getElementById('viscosity').addEventListener('input', () => {
+            viscosity = parseFloat(document.getElementById('viscosity').value);
+            document.getElementById('viscosityValue').textContent = viscosity.toFixed(3);
+        });
+        
+        // 控制按钮事件
+        startSimBtn.addEventListener('click', () => {
+            isSimulating = true;
+            startSimBtn.textContent = '模拟中...';
+            startSimBtn.disabled = true;
+            pauseSimBtn.disabled = false;
+        });
+        
+        pauseSimBtn.addEventListener('click', () => {
+            isSimulating = false;
+            startSimBtn.textContent = '继续模拟';
+            startSimBtn.disabled = false;
+            pauseSimBtn.disabled = true;
+        });
+        
+        resetSimBtn.addEventListener('click', () => {
+            isSimulating = false;
+            startSimBtn.textContent = '开始模拟';
+            startSimBtn.disabled = false;
+            pauseSimBtn.disabled = false;
+            generateTerrain();
+        });
+        
+        clearBtn.addEventListener('click', () => {
+            initializeGrid();
+            generateTerrain();
+        });
+        
+        designBtn.addEventListener('click', () => {
+            isDesigning = !isDesigning;
+            designBtn.textContent = isDesigning ? '退出设计模式' : '船体设计';
+            designBtn.classList.toggle('selected', isDesigning);
+        });
+        
+        destructBtn.addEventListener('click', () => {
+            isDestructing = !isDestructing;
+            destructBtn.textContent = isDestructing ? '退出破坏模式' : '破坏模式';
+            destructBtn.classList.toggle('selected', isDestructing);
+            
+            if (isDestructing) {
+                selectedMaterial = 'explosive';
+                document.querySelectorAll('.material-btn').forEach(b => b.classList.remove('selected'));
+                document.querySelector('.material-btn.explosive').classList.add('selected');
+            }
+        });
+        
+        // 窗口调整大小时重设画布
+        window.addEventListener('resize', resizeCanvas);
+        
+        // 初始化游戏
+        resizeCanvas();
+        gameLoop();
+    </script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>
