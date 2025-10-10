@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地理等高线沙盒系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+        }
+        
+        .main-container {
+            flex: 1;
+            display: flex;
+            gap: 15px;
+            height: calc(100vh - 180px);
+        }
+        
+        .control-panel {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            overflow-y: auto;
+        }
+        
+        .simulation-container {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        #terrainCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+        
+        .control-section {
+            margin-bottom: 15px;
+        }
+        
+        .control-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(to right, #3498db, #e74c3c);
+            outline: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        
+        input[type="range"]:hover {
+            opacity: 1;
+        }
+        
+        .action-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            background: linear-gradient(to bottom, #2ecc71, #27ae60);
+            color: white;
+            transition: all 0.2s;
+            margin-bottom: 8px;
+            width: 100%;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .action-btn:active {
+            transform: translateY(0);
+        }
+        
+        .action-btn.reset {
+            background: linear-gradient(to bottom, #e74c3c, #c0392b);
+        }
+        
+        .action-btn.secondary {
+            background: linear-gradient(to bottom, #3498db, #2980b9);
+        }
+        
+        .data-panel {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(236, 240, 241, 0.95);
+            padding: 15px;
+            border-radius: 12px;
+            min-width: 200px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .data-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .data-label {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .data-value {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .toggle-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .toggle-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #ecf0f1;
+            color: #2c3e50;
+            transition: all 0.2s;
+        }
+        
+        .toggle-btn.active {
+            background: #3498db;
+            color: white;
+        }
+        
+        .instructions {
+            background: rgba(236, 240, 241, 0.95);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .instructions h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .instructions p {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .control-panel {
+                width: 100%;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>地理等高线沙盒系统</h1>
+        <p class="subtitle">地形生成 · 等高线绘制 · 物理模拟</p>
+    </div>
+    
+    <div class="main-container">
+        <div class="control-panel">
+            <div class="control-section">
+                <div class="control-title">地形控制</div>
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>地形粗糙度: </span>
+                        <span id="roughnessValue">0.5</span>
+                    </div>
+                    <input type="range" id="roughness" min="0.1" max="1.0" step="0.05" value="0.5">
+                </div>
+                
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>地形高度: </span>
+                        <span id="heightValue">0.7</span>
+                    </div>
+                    <input type="range" id="height" min="0.1" max="2.0" step="0.1" value="0.7">
+                </div>
+                
+                <div class="toggle-buttons">
+                    <button class="toggle-btn active" id="smoothTerrain">平滑地形</button>
+                    <button class="toggle-btn" id="mountainTerrain">山地地形</button>
+                    <button class="toggle-btn" id="valleyTerrain">谷地地形</button>
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <div class="control-title">等高线设置</div>
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>等高线间距: </span>
+                        <span id="contourValue">20</span>
+                    </div>
+                    <input type="range" id="contourSpacing" min="5" max="100" step="5" value="20">
+                </div>
+                
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>等高线宽度: </span>
+                        <span id="widthValue">2</span>
+                    </div>
+                    <input type="range" id="contourWidth" min="1" max="5" step="1" value="2">
+                </div>
+                
+                <div class="toggle-buttons">
+                    <button class="toggle-btn active" id="showContours">显示等高线</button>
+                    <button class="toggle-btn" id="colorContours">彩色等高线</button>
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <div class="control-title">模拟控制</div>
+                <button class="action-btn" id="generateTerrain">生成新地形</button>
+                <button class="action-btn secondary" id="erodeTerrain">模拟侵蚀</button>
+                <button class="action-btn" id="addWater">添加水体</button>
+                <button class="action-btn reset" id="resetTerrain">重置地形</button>
+            </div>
+            
+            <div class="control-section">
+                <div class="control-title">视图选项</div>
+                <div class="toggle-buttons">
+                    <button class="toggle-btn active" id="view2D">2D视图</button>
+                    <button class="toggle-btn" id="view3D">3D视角</button>
+                </div>
+                
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>光照角度: </span>
+                        <span id="lightValue">45°</span>
+                    </div>
+                    <input type="range" id="lightAngle" min="0" max="360" step="1" value="45">
+                </div>
+            </div>
+        </div>
+        
+        <div class="simulation-container">
+            <canvas id="terrainCanvas"></canvas>
+            
+            <div class="data-panel">
+                <div class="data-title">地形数据</div>
+                <div class="data-item">
+                    <span class="data-label">最高点:</span>
+                    <span class="data-value" id="maxElevation">0</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">最低点:</span>
+                    <span class="data-value" id="minElevation">0</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">等高线条数:</span>
+                    <span class="data-value" id="contourCount">0</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">地形复杂度:</span>
+                    <span class="data-value" id="complexity">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        <h3>使用说明</h3>
+        <p>1. <strong>地形生成</strong> - 点击"生成新地形"创建随机地形，或使用地形控制调整参数</p>
+        <p>2. <strong>等高线查看</strong> - 启用"显示等高线"查看高程分布，调整间距改变细节程度</p>
+        <p>3. <strong>交互编辑</strong> - 点击并拖动画布可提升地形，按住Shift点击可降低地形</p>
+        <p>4. <strong>侵蚀模拟</strong> - 点击"模拟侵蚀"应用水力侵蚀效果，创造更自然的地形</p>
+        <p>5. <strong>视角切换</strong> - 使用"3D视角"从不同角度观察地形结构</p>
+    </div>
+
+    <script>
+        // 地形生成和等高线绘制核心代码
+        const canvas = document.getElementById('terrainCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // 调整画布尺寸以适应容器
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            generateTerrain();
+            drawTerrain();
+        }
+        
+        // 地形数据变量
+        let terrainData = [];
+        let cols, rows;
+        const cellSize = 8;
+        
+        // 地形生成参数
+        let roughness = 0.5;
+        let maxHeight = 0.7;
+        let terrainType = 'smooth';
+        
+        // 等高线参数
+        let contourSpacing = 20;
+        let contourWidth = 2;
+        let showContours = true;
+        let colorContours = false;
+        
+        // 视图参数
+        let view3D = false;
+        let lightAngle = 45;
+        
+        // 初始化地形网格
+        function initializeGrid() {
+            cols = Math.ceil(canvas.width / cellSize);
+            rows = Math.ceil(canvas.height / cellSize);
+            
+            terrainData = [];
+            for (let x = 0; x < cols; x++) {
+                terrainData[x] = [];
+                for (let y = 0; y < rows; y++) {
+                    terrainData[x][y] = 0;
+                }
+            }
+        }
+        
+        // 生成随机地形
+        function generateTerrain() {
+            initializeGrid();
+            
+            // 设置四个角的初始随机值
+            terrainData[0][0] = Math.random() * maxHeight;
+            terrainData[cols-1][0] = Math.random() * maxHeight;
+            terrainData[0][rows-1] = Math.random() * maxHeight;
+            terrainData[cols-1][rows-1] = Math.random() * maxHeight;
+            
+            // 使用菱形-正方形算法生成地形
+            let stepSize = Math.max(cols, rows);
+            let scale = maxHeight;
+            
+            while (stepSize > 1) {
+                // 正方形步骤
+                for (let x = 0; x < cols-1; x += stepSize) {
+                    for (let y = 0; y < rows-1; y += stepSize) {
+                        const x2 = Math.min(x + stepSize, cols-1);
+                        const y2 = Math.min(y + stepSize, rows-1);
+                        const midX = Math.floor(x + stepSize/2);
+                        const midY = Math.floor(y + stepSize/2);
+                        
+                        // 计算中心点
+                        terrainData[midX][midY] = (
+                            terrainData[x][y] + 
+                            terrainData[x2][y] + 
+                            terrainData[x][y2] + 
+                            terrainData[x2][y2]
+                        ) / 4 + (Math.random() * 2 - 1) * scale;
+                    }
+                }
+                
+                // 菱形步骤
+                for (let x = 0; x < cols-1; x += stepSize) {
+                    for (let y = 0; y < rows-1; y += stepSize) {
+                        const x2 = Math.min(x + stepSize, cols-1);
+                        const y2 = Math.min(y + stepSize, rows-1);
+                        const midX = Math.floor(x + stepSize/2);
+                        const midY = Math.floor(y + stepSize/2);
+                        
+                        // 计算边缘点
+                        if (x > 0) {
+                            terrainData[x][midY] = (
+                                terrainData[x][y] + 
+                                terrainData[x][y2] + 
+                                terrainData[x-stepSize/2][midY] + 
+                                terrainData[x+stepSize/2][midY]
+                            ) / 4 + (Math.random() * 2 - 1) * scale;
+                        }
+                        
+                        if (y > 0) {
+                            terrainData[midX][y] = (
+                                terrainData[x][y] + 
+                                terrainData[x2][y] + 
+                                terrainData[midX][y-stepSize/2] + 
+                                terrainData[midX][y+stepSize/2]
+                            ) / 4 + (Math.random() * 2 - 1) * scale;
+                        }
+                    }
+                }
+                
+                stepSize = Math.floor(stepSize / 2);
+                scale *= roughness;
+            }
+            
+            // 应用地形类型滤镜
+            applyTerrainFilter();
+            updateTerrainStats();
+        }
+        
+        // 应用地形滤镜
+        function applyTerrainFilter() {
+            for (let x = 0; x < cols; x++) {
+                for (let y = 0; y < rows; y++) {
+                    if (terrainType === 'mountain') {
+                        // 增强峰值
+                        terrainData[x][y] = Math.pow(terrainData[x][y], 0.7);
+                    } else if (terrainType === 'valley') {
+                        // 创建谷地效果
+                        terrainData[x][y] = 1 - Math.pow(1 - terrainData[x][y], 1.3);
+                    }
+                    // 平滑地形不需要额外处理
+                }
+            }
+        }
+        
+        // 绘制地形和等高线
+        function drawTerrain() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (view3D) {
+                draw3DTerrain();
+            } else {
+                draw2DTerrain();
+            }
+            
+            if (showContours) {
+                drawContours();
+            }
+        }
+        
+        // 绘制2D地形
+        function draw2DTerrain() {
+            for (let x = 0; x < cols; x++) {
+                for (let y = 0; y < rows; y++) {
+                    const height = terrainData[x][y];
+                    const color = getTerrainColor(height);
+                    
+                    ctx.fillStyle = color;
+                    ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                }
+            }
+        }
+        
+        // 绘制3D地形（等轴测视图）
+        function draw3DTerrain() {
+            const angle = lightAngle * Math.PI / 180;
+            const lightX = Math.cos(angle);
+            const lightY = Math.sin(angle);
+            
+            for (let x = 0; x < cols; x++) {
+                for (let y = 0; y < rows; y++) {
+                    const height = terrainData[x][y];
+                    
+                    // 计算法线用于光照
+                    let normalX = 0, normalY = 0, normalZ = 1;
+                    
+                    if (x > 0 && x < cols-1 && y > 0 && y < rows-1) {
+                        normalX = (terrainData[x-1][y] - terrainData[x+1][y]) / 2;
+                        normalY = (terrainData[x][y-1] - terrainData[x][y+1]) / 2;
+                        normalZ = 1;
+                        
+                        // 归一化
+                        const length = Math.sqrt(normalX*normalX + normalY*normalY + normalZ*normalZ);
+                        normalX /= length;
+                        normalY /= length;
+                        normalZ /= length;
+                    }
+                    
+                    // 计算光照强度
+                    const intensity = Math.max(0.2, normalX * lightX + normalY * lightY + normalZ * 0.5);
+                    
+                    const color = getTerrainColor(height, intensity);
+                    
+                    ctx.fillStyle = color;
+                    ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                }
+            }
+        }
+        
+        // 根据高度获取地形颜色
+        function getTerrainColor(height, intensity = 1) {
+            let r, g, b;
+            
+            if (height < 0.2) {
+                // 水体 - 蓝色
+                r = 34 * intensity;
+                g = 150 * intensity;
+                b = 218 * intensity;
+            } else if (height < 0.4) {
+                // 低地 - 绿色
+                r = 76 * intensity;
+                g = 187 * intensity;
+                b = 23 * intensity;
+            } else if (height < 0.6) {
+                // 丘陵 - 黄色/棕色
+                r = 189 * intensity;
+                g = 164 * intensity;
+                b = 56 * intensity;
+            } else if (height < 0.8) {
+                // 山地 - 灰色/棕色
+                r = 148 * intensity;
+                g = 118 * intensity;
+                b = 80 * intensity;
+            } else {
+                // 高峰 - 白色/灰色
+                r = 220 * intensity;
+                g = 220 * intensity;
+                b = 220 * intensity;
+            }
+            
+            return `rgb(${Math.floor(r)}, ${Math.floor(g)}, ${Math.floor(b)})`;
+        }
+        
+        // 绘制等高线
+        function drawContours() {
+            ctx.strokeStyle = colorContours ? '#ff0000' : '#000000';
+            ctx.lineWidth = contourWidth;
+            ctx.globalAlpha = 0.7;
+            
+            // 计算等高线范围
+            const minHeight = Math.min(...terrainData.flat());
+            const maxHeight = Math.max(...terrainData.flat());
+            
+            // 绘制每条等高线
+            for (let h = minHeight; h <= maxHeight; h += contourSpacing / 100) {
+                drawContourLine(h);
+            }
+            
+            ctx.globalAlpha = 1.0;
+        }
+        
+        // 绘制单条等高线
+        function drawContourLine(level) {
+            ctx.beginPath();
+            
+            for (let x = 0; x < cols - 1; x++) {
+                for (let y = 0; y < rows - 1; y++) {
+                    // 检查当前单元格的四个角
+                    const a = terrainData[x][y] >= level;
+                    const b = terrainData[x+1][y] >= level;
+                    const c = terrainData[x+1][y+1] >= level;
+                    const d = terrainData[x][y+1] >= level;
+                    
+                    // 计算配置索引
+                    const config = (a ? 8 : 0) + (b ? 4 : 0) + (c ? 2 : 0) + (d ? 1 : 0);
+                    
+                    // 根据配置绘制线段
+                    drawContourSegment(x, y, config, level);
+                }
+            }
+            
+            ctx.stroke();
+        }
+        
+        // 绘制等高线段（使用Marching Squares算法）
+        function drawContourSegment(x, y, config, level) {
+            const xPos = x * cellSize;
+            const yPos = y * cellSize;
+            
+            // 计算边的交点
+            let startX, startY, endX, endY;
+            
+            switch(config) {
+                case 1: case 14:
+                    startX = xPos;
+                    startY = yPos + cellSize * interpolate(terrainData[x][y+1], terrainData[x][y], level);
+                    endX = xPos + cellSize * interpolate(terrainData[x][y], terrainData[x+1][y], level);
+                    endY = yPos;
+                    break;
+                case 2: case 13:
+                    startX = xPos + cellSize;
+                    startY = yPos + cellSize * interpolate(terrainData[x+1][y+1], terrainData[x+1][y], level);
+                    endX = xPos + cellSize * interpolate(terrainData[x][y+1], terrainData[x+1][y+1], level);
+                    endY = yPos + cellSize;
+                    break;
+                case 3: case 12:
+                    startX = xPos;
+                    startY = yPos + cellSize * interpolate(terrainData[x][y+1], terrainData[x][y], level);
+                    endX = xPos + cellSize * interpolate(terrainData[x][y+1], terrainData[x+1][y+1], level);
+                    endY = yPos + cellSize;
+                    break;
+                case 4: case 11:
+                    startX = xPos + cellSize * interpolate(terrainData[x][y], terrainData[x+1][y], level);
+                    startY = yPos;
+                    endX = xPos + cellSize;
+                    endY = yPos + cellSize * interpolate(terrainData[x+1][y+1], terrainData[x+1][y], level);
+                    break;
+                case 5:
+                    startX = xPos;
+                    startY = yPos + cellSize * interpolate(terrainData[x][y+1], terrainData[x][y], level);
+                    endX = xPos + cellSize * interpolate(terrainData[x][y], terrainData[x+1][y], level);
+                    endY = yPos;
+                    ctx.moveTo(startX, startY);
+                    ctx.lineTo(endX, endY);
+                    
+                    startX = xPos + cellSize * interpolate(terrainData[x][y+1], terrainData[x+1][y+1], level);
+                    startY = yPos + cellSize;
+                    endX = xPos + cellSize;
+                    endY = yPos + cellSize * interpolate(terrainData[x+1][y+1], terrainData[x+1][y], level);
+                    break;
+                case 6: case 9:
+                    startX = xPos + cellSize * interpolate(terrainData[x][y], terrainData[x+1][y], level);
+                    startY = yPos;
+                    endX = xPos + cellSize * interpolate(terrainData[x][y+1], terrainData[x+1][y+1], level);
+                    endY = yPos + cellSize;
+                    break;
+                case 7: case 8:
+                    startX = xPos;
+                    startY = yPos + cellSize * interpolate(terrainData[x][y+1], terrainData[x][y], level);
+                    endX = xPos + cellSize * interpolate(terrainData[x][y+1], terrainData[x+1][y+1], level);
+                    endY = yPos + cellSize;
+                    break;
+                case 10:
+                    startX = xPos + cellSize * interpolate(terrainData[x][y], terrainData[x+1][y], level);
+                    startY = yPos;
+                    endX = xPos;
+                    endY = yPos + cellSize * interpolate(terrainData[x][y+1], terrainData[x][y], level);
+                    ctx.moveTo(startX, startY);
+                    ctx.lineTo(endX, endY);
+                    
+                    startX = xPos + cellSize;
+                    startY = yPos + cellSize * interpolate(terrainData[x+1][y+1], terrainData[x+1][y], level);
+                    endX = xPos + cellSize * interpolate(terrainData[x][y+1], terrainData[x+1][y+1], level);
+                    endY = yPos + cellSize;
+                    break;
+                default:
+                    return; // 无等高线通过此单元格
+            }
+            
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+        }
+        
+        // 线性插值
+        function interpolate(a, b, level) {
+            return (level - a) / (b - a);
+        }
+        
+        // 更新地形统计数据
+        function updateTerrainStats() {
+            const heights = terrainData.flat();
+            const maxElev = Math.max(...heights);
+            const minElev = Math.min(...heights);
+            
+            document.getElementById('maxElevation').textContent = (maxElev * 1000).toFixed(0) + 'm';
+            document.getElementById('minElevation').textContent = (minElev * 1000).toFixed(0) + 'm';
+            
+            // 计算等高线条数
+            const contourCount = Math.floor((maxElev - minElev) * 1000 / contourSpacing);
+            document.getElementById('contourCount').textContent = contourCount;
+            
+            // 计算地形复杂度
+            let complexity = 0;
+            for (let x = 1; x < cols-1; x++) {
+                for (let y = 1; y < rows-1; y++) {
+                    complexity += Math.abs(terrainData[x][y] - terrainData[x-1][y]);
+                    complexity += Math.abs(terrainData[x][y] - terrainData[x][y-1]);
+                }
+            }
+            document.getElementById('complexity').textContent = (complexity / (cols * rows)).toFixed(2);
+        }
+        
+        // 地形侵蚀模拟
+        function simulateErosion() {
+            // 简化的水力侵蚀算法
+            for (let i = 0; i < 5; i++) { // 多次迭代
+                for (let x = 1; x < cols-1; x++) {
+                    for (let y = 1; y < rows-1; y++) {
+                        // 计算流向
+                        let lowestX = x, lowestY = y;
+                        let lowestHeight = terrainData[x][y];
+                        
+                        for (let dx = -1; dx <= 1; dx++) {
+                            for (let dy = -1; dy <= 1; dy++) {
+                                if (terrainData[x+dx][y+dy] < lowestHeight) {
+                                    lowestHeight = terrainData[x+dx][y+dy];
+                                    lowestX = x+dx;
+                                    lowestY = y+dy;
+                                }
+                            }
+                        }
+                        
+                        // 移动少量土壤
+                        if (lowestX !== x || lowestY !== y) {
+                            const sediment = 0.01;
+                            terrainData[x][y] -= sediment;
+                            terrainData[lowestX][lowestY] += sediment;
+                        }
+                    }
+                }
+            }
+            
+            updateTerrainStats();
+            drawTerrain();
+        }
+        
+        // 添加水体
+        function addWater() {
+            for (let x = 0; x < cols; x++) {
+                for (let y = 0; y < rows; y++) {
+                    if (terrainData[x][y] < 0.25) {
+                        terrainData[x][y] = 0.2; // 平整低洼区域
+                    }
+                }
+            }
+            updateTerrainStats();
+            drawTerrain();
+        }
+        
+        // 交互式地形编辑
+        function setupInteractions() {
+            let isDrawing = false;
+            let isLowering = false;
+            
+            canvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                isLowering = e.shiftKey;
+                editTerrain(e);
+            });
+            
+            canvas.addEventListener('mousemove', (e) => {
+                if (isDrawing) {
+                    editTerrain(e);
+                }
+            });
+            
+            canvas.addEventListener('mouseup', () => {
+                isDrawing = false;
+            });
+            
+            canvas.addEventListener('mouseleave', () => {
+                isDrawing = false;
+            });
+            
+            // 触摸设备支持
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                isDrawing = true;
+                editTerrain(e.touches[0]);
+            });
+            
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                if (isDrawing) {
+                    editTerrain(e.touches[0]);
+                }
+            });
+            
+            canvas.addEventListener('touchend', () => {
+                isDrawing = false;
+            });
+        }
+        
+        // 编辑地形
+        function editTerrain(e) {
+            const rect = canvas.getBoundingClientRect();
+            const x = Math.floor((e.clientX - rect.left) / cellSize);
+            const y = Math.floor((e.clientY - rect.top) / cellSize);
+            
+            if (x >= 0 && x < cols && y >= 0 && y < rows) {
+                const radius = 3;
+                const intensity = 0.05;
+                
+                for (let dx = -radius; dx <= radius; dx++) {
+                    for (let dy = -radius; dy <= radius; dy++) {
+                        const nx = x + dx;
+                        const ny = y + dy;
+                        
+                        if (nx >= 0 && nx < cols && ny >= 0 && ny < rows) {
+                            const distance = Math.sqrt(dx*dx + dy*dy);
+                            if (distance <= radius) {
+                                const effect = intensity * (1 - distance/radius);
+                                if (isLowering) {
+                                    terrainData[nx][ny] = Math.max(0, terrainData[nx][ny] - effect);
+                                } else {
+                                    terrainData[nx][ny] = Math.min(1, terrainData[nx][ny] + effect);
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                updateTerrainStats();
+                drawTerrain();
+            }
+        }
+        
+        // 初始化事件监听器
+        function setupEventListeners() {
+            // 地形参数控制
+            document.getElementById('roughness').addEventListener('input', (e) => {
+                roughness = parseFloat(e.target.value);
+                document.getElementById('roughnessValue').textContent = roughness.toFixed(2);
+                generateTerrain();
+                drawTerrain();
+            });
+            
+            document.getElementById('height').addEventListener('input', (e) => {
+                maxHeight = parseFloat(e.target.value);
+                document.getElementById('heightValue').textContent = maxHeight.toFixed(1);
+                generateTerrain();
+                drawTerrain();
+            });
+            
+            // 地形类型按钮
+            document.getElementById('smoothTerrain').addEventListener('click', () => {
+                setActiveTerrainButton('smoothTerrain');
+                terrainType = 'smooth';
+                generateTerrain();
+                drawTerrain();
+            });
+            
+            document.getElementById('mountainTerrain').addEventListener('click', () => {
+                setActiveTerrainButton('mountainTerrain');
+                terrainType = 'mountain';
+                generateTerrain();
+                drawTerrain();
+            });
+            
+            document.getElementById('valleyTerrain').addEventListener('click', () => {
+                setActiveTerrainButton('valleyTerrain');
+                terrainType = 'valley';
+                generateTerrain();
+                drawTerrain();
+            });
+            
+            // 等高线控制
+            document.getElementById('contourSpacing').addEventListener('input', (e) => {
+                contourSpacing = parseInt(e.target.value);
+                document.getElementById('contourValue').textContent = contourSpacing;
+                updateTerrainStats();
+                drawTerrain();
+            });
+            
+            document.getElementById('contourWidth').addEventListener('input', (e) => {
+                contourWidth = parseInt(e.target.value);
+                document.getElementById('widthValue').textContent = contourWidth;
+                drawTerrain();
+            });
+            
+            document.getElementById('showContours').addEventListener('click', (e) => {
+                showContours = !showContours;
+                e.target.classList.toggle('active', showContours);
+                drawTerrain();
+            });
+            
+            document.getElementById('colorContours').addEventListener('click', (e) => {
+                colorContours = !colorContours;
+                e.target.classList.toggle('active', colorContours);
+                drawTerrain();
+            });
+            
+            // 视图控制
+            document.getElementById('view2D').addEventListener('click', (e) => {
+                view3D = false;
+                setActiveViewButton('view2D');
+                drawTerrain();
+            });
+            
+            document.getElementById('view3D').addEventListener('click', (e) => {
+                view3D = true;
+                setActiveViewButton('view3D');
+                drawTerrain();
+            });
+            
+            document.getElementById('lightAngle').addEventListener('input', (e) => {
+                lightAngle = parseInt(e.target.value);
+                document.getElementById('lightValue').textContent = lightAngle + '°';
+                if (view3D) drawTerrain();
+            });
+            
+            // 动作按钮
+            document.getElementById('generateTerrain').addEventListener('click', () => {
+                generateTerrain();
+                drawTerrain();
+            });
+            
+            document.getElementById('erodeTerrain').addEventListener('click', simulateErosion);
+            document.getElementById('addWater').addEventListener('click', addWater);
+            document.getElementById('resetTerrain').addEventListener('click', () => {
+                generateTerrain();
+                drawTerrain();
+            });
+        }
+        
+        // 设置活动地形按钮
+        function setActiveTerrainButton(activeId) {
+            document.getElementById('smoothTerrain').classList.remove('active');
+            document.getElementById('mountainTerrain').classList.remove('active');
+            document.getElementById('valleyTerrain').classList.remove('active');
+            document.getElementById(activeId).classList.add('active');
+        }
+        
+        // 设置活动视图按钮
+        function setActiveViewButton(activeId) {
+            document.getElementById('view2D').classList.remove('active');
+            document.getElementById('view3D').classList.remove('active');
+            document.getElementById(activeId).classList.add('active');
+        }
+        
+        // 初始化应用
+        function init() {
+            resizeCanvas();
+            setupEventListeners();
+            setupInteractions();
+            generateTerrain();
+            drawTerrain();
+            
+            // 窗口调整大小时重设画布
+            window.addEventListener('resize', resizeCanvas);
+        }
+        
+        // 启动应用
+        init();
+    </script>
+</body>
+</html>
