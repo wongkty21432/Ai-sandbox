@@ -14,30 +14,22 @@
         
         body {
             background: linear-gradient(to bottom, #1a2980, #26d0ce);
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-        }
-        
-        .game-container {
-            width: 1000px;
-            height: 700px;
-            background: rgba(0, 20, 40, 0.7);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
-            position: relative;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: white;
+            overflow-x: hidden;
         }
         
         .game-header {
             text-align: center;
             padding: 15px;
+            width: 100%;
+            max-width: 1000px;
             background: rgba(0, 40, 80, 0.8);
+            border-radius: 15px 15px 0 0;
             border-bottom: 2px solid #00b4ff;
         }
         
@@ -54,10 +46,53 @@
             opacity: 0.8;
         }
         
+        .size-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .size-btn {
+            background: rgba(0, 80, 160, 0.7);
+            border: 2px solid #00b4ff;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .size-btn:hover {
+            background: rgba(0, 120, 220, 0.9);
+            transform: translateY(-2px);
+        }
+        
+        .size-btn.active {
+            background: #00b4ff;
+            box-shadow: 0 0 15px #00b4ff;
+        }
+        
+        .game-wrapper {
+            width: 100%;
+            max-width: 1000px;
+            height: 700px;
+            background: rgba(0, 20, 40, 0.7);
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
         .game-content {
             display: flex;
             flex: 1;
             padding: 20px;
+            gap: 20px;
         }
         
         .boat-view {
@@ -66,6 +101,7 @@
             overflow: hidden;
             border-radius: 10px;
             background: linear-gradient(to bottom, #4da0ff, #80d0ff);
+            min-height: 300px;
         }
         
         .ocean {
@@ -197,9 +233,9 @@
             padding: 20px;
             background: rgba(0, 30, 60, 0.8);
             border-radius: 10px;
-            margin-left: 20px;
             display: flex;
             flex-direction: column;
+            min-width: 300px;
         }
         
         .panel-title {
@@ -231,18 +267,18 @@
             padding: 15px;
             position: relative;
             height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
         .winch-handle {
-            position: absolute;
-            top: 50%;
-            left: 50%;
+            position: relative;
             width: 180px;
             height: 180px;
             border-radius: 50%;
             background: #2c3e50;
             border: 8px solid #34495e;
-            transform: translate(-50%, -50%);
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
         
@@ -386,15 +422,70 @@
         .cloud:nth-child(1) { top: 15%; left: 10%; width: 80px; height: 40px; }
         .cloud:nth-child(2) { top: 25%; right: 15%; width: 120px; height: 50px; }
         .cloud:nth-child(3) { top: 10%; right: 30%; width: 60px; height: 30px; }
+        
+        /* 响应式设计 */
+        @media (max-width: 900px) {
+            .game-content {
+                flex-direction: column;
+            }
+            
+            .boat-view {
+                min-height: 300px;
+            }
+            
+            .controls-panel {
+                min-width: auto;
+            }
+            
+            .game-wrapper {
+                height: auto;
+                min-height: 600px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .game-title {
+                font-size: 22px;
+            }
+            
+            .stats-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .winch {
+                height: 180px;
+            }
+            
+            .winch-handle {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .winch-handle::before {
+                width: 130px;
+                height: 130px;
+            }
+            
+            .handle-bar {
+                width: 60px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <div class="game-header">
-            <div class="game-title">帆船模拟操控游戏</div>
-            <div class="game-subtitle">动态模拟帆船航行 - 使用绞盘控制帆的角度</div>
-        </div>
+    <div class="game-header">
+        <div class="game-title">帆船模拟操控游戏</div>
+        <div class="game-subtitle">动态模拟帆船航行 - 使用绞盘控制帆的角度</div>
         
+        <div class="size-controls">
+            <div class="size-btn active" data-size="desktop">桌面模式</div>
+            <div class="size-btn" data-size="tablet">平板模式</div>
+            <div class="size-btn" data-size="mobile">手机模式</div>
+            <div class="size-btn" data-size="fullscreen">全屏模式</div>
+        </div>
+    </div>
+    
+    <div class="game-wrapper" id="gameWrapper">
         <div class="game-content">
             <div class="boat-view">
                 <div class="wind-indicator">
@@ -483,7 +574,7 @@
                         <li>帆的角度影响帆船的速度和方向</li>
                         <li>当风向与帆的角度合适时，船速会增加</li>
                         <li>尝试不同的帆角组合，探索最佳航行方式</li>
-                        <li>观察船速和航行方向的变化</li>
+                        <li>使用上方按钮调整界面大小</li>
                     </ul>
                 </div>
             </div>
@@ -493,6 +584,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // 获取DOM元素
+            const gameWrapper = document.getElementById('gameWrapper');
+            const sizeButtons = document.querySelectorAll('.size-btn');
             const mainSail = document.getElementById('mainSail');
             const jibSail = document.getElementById('jibSail');
             const boom = document.getElementById('boom');
@@ -510,6 +603,45 @@
             let jibSailAngle = 0;
             let boatHeading = 45;
             let boatSpeed = 5.2;
+            
+            // 大小控制
+            sizeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 移除所有active类
+                    sizeButtons.forEach(btn => btn.classList.remove('active'));
+                    // 添加active类到当前按钮
+                    this.classList.add('active');
+                    
+                    const size = this.getAttribute('data-size');
+                    applySize(size);
+                });
+            });
+            
+            // 应用大小设置
+            function applySize(size) {
+                switch(size) {
+                    case 'desktop':
+                        gameWrapper.style.width = '100%';
+                        gameWrapper.style.height = 'auto';
+                        gameWrapper.style.minHeight = '600px';
+                        break;
+                    case 'tablet':
+                        gameWrapper.style.width = '95%';
+                        gameWrapper.style.height = 'auto';
+                        gameWrapper.style.minHeight = '500px';
+                        break;
+                    case 'mobile':
+                        gameWrapper.style.width = '100%';
+                        gameWrapper.style.height = 'auto';
+                        gameWrapper.style.minHeight = '400px';
+                        break;
+                    case 'fullscreen':
+                        gameWrapper.style.width = '100vw';
+                        gameWrapper.style.height = '100vh';
+                        gameWrapper.style.borderRadius = '0';
+                        break;
+                }
+            }
             
             // 更新帆船位置
             function updateBoatPosition() {
