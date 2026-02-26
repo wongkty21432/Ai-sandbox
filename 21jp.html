@@ -2,49 +2,60 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>21點 BlackJack</title>
+<title>21點 可拖動牌</title>
 <style>
   body {
     background: #0a5020;
-    color: white;
+    color: #fff;
     font-family: Arial, sans-serif;
     text-align: center;
+    margin: 0;
     padding: 20px;
+    user-select: none;
   }
-  .container {
-    max-width: 600px;
+  .table {
+    max-width: 900px;
     margin: 0 auto;
   }
+  .zone {
+    min-height: 160px;
+    margin: 20px 0;
+    border: 1px dashed rgba(255,255,255,0.3);
+    padding: 10px;
+    border-radius: 10px;
+  }
   .cards {
-    margin: 10px 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-height: 120px;
   }
   .card {
-    display: inline-block;
-    width: 60px;
-    height: 90px;
-    background: white;
-    color: black;
-    border-radius: 6px;
-    margin: 4px;
-    line-height: 90px;
-    font-size: 22px;
+    width: 80px;
+    height: 120px;
+    background: #fff;
+    color: #000;
+    border-radius: 8px;
+    font-size: 24px;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    position: relative;
   }
+  .card:active { cursor: grabbing; }
   .btn {
     padding: 10px 20px;
     margin: 6px;
     font-size: 16px;
-    cursor: pointer;
     border: none;
     border-radius: 6px;
+    cursor: pointer;
   }
-  .btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  .bet-area {
-    margin: 20px 0;
-  }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
   input {
     padding: 8px;
     width: 100px;
@@ -54,146 +65,129 @@
 </head>
 
 <body>
-<div class="container">
-  <h1>21點 BlackJack</h1>
+<div class="table">
+  <h1>21點 • 可拖動牌</h1>
   <p>籌碼：<span id="chip">1000</span></p>
 
-  <div class="bet-area">
-    <input type="number" id="betInput" placeholder="下注" min="1" value="10">
-    <button class="btn" onclick="startGame()">開始遊戲</button>
+  <div>
+    <input type="number" id="bet" min="1" value="10">
+    <button class="btn" onclick="start()">新遊戲</button>
+    <button class="btn" id="hit" disabled onclick="hit()">要牌</button>
+    <button class="btn" id="stand" disabled onclick="stand()">停牌</button>
   </div>
 
   <h3>莊家</h3>
-  <div id="dealerCards" class="cards"></div>
-  <p>點數：<span id="dealerScore">0</span></p>
+  <div class="zone"><div id="dealer" class="cards"></div></div>
+  <p>點數：<span id="d-score">?</span></p>
 
   <h3>玩家</h3>
-  <div id="playerCards" class="cards"></div>
-  <p>點數：<span id="playerScore">0</span></p>
+  <div class="zone"><div id="player" class="cards"></div></div>
+  <p>點數：<span id="p-score">0</span></p>
 
-  <div>
-    <button class="btn" id="hitBtn" disabled onclick="hit()">要牌</button>
-    <button class="btn" id="standBtn" disabled onclick="stand()">停牌</button>
-  </div>
-
-  <h2 id="result"></h2>
+  <h2 id="msg"></h2>
 </div>
 
 <script>
-  let chips = 1000;
-  let bet = 0;
-  let player = [];
-  let dealer = [];
-  let gameOver = false;
+let chips = 1000;
+let bet = 10;
+let pHand = [], dHand = [];
+let gameOver = true;
 
-  function getCard() {
-    const cards = [2,3,4,5,6,7,8,9,10,10,10,10,11];
-    return cards[Math.floor(Math.random()*cards.length)];
-  }
+// 發牌
+function card() {
+  const arr = [2,3,4,5,6,7,8,9,10,10,10,10,11];
+  return arr[Math.random()*arr.length|0];
+}
 
-  function calcScore(hand) {
-    let sum = 0;
-    let aces = 0;
-    for (let c of hand) {
-      sum += c;
-      if (c === 11) aces++;
-    }
-    while (sum > 21 && aces > 0) {
-      sum -= 10;
-      aces--;
-    }
-    return sum;
-  }
+// 算分
+function score(hand) {
+  let s = 0, aces = 0;
+  for(let c of hand) { s+=c; if(c===11) aces++; }
+  while(s>21 && aces>0) { s-=10; aces--; }
+  return s;
+}
 
-  function render() {
-    const pCards = document.getElementById('playerCards');
-    const dCards = document.getElementById('dealerCards');
-    pCards.innerHTML = '';
-    dCards.innerHTML = '';
+// 畫牌 + 拖動
+function render() {
+  const d = document.getElementById('dealer');
+  const p = document.getElementById('player');
+  d.innerHTML = ''; p.innerHTML = '';
 
-    player.forEach(c => {
-      const div = document.createElement('div');
-      div.className = 'card';
-      div.textContent = c === 11 ? 'A' : c;
-      pCards.appendChild(div);
-    });
+  dHand.forEach((c,i)=>{
+    const el = mkCard(i===1 && !gameOver ? '?' : (c===11 ? 'A' : c));
+    d.appendChild(el);
+  });
+  pHand.forEach(c=>{
+    const el = mkCard(c===11 ? 'A' : c);
+    p.appendChild(el);
+  });
 
-    dealer.forEach((c, i) => {
-      const div = document.createElement('div');
-      div.className = 'card';
-      if (i === 1 && !gameOver) {
-        div.textContent = '?';
-      } else {
-        div.textContent = c === 11 ? 'A' : c;
-      }
-      dCards.appendChild(div);
-    });
+  document.getElementById('d-score').textContent = gameOver ? score(dHand) : '?';
+  document.getElementById('p-score').textContent = score(pHand);
+  document.getElementById('chip').textContent = chips;
+}
 
-    document.getElementById('playerScore').textContent = calcScore(player);
-    document.getElementById('dealerScore').textContent = gameOver ? calcScore(dealer) : '?';
-  }
+// 建立一張可拖動的牌
+function mkCard(txt) {
+  const div = document.createElement('div');
+  div.className = 'card';
+  div.textContent = txt;
+  div.draggable = true;
+  div.ondragstart = e=>{
+    e.dataTransfer.setData('text', div.textContent);
+    div.style.opacity = 0.6;
+  };
+  div.ondragend = ()=> div.style.opacity = 1;
+  return div;
+}
 
-  function startGame() {
-    const betInput = document.getElementById('betInput');
-    bet = parseInt(betInput.value);
-    if (bet < 1 || bet > chips) {
-      alert('下注金額無效');
-      return;
-    }
+// 拖動區域允許放置
+document.querySelectorAll('.zone').forEach(z=>{
+  z.ondragover = e=>e.preventDefault();
+  z.ondrop = e=>{
+    e.preventDefault();
+    const t = e.target.closest('.zone')?.querySelector('.cards');
+    if(t) t.appendChild(e.target);
+  };
+});
 
-    player = [getCard(), getCard()];
-    dealer = [getCard(), getCard()];
-    gameOver = false;
-    document.getElementById('result').textContent = '';
-    document.getElementById('hitBtn').disabled = false;
-    document.getElementById('standBtn').disabled = false;
-    render();
-  }
+function start() {
+  bet = Math.min(+document.getElementById('bet').value||10, chips);
+  if(bet<1) return alert('下注無效');
+  pHand = [card(),card()];
+  dHand = [card(),card()];
+  gameOver = false;
+  document.getElementById('msg').textContent = '';
+  document.getElementById('hit').disabled = false;
+  document.getElementById('stand').disabled = false;
+  render();
+}
 
-  function hit() {
-    player.push(getCard());
-    render();
-    if (calcScore(player) > 21) {
-      endGame();
-    }
-  }
+function hit() {
+  pHand.push(card());
+  render();
+  if(score(pHand)>21) end();
+}
 
-  function stand() {
-    while (calcScore(dealer) < 17 && calcScore(dealer) <= 21) {
-      dealer.push(getCard());
-    }
-    endGame();
-  }
+function stand() {
+  while(score(dHand)<17 && score(dHand)<=21) dHand.push(card());
+  end();
+}
 
-  function endGame() {
-    gameOver = true;
-    document.getElementById('hitBtn').disabled = true;
-    document.getElementById('standBtn').disabled = true;
-
-    const p = calcScore(player);
-    const d = calcScore(dealer);
-    let res = '';
-
-    if (p > 21) {
-      res = '你爆牌！輸了';
-      chips -= bet;
-    } else if (d > 21) {
-      res = '莊家爆牌！你贏了';
-      chips += bet;
-    } else if (p > d) {
-      res = '你贏了！';
-      chips += bet;
-    } else if (p < d) {
-      res = '你輸了！';
-      chips -= bet;
-    } else {
-      res = '平手！';
-    }
-
-    document.getElementById('result').textContent = res;
-    document.getElementById('chip').textContent = chips;
-    render();
-  }
+function end() {
+  gameOver = true;
+  document.getElementById('hit').disabled = true;
+  document.getElementById('stand').disabled = true;
+  const p = score(pHand), d = score(dHand);
+  let msg = '';
+  if(p>21){ msg='爆牌輸'; chips-=bet; }
+  else if(d>21){ msg='莊家爆牌，你贏'; chips+=bet; }
+  else if(p>d){ msg='你贏'; chips+=bet; }
+  else if(p<d){ msg='你輸'; chips-=bet; }
+  else msg='平手';
+  document.getElementById('msg').textContent = msg;
+  render();
+}
 </script>
 </body>
 </html>
