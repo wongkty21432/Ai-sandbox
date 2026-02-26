@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>21點 BlackJack</title>
+<style>
+  body {
+    background: #0a5020;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+  }
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .cards {
+    margin: 10px 0;
+  }
+  .card {
+    display: inline-block;
+    width: 60px;
+    height: 90px;
+    background: white;
+    color: black;
+    border-radius: 6px;
+    margin: 4px;
+    line-height: 90px;
+    font-size: 22px;
+    font-weight: bold;
+  }
+  .btn {
+    padding: 10px 20px;
+    margin: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .bet-area {
+    margin: 20px 0;
+  }
+  input {
+    padding: 8px;
+    width: 100px;
+    font-size: 16px;
+  }
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>21點 BlackJack</h1>
+  <p>籌碼：<span id="chip">1000</span></p>
+
+  <div class="bet-area">
+    <input type="number" id="betInput" placeholder="下注" min="1" value="10">
+    <button class="btn" onclick="startGame()">開始遊戲</button>
+  </div>
+
+  <h3>莊家</h3>
+  <div id="dealerCards" class="cards"></div>
+  <p>點數：<span id="dealerScore">0</span></p>
+
+  <h3>玩家</h3>
+  <div id="playerCards" class="cards"></div>
+  <p>點數：<span id="playerScore">0</span></p>
+
+  <div>
+    <button class="btn" id="hitBtn" disabled onclick="hit()">要牌</button>
+    <button class="btn" id="standBtn" disabled onclick="stand()">停牌</button>
+  </div>
+
+  <h2 id="result"></h2>
+</div>
+
+<script>
+  let chips = 1000;
+  let bet = 0;
+  let player = [];
+  let dealer = [];
+  let gameOver = false;
+
+  function getCard() {
+    const cards = [2,3,4,5,6,7,8,9,10,10,10,10,11];
+    return cards[Math.floor(Math.random()*cards.length)];
+  }
+
+  function calcScore(hand) {
+    let sum = 0;
+    let aces = 0;
+    for (let c of hand) {
+      sum += c;
+      if (c === 11) aces++;
+    }
+    while (sum > 21 && aces > 0) {
+      sum -= 10;
+      aces--;
+    }
+    return sum;
+  }
+
+  function render() {
+    const pCards = document.getElementById('playerCards');
+    const dCards = document.getElementById('dealerCards');
+    pCards.innerHTML = '';
+    dCards.innerHTML = '';
+
+    player.forEach(c => {
+      const div = document.createElement('div');
+      div.className = 'card';
+      div.textContent = c === 11 ? 'A' : c;
+      pCards.appendChild(div);
+    });
+
+    dealer.forEach((c, i) => {
+      const div = document.createElement('div');
+      div.className = 'card';
+      if (i === 1 && !gameOver) {
+        div.textContent = '?';
+      } else {
+        div.textContent = c === 11 ? 'A' : c;
+      }
+      dCards.appendChild(div);
+    });
+
+    document.getElementById('playerScore').textContent = calcScore(player);
+    document.getElementById('dealerScore').textContent = gameOver ? calcScore(dealer) : '?';
+  }
+
+  function startGame() {
+    const betInput = document.getElementById('betInput');
+    bet = parseInt(betInput.value);
+    if (bet < 1 || bet > chips) {
+      alert('下注金額無效');
+      return;
+    }
+
+    player = [getCard(), getCard()];
+    dealer = [getCard(), getCard()];
+    gameOver = false;
+    document.getElementById('result').textContent = '';
+    document.getElementById('hitBtn').disabled = false;
+    document.getElementById('standBtn').disabled = false;
+    render();
+  }
+
+  function hit() {
+    player.push(getCard());
+    render();
+    if (calcScore(player) > 21) {
+      endGame();
+    }
+  }
+
+  function stand() {
+    while (calcScore(dealer) < 17 && calcScore(dealer) <= 21) {
+      dealer.push(getCard());
+    }
+    endGame();
+  }
+
+  function endGame() {
+    gameOver = true;
+    document.getElementById('hitBtn').disabled = true;
+    document.getElementById('standBtn').disabled = true;
+
+    const p = calcScore(player);
+    const d = calcScore(dealer);
+    let res = '';
+
+    if (p > 21) {
+      res = '你爆牌！輸了';
+      chips -= bet;
+    } else if (d > 21) {
+      res = '莊家爆牌！你贏了';
+      chips += bet;
+    } else if (p > d) {
+      res = '你贏了！';
+      chips += bet;
+    } else if (p < d) {
+      res = '你輸了！';
+      chips -= bet;
+    } else {
+      res = '平手！';
+    }
+
+    document.getElementById('result').textContent = res;
+    document.getElementById('chip').textContent = chips;
+    render();
+  }
+</script>
+</body>
+</html>
