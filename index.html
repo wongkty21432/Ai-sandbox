@@ -1,242 +1,315 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Pages项目导航中心</title>
+    <title>AI Sandbox | 项目导航</title>
     <style>
-        :root {
-            --primary-color: #0366d6;
-            --bg-color: #f6f8fa;
-            --card-bg: #ffffff;
-            --text-color: #24292e;
-            --border-color: #e1e4e8;
-        }
-        
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.5;
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            color: #f0f6fc;
+            min-height: 100vh;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         
         .container {
-            max-width: 800px;
-            margin: 0 auto;
+            max-width: 1200px;
+            width: 100%;
             padding: 20px;
         }
         
         header {
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(240, 246, 252, 0.1);
         }
         
         h1 {
-            font-size: 28px;
+            font-size: 2.8rem;
+            background: linear-gradient(90deg, #58a6ff, #238636);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             margin-bottom: 10px;
-            color: var(--primary-color);
+            letter-spacing: 1px;
         }
         
-        .description {
-            color: #586069;
-            font-size: 16px;
+        .subtitle {
+            font-size: 1.2rem;
+            color: #8b949e;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
         
-        .branch-list {
+        .button-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
             margin-bottom: 40px;
         }
         
-        .branch-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 20px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        .branch-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            border-color: var(--primary-color);
-        }
-        
-        .branch-title {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: var(--primary-color);
-        }
-        
-        .branch-description {
-            color: #586069;
-            font-size: 14px;
-            margin-bottom: 15px;
-            min-height: 60px;
-        }
-        
-        .branch-link {
-            display: inline-block;
-            background-color: var(--primary-color);
-            color: white;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-size: 14px;
-            transition: background-color 0.2s;
-        }
-        
-        .branch-link:hover {
-            background-color: #0356b6;
-        }
-        
-        .add-project-section {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 20px;
-            margin-top: 30px;
-        }
-        
-        .add-project-title {
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-        
-        input, textarea {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        
-        textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
-        
-        .add-btn {
-            background-color: #2ea44f;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.2s;
-        }
-        
-        .add-btn:hover {
-            background-color: #2c974b;
+        @media (max-width: 1024px) {
+            .button-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         
         @media (max-width: 600px) {
-            .branch-list {
+            .button-grid {
                 grid-template-columns: 1fr;
             }
         }
+        
+        .nav-button {
+            background: rgba(22, 27, 34, 0.8);
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 30px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            height: 180px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-button:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+            border-color: #238636;
+            background: rgba(35, 134, 54, 0.1);
+        }
+        
+        .nav-button:active {
+            transform: translateY(-4px);
+            transition: transform 0.1s;
+        }
+        
+        .button-icon {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #58a6ff, #238636);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .button-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-align: center;
+            color: #f0f6fc;
+        }
+        
+        .button-description {
+            font-size: 0.9rem;
+            color: #8b949e;
+            text-align: center;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+        
+        .button-id {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(35, 134, 54, 0.2);
+            color: #3fb950;
+            font-size: 0.85rem;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+        
+        .instructions {
+            background: rgba(22, 27, 34, 0.6);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            border-left: 4px solid #238636;
+        }
+        
+        .instructions h3 {
+            color: #58a6ff;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .instructions p {
+            color: #8b949e;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .instructions code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            color: #f0f6fc;
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #8b949e;
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid rgba(240, 246, 252, 0.1);
+            width: 100%;
+        }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>GitHub Pages项目导航中心</h1>
-            <p class="description">所有项目分支的集中访问点</p>
+            <h1><i class="fas fa-robot"></i> AI Sandbox</h1>
+            <p class="subtitle">点击下方按钮，快速访问AI生成的项目。所有链接将在新标签页中打开。</p>
         </header>
         
-        <div class="branch-list">
-            <!-- 项目分支卡片 - 从这里开始添加您的项目 -->
-            <!-- 每个项目卡片模板如下 -->
-            <!-- 在href属性中输入跳转网址 -->
-            <div class="branch-card">
-                <h2 class="branch-title">项目示例1</h2>
-                <p class="branch-description">这是一个示例项目描述</p>
-                <!-- 在href属性中输入跳转网址 -->
-                <a href="https://example.com/project1" class="branch-link">访问项目</a>
+        <main>
+            <div class="button-grid" id="buttonContainer">
+                <!-- 按钮将通过JavaScript动态生成 -->
             </div>
             
-            <div class="branch-card">
-                <h2 class="branch-title">21點</h2>
-                <p class="branch-description">这是21项目描述</p>
-                <!-- 在href属性中输入跳转网址 -->
-                <a href="https://wongkty21432.github.io/Ai-sandbox/21jp.html" class="branch-link">访问项目</a>
+            <div class="instructions">
+                <h3><i class="fas fa-cog"></i> 配置说明</h3>
+                <p>要修改按钮的链接和文字，请编辑此文件中的 <code>buttonConfig</code> 数组。您可以为每个按钮设置：</p>
+                <p><code>text</code> - 按钮显示文字，<code>url</code> - 目标网址，<code>desc</code> - 描述文本（可选），<code>icon</code> - FontAwesome图标类名（可选）。</p>
+                <p>保存修改后刷新页面即可生效。</p>
             </div>
-            
-            <!-- 添加更多项目卡片 -->
-            <!-- 复制上面的div并修改内容 -->
-            <!-- 在href属性中输入跳转网址 -->
-        </div>
+        </main>
         
-        <div class="add-project-section">
-            <h2 class="add-project-title">添加新项目</h2>
-            <div class="form-group">
-                <label for="project-name">项目名称</label>
-                <input type="text" id="project-name" placeholder="输入项目名称">
-            </div>
-            <div class="form-group">
-                <label for="project-description">项目描述</label>
-                <textarea id="project-description" placeholder="输入项目描述"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="project-url">项目网址</label>
-                <!-- 在这里输入跳转网址 -->
-                <input type="url" id="project-url" placeholder="https://example.com/project">
-            </div>
-            <button class="add-btn" onclick="addProject()">添加项目</button>
-        </div>
+        <footer>
+            <p>AI Sandbox 项目导航 | 最后更新：2026年3月</p>
+        </footer>
     </div>
 
     <script>
-        function addProject() {
-            const name = document.getElementById('project-name').value;
-            const description = document.getElementById('project-description').value;
-            const url = document.getElementById('project-url').value;
-            
-            if (!name || !url) {
-                alert('请填写项目名称和网址');
-                return;
+        // 按钮配置数组 - 在这里修改按钮的链接和文字
+        const buttonConfig = [
+            {
+                id: 1,
+                text: "项目一",
+                url: "https://wongkty21432.github.io/Ai-sandbox/21jp.html",
+                desc: "21點",
+                icon: "fas fa-magic"
+            },
+            {
+                id: 2,
+                text: "项目二",
+                url: "project2.html",
+                desc: "机器学习演示",
+                icon: "fas fa-brain"
+            },
+            {
+                id: 3,
+                text: "项目三",
+                url: "project3.html",
+                desc: "自然语言处理工具",
+                icon: "fas fa-language"
+            },
+            {
+                id: 4,
+                text: "项目四",
+                url: "project4.html",
+                desc: "计算机视觉示例",
+                icon: "fas fa-eye"
+            },
+            {
+                id: 5,
+                text: "项目五",
+                url: "project5.html",
+                desc: "数据分析面板",
+                icon: "fas fa-chart-bar"
+            },
+            {
+                id: 6,
+                text: "项目六",
+                url: "project6.html",
+                desc: "算法可视化",
+                icon: "fas fa-project-diagram"
+            },
+            {
+                id: 7,
+                text: "项目七",
+                url: "project7.html",
+                desc: "AI绘画实验",
+                icon: "fas fa-palette"
+            },
+            {
+                id: 8,
+                text: "项目八",
+                url: "project8.html",
+                desc: "聊天机器人界面",
+                icon: "fas fa-comments"
             }
+        ];
+        
+        // 默认图标库（如果按钮配置中没有指定图标）
+        const defaultIcons = [
+            "fas fa-cube",
+            "fas fa-star",
+            "fas fa-rocket",
+            "fas fa-lightbulb",
+            "fas fa-code",
+            "fas fa-database",
+            "fas fa-chart-line",
+            "fas fa-gamepad"
+        ];
+        
+        // 动态生成按钮
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttonContainer = document.getElementById('buttonContainer');
             
-            const branchList = document.querySelector('.branch-list');
-            
-            const projectCard = document.createElement('div');
-            projectCard.className = 'branch-card';
-            projectCard.innerHTML = `
-                <h2 class="branch-title">${name}</h2>
-                <p class="branch-description">${description || '暂无描述'}</p>
-                <a href="${url}" class="branch-link">访问项目</a>
-            `;
-            
-            branchList.appendChild(projectCard);
-            
-            // 清空表单
-            document.getElementById('project-name').value = '';
-            document.getElementById('project-description').value = '';
-            document.getElementById('project-url').value = '';
-            
-            alert('项目已添加！');
-        }
+            buttonConfig.forEach((button, index) => {
+                // 创建按钮元素
+                const buttonElement = document.createElement('a');
+                buttonElement.className = 'nav-button';
+                buttonElement.href = button.url || '#';
+                buttonElement.target = '_blank'; // 在新标签页打开
+                
+                // 设置按钮内容
+                buttonElement.innerHTML = `
+                    <span class="button-id">${button.id}</span>
+                    <div class="button-icon">
+                        <i class="${button.icon || defaultIcons[index]}"></i>
+                    </div>
+                    <div class="button-text">${button.text}</div>
+                    <div class="button-description">${button.desc || 'AI生成项目'}</div>
+                `;
+                
+                // 如果链接为空，禁用点击并添加提示
+                if (!button.url) {
+                    buttonElement.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        alert('此按钮尚未配置链接。请在代码中编辑buttonConfig数组。');
+                    });
+                    buttonElement.style.opacity = '0.7';
+                    buttonElement.style.cursor = 'not-allowed';
+                }
+                
+                buttonContainer.appendChild(buttonElement);
+            });
+        });
     </script>
 </body>
 </html>
