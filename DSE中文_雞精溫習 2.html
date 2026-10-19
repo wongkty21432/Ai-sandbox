@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>DSE 中文科・雞精溫習網頁（2027）</title>
+<title>HKDSE 中國語文 — 題庫練習 | 自適應 Quiz・歷屆試題・語譯題・記憶系統</title>
 <style>
 :root{
   --bg:#0f1216; --panel:#161b22; --panel2:#1c2230; --line:#2a3240;
@@ -191,19 +191,64 @@ nav.tabs button:active{background:var(--panel2)}
 @media(-webkit-min-device-pixel-ratio:2),(min-resolution:2dppx){
   th,td{border-width:1px}
 }
+
+/* ================= 🎯 SRS 記憶引擎 ================= */
+.srsTop{display:flex;gap:12px;flex-wrap:wrap;align-items:stretch;margin:6px 0 4px}
+.srsBig{flex:1 1 150px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px}
+.srsBig .n{font-size:34px;font-weight:800;line-height:1.1}
+.srsBig .l{font-size:12.5px;color:var(--dim);margin-top:3px}
+.srsBig.due .n{color:var(--warn)} .srsBig.new .n{color:var(--accent)}
+.srsBig.master .n{color:var(--ok)}
+.srsDeck{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:12px 14px;margin:10px 0;break-inside:avoid}
+.srsDeck h4{margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.srsDeck .nums{font-size:12.5px;color:var(--dim);font-weight:400}
+.bar2{height:9px;background:#0b0f14;border-radius:99px;overflow:hidden;display:flex;border:1px solid var(--line)}
+.bar2 i{display:block;height:100%}
+.bar2 i.m{background:var(--ok)} .bar2 i.r{background:var(--accent)} .bar2 i.d{background:var(--warn)} .bar2 i.n{background:#334155}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:11.5px;color:var(--dim);margin-top:7px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:middle}
+.srsTask{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:11px 13px;border:1px solid var(--line);border-left:4px solid var(--accent);
+  border-radius:10px;margin:8px 0;background:var(--panel)}
+.srsTask.no{border-left-color:#334155;opacity:.75}
+.srsTask .t{font-weight:700}
+.srsTask .d{font-size:12.5px;color:var(--dim);margin-top:2px}
+.tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.tags span{font-size:11px;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--dim)}
+.tags span.hot{border-color:#7f1d33;color:#ffb3c1}
+.piecerow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line);flex-wrap:wrap}
+.piecerow .nm{flex:1 1 130px;font-size:13.5px}
+.piecerow .pc{font-size:12.5px;font-variant-numeric:tabular-nums;color:var(--dim);min-width:74px;text-align:right}
+.pill.risk{border-color:#7f1d33;color:#ffb3c1}
+.pill.warn{border-color:#78621a;color:#fde68a}
+.pill.ok{border-color:#1d5b52;color:#9ff5e6}
+
+
+/* ================= 跨裝置同步提示 ================= */
+.typoOK{background:#0b2b26;border:1.5px solid #1d5b52;border-radius:10px;
+  padding:10px 13px;margin-top:10px;color:#9ff5e6;font-size:13.5px;line-height:1.7}
+.typoWarn{background:#3b0d18;border:1.5px solid #7f1d33;border-radius:10px;
+  padding:11px 13px;margin-top:10px;color:#ffd0d8;font-size:13.5px;line-height:1.7}
+.typoWarn b.hd{color:#fbbf24}
 </style>
+<style>
+/* ===== 平台整合樣式 ===== */
+</style><script>
+window.DEFAULT_TAB = "v7";
+window.ALT_TARGET  = {url:"study-guide.html", label:"📚 去學習指南 →"};
+</script>
 </head>
 <body>
-<header class="hero"><div class="wrap">
-  <h1>DSE 中國語文科・雞精溫習網頁</h1>
-  <div class="sub">適用 2027 考生（新制 2 卷）｜精華內容 → 自適應 Quiz → 歷屆試題</div>
+<header class="hero plat"><div class="wrap">
+  <h1>DSE 中國語文科・雞精溫習</h1>
+  <div class="sub">適用 2027 考生（新制 2 卷）｜完整功能：精華內容 → 範文點字 → 自適應 Quiz → 歷屆試題 → 記憶系統</div>
   <div class="badges">
-    <span class="badge">甲部 12 篇範文</span>
-    <span class="badge">考生表現報告通病</span>
-    <span class="badge">評卷參考要求</span>
-    <span class="badge">2018–2023 歷屆真題</span>
-    <span class="badge">98 題題庫・31 題真題改編</span>
-    <span class="badge">錯題自動加練</span>
+    <span class="badge">12 個分頁</span>
+    <span class="badge">字詞卡 1,139</span>
+    <span class="badge">歷屆真題 2018–2025</span>
+    <span class="badge">錯別字比對器</span>
+    <span class="badge">SRS 記憶引擎</span>
   </div>
 </div></header>
 
@@ -219,6 +264,7 @@ nav.tabs button:active{background:var(--panel2)}
   <button data-v="v8">⑨ 歷屆試題</button>
   <button data-v="v9">⑩ 全文點字查卡</button>
   <button data-v="v10">⑪ 語譯題專區</button>
+  <button data-v="v11">🎯 今日待背</button>
 </nav>
 
 <main>
@@ -237,7 +283,7 @@ nav.tabs button:active{background:var(--panel2)}
         <td>甲部 實用寫作 30%<br>乙部 命題寫作 70%</td>
         <td>約 32%</td></tr>
     </table></div>
-    <p class="sub">※ 本頁「考生表現報告」數據源自 2014–2022（舊制），只抽取<b>跨年份通用通病與評分概念</b>；凡涉卷三／卷四已取消。</p>
+    <p class="sub">※ 本頁「考生表現報告」數據源自 <b>2014–2025</b>（含新制 2024–2025），評卷參考至 <b>2025</b>，並納入 <b>2026 卷一閱讀考材</b>；只抽取<b>跨年份通用通病與評分概念</b>；凡涉卷三／卷四已取消。</p>
   </div>
   <h3>🎯 備試優先次序（按投資回報）</h3>
   <div class="card">
@@ -254,6 +300,37 @@ nav.tabs button:active{background:var(--panel2)}
       <li>每年考 <b>2–4 篇</b>範文</li>
       <li>最少隔約 <b>2 份卷</b>就會重考同一篇</li>
       <li><b>詩詞通常只出一篇</b>（唐詩三首／詞三首 各出一首）</li>
+    </ul>
+  </div>
+
+  <h3>🆕 新制考情實錄（2023–2026・據考生表現報告與考材）</h3>
+  <div class="card">
+    <p class="sub">以下為<b>實際考卷</b>逐年紀錄，唔係估算。用嚟判斷「邊篇／邊個題型」最熱。</p>
+    <div class="tablewrap"><table>
+      <tr><th>年份</th><th>甲部指定範文</th><th>乙部白話篇目</th><th>乙部文言出處</th></tr>
+      <tr><td><b>2023</b></td><td>廉頗藺相如列傳（節錄）、月下獨酌</td><td>《我們去唱歌》、《一竿冷》</td><td>紀昀《閱微草堂筆記》卷三</td></tr>
+      <tr><td><b>2024</b></td><td><b>師說</b>、<b>岳陽樓記</b></td><td>李娟《繁盛》</td><td>《世說新語》、《東坡志林》</td></tr>
+      <tr><td><b>2025</b></td><td><b>論仁、論孝、論君子</b>、山居秋暝</td><td>柯裕棻《比正路還長的巷子》</td><td>司馬光《資治通鑑》卷二百二十、《滹南遺老集》</td></tr>
+      <tr><td><b>2026</b></td><td>（考材未列甲部）</td><td>兩篇白話（AI 與價值觀；記敘類）</td><td>《世說新語》三則（品鑑人物）</td></tr>
+    </table></div>
+    <p class="sub" style="margin-top:10px"><b>卷二命題寫作題目</b></p>
+    <div class="tablewrap"><table>
+      <tr><th>年份</th><th>題目</th><th>甲部實用寫作文體</th></tr>
+      <tr><td><b>2025</b></td><td>「藏在泥土中的寶物」／「為不完美添色彩」</td><td><b>演講辭</b>（學校早會）</td></tr>
+      <tr><td><b>2024</b></td><td>（新制首年，實用寫作擬題模式首見）</td><td>新制實用寫作首年</td></tr>
+    </table></div>
+  </div>
+
+  <h3>⚠️ 2023–2025 新增通病（實錄，取代舊制假設）</h3>
+  <div class="card">
+    <ul>
+      <li><b>文言字詞解釋持續失分</b>（2023、2024 連續兩年點名）——「常見文言字詞且摘錄自建議篇章，考生表現未如理想」。<span class="danger">即係範文字詞都唔穩。</span></li>
+      <li><b>語文基礎知識不足</b>——修辭技巧、文言常見知識點掌握待改善（2023 明言）。</li>
+      <li><b>手法「知定義但唔知作用」</b>——2024 點名：考生熟讀定義，但唔識講<b>運用該手法的意圖與效果</b>。</li>
+      <li><b>筆畫缺漏嚴重</b>——2023：錯別字情況有改善，但「筆畫缺漏的情況相當嚴重」。</li>
+      <li><b>詳略失衡／焦點不清</b>——2023 卷二：未針對題目寫作。</li>
+      <li><b>忽略題幹指引</b>——2024：審題略有改善，但仍會忽略題幹的提示。</li>
+      <li><b>字數上限</b>——2024 起甲部設字數上限，超出者計入扣分考量。</li>
     </ul>
   </div>
 </section>
@@ -358,6 +435,22 @@ nav.tabs button:active{background:var(--panel2)}
       <tr><td>羅列事實</td><td>只寫「只負責點菜」</td><td>要對比／點出意義</td></tr>
     </table></div>
   </div>
+
+  <h3>E. 2026 卷一真題觀察（最新考材實錄）</h3>
+  <div class="card">
+    <p class="sub">源自 2026 卷一閱讀考材（HKEAA 官方）。睇最新一年考咩，調整溫習重心。</p>
+    <div class="tablewrap"><table>
+      <tr><th>篇目</th><th>類型</th><th>主題／考點啟示</th></tr>
+      <tr><td><b>第一篇</b>（白話）</td><td>議論</td><td><b>AI 與價值觀</b>——人類智能 99% 或被取代，但涉及<b>價值觀</b>時機器力不從心（自動駕駛「事故減損機制」兩難：保護車內定車外？）。論點：<b>文學長於傳導價值觀</b>，好作家能突破常規發現真善美；人嘅「缺點」（健忘、糊塗、不講理）正是機器無法複製之處。<br>👉 <b>溫習提示</b>：呢類「科技 vs 人文」議論係新趨勢，準備「價值觀／創造力／人之所以為人」原因類答案。</td></tr>
+      <tr><td><b>第三篇</b>（文言）</td><td>《世說新語》三則</td><td><b>品鑑人物之高下</b>——①華歆、王朗乘船避難（王朗輕諾、華歆守諾→「世以此定華、王之優劣」）；②張玄之、顧敷（小兒辯才）；③第三則對答略去主語，一問一答條理清晰。<br>👉 <b>溫習提示</b>：《世說新語》連續兩年（2024、2026）出現，屬高頻文言出處，人物品評＋對比手法要熟。</td></tr>
+    </table></div>
+    <p class="sub" style="margin-top:9px"><b>2026 觀察到嘅出題走向</b></p>
+    <ul>
+      <li><b>白話乙部偏議論／科技人文</b>——唔再只考抒情散文，議論成分重，要練「論點＋論據＋評價」。</li>
+      <li><b>文言出處集中</b>：《世說新語》（2024、2026）＋《資治通鑑》（2025）＋筆記小說（2023《閱微草堂筆記》）。</li>
+      <li><b>甲部範文輪替加快</b>：2024 師說／岳陽樓記、2025 論仁／山居秋暝——<b>勸學、逍遙遊、魚我所欲也、六國論、唐詩（登樓／月下獨酌）近年較少出</b>，屬「冷門高危」：愈唔出愈要防。</li>
+    </ul>
+  </div>
 </section>
 
 <!-- ============ ④ 卷二 ============ -->
@@ -365,120 +458,115 @@ nav.tabs button:active{background:var(--panel2)}
   <h2>④ 卷二・寫作能力</h2>
 
   <h3>甲部：實用寫作（30%）</h3>
-
-  <!-- 1. 紙上手寫筆記：整合拓展 SOP 核心算法 -->
-  <div class="card" style="border: 1.5px solid var(--accent); background: linear-gradient(160deg, #101e24, #161b22);">
-    <h4 style="color:var(--accent);font-size:16px;margin-top:0">⭐ 手寫筆記核心算法：單段「整合拓展」五步封閉函數（5-Step Block）</h4>
-    <p class="sub">實用文主體段絕不可「抄完資料就算」，每一小任務必須執行獨立的 5 步邏輯閉環（單段約 180–200 字）：</p>
-    
+  <div class="card">
+    <h4>四大評分支柱</h4>
+    <ol><li><b>語境意識</b>（身分、對象、目的、場合）</li>
+        <li><b>整合拓展</b>（整合資料 ＋ <span class="hl">拓展意義</span>）</li>
+        <li><b>見解論證</b>（立場 ＋ 論據 ＋ 論證）</li>
+        <li><b>表達組織</b>（格式、結構、用詞）</li></ol>
+    <h4>⭐ 手寫筆記核心算法：單段「整合拓展」五步封閉函數（5-Step Block）</h4>
+    <p class="sub">實用文主體段絕不可「抄完資料就算」，每一小任務必須執行獨立的 5 步邏輯閉環（單段約 <b>180–200 字</b>）。</p>
     <div class="tablewrap"><table>
-      <tr><th style="width:22%">步驟編號</th><th style="width:28%">功能與核心要求</th><th>實例演示（以「食品不健康」為例）</th></tr>
-      <tr>
-        <td><b>① 主旨句（小任務）</b></td>
-        <td>宣告本段要解決的<b>具體活動／問題</b>（段落主題）。</td>
-        <td>首先，在校園飲食健康方面，審視並改善小食部所售食品的營養結構，實為當務之急。</td>
-      </tr>
-      <tr>
-        <td><b>② 引用資料（整合）</b></td>
-        <td>提取題幹的「意見／對話／現象」，<b>用自己文字概括</b>（約 3–5 行，忌整段抄錄）。</td>
-        <td>據校內調查反映，不少同學指出小食部充斥炸雞髀、燒賣及高糖飲品，缺乏健康飲食選擇，長此以往恐對同學飲食習慣造成不良引導。</td>
-      </tr>
-      <tr>
-        <td><b>③ 舉例拓展（推導）</b></td>
-        <td><b>生活化細節推導</b>：指出具體惡果或效益（如油炸、高糖 ➜ 肥胖、心血管負擔、發育不良）。</td>
-        <td>事實上，油炸食品與加工零食普遍含有極高飽和脂肪及人工添加劑。青少年正處於骨骼生長與內分泌發育黃金期，長期攝取高熱量、低營養食物，極易誘發肥胖問題，甚至增加心血管與皮膚暗瘡等健康風險。</td>
-      </tr>
-      <tr>
-        <td><b>④ 扣連大目標（採分點！）</b></td>
-        <td><b>強制映射回文章終極大目標</b>（如青少年身心健康、課堂專注）。<br><span class="danger">⚠️ 戒無限上綱</span>（扣緊切身影響，切勿扯到毀滅人類）。</td>
-        <td>更嚴重的是，高糖高脂食品會導致血糖在短時間內急升驟降，使同學在下午課堂容易感到疲勞嗜睡、思維遲鈍，直接削弱專注力與學習效能。由此可見，監管小食部食品並非單純控制體重，更是維護<b>「青少年身心健康與學業發展」這一核心大目標</b>的根本防線。</td>
-      </tr>
-      <tr>
-        <td><b>⑤ 小結</b></td>
-        <td>用一句話呼應段首主旨句，完成論述閉環。</td>
-        <td>故此，校方嚴格把關小食部食物品質、引入營養餐點，確實具備不可推卸的迫切性。</td>
-      </tr>
+      <tr><th style="width:15%">步驟</th><th style="width:30%">功能與核心要求</th><th>實例演示（以「食品不健康」為例）</th></tr>
+      <tr><td><b>① 主旨句<br>（小任務）</b></td>
+          <td>宣告本段要解決的具體活動／問題（段落主題）。</td>
+          <td>首先，在校園飲食健康方面，審視並改善小食部所售食品的營養結構，實為當務之急。</td></tr>
+      <tr><td><b>② 引用資料<br>（整合）</b></td>
+          <td>提取題幹的「意見／對話／現象」，用<b>自己文字概括</b>（約 3–5 行，<span class="danger">忌整段抄錄</span>）。</td>
+          <td>據校內調查反映，不少同學指出小食部充斥炸雞髀、燒賣及高糖飲品，缺乏健康飲食選擇，長此以往恐對同學飲食習慣造成不良引導。</td></tr>
+      <tr><td><b>③ 舉例拓展<br>（推導）</b></td>
+          <td>生活化細節推導：指出具體惡果或效益（如油炸、高糖 ➜ 肥胖、心血管負擔、發育不良）。</td>
+          <td>事實上，油炸食品與加工零食普遍含有極高飽和脂肪及人工添加劑。青少年正處於骨骼生長與內分泌發育黃金期，長期攝取高熱量、低營養食物，極易誘發肥胖問題，甚至增加心血管與皮膚暗瘡等健康風險。</td></tr>
+      <tr><td><b>④ 扣連大目標</b><br>（<span class="hl">採分點！</span>）</td>
+          <td>強制映射回文章終極大目標（如青少年身心健康、課堂專注）。<br>
+              <span class="no">⚠️ 戒無限上綱</span>：扣緊切身影響，切勿扯到毀滅人類。</td>
+          <td>更嚴重的是，高糖高脂食品會導致血糖在短時間內急升驟降，使同學在下午課堂容易感到疲勞嗜睡、思維遲鈍，直接削弱專注力與學習效能。由此可見，監管小食部食品並非單純控制體重，更是維護「青少年身心健康與學業發展」這一核心大目標的根本防線。</td></tr>
+      <tr><td><b>⑤ 小結</b></td>
+          <td>用一句話呼應段首主旨句，完成論述閉環。</td>
+          <td>故此，校方嚴格把關小食部食物品質、引入營養餐點，確實具備不可推卸的迫切性。</td></tr>
     </table></div>
 
-    <div class="grid2" style="margin-top:12px">
-      <div style="background:#0c131a;border:1px solid var(--line);border-radius:8px;padding:12px">
-        <h5 style="margin:0 0 6px;color:#5eead4">📌 全局篇幅與配分結構（筆記左側密碼）</h5>
-        <ul style="margin:0;padding-left:18px;font-size:13.5px">
-          <li><b>篇幅控制</b>：全篇 <b>4–5 段</b>（引言 + 2個整合拓展段 + 總結）。</li>
-          <li><b>2 個任務分開寫</b>：每個任務獨佔 1 段，<b>嚴禁混在同一段！</b>（混寫會被批「未有組織活動」，內容分直接壓在 0–1 下品）。</li>
-          <li><b>得分目標</b>：單段收割 10 分（內容 10 + 組織/語氣 10），總分直衝 <b>24–26 分以上（上品區間）</b>。</li>
-        </ul>
-      </div>
-      <div style="background:#0c131a;border:1px solid var(--line);border-radius:8px;padding:12px">
-        <h5 style="margin:0 0 6px;color:#f0abfc">🎯 實戰推導鏈（因果展開示例）</h5>
-        <p style="margin:0;font-size:13px;color:#cbd5e1">
-          <code>小任務：食品不健康（油炸）</code> ➜ <code>拓展：反式脂肪、飽和脂肪</code> ➜ <code>惡果：肥胖、心血管疾病、免疫力低</code> ➜ <code>大目標（青少年健康）：吸收快、新陳代謝、體力疲勞、影響課堂學習、皮膚問題</code> ➜ <code>結論小結</code>
-        </p>
-      </div>
-    </div>
-  </div>
+    <h4>📌 全局篇幅與配分結構（筆記左側密碼）</h4>
+    <ul>
+      <li><b>篇幅控制</b>：全篇 <b>4–5 段</b>（引言 ＋ 2 個整合拓展段 ＋ 總結）。</li>
+      <li><b>2 個任務分開寫</b>：每個任務獨佔 1 段，<span class="danger">嚴禁混在同一段！</span>（混寫會被批「未有組織活動」，內容分直接壓在 0–1 下品）。</li>
+      <li><b>得分目標</b>：單段收割 <b>10 分</b>（內容 10 ＋ 組織／語氣 10），總分直衝 <b>24–26 分以上</b>（上品區間）。</li>
+    </ul>
 
-  <!-- 2. 格式規範與防呆對照表 -->
-  <div class="card">
+    <h4>🎯 實戰推導鏈（因果展開示例）</h4>
+    <blockquote>
+      小任務：食品不健康（油炸）<br>
+      ➜ 拓展：反式脂肪、飽和脂肪<br>
+      ➜ 惡果：肥胖、心血管疾病、免疫力低<br>
+      ➜ 大目標（青少年健康）：吸收快、新陳代謝、體力疲勞、影響課堂學習、皮膚問題<br>
+      ➜ 結論小結
+    </blockquote>
+
     <h4>常見文體格式防呆對照表（避免低階格式扣分）</h4>
     <div class="tablewrap"><table>
       <tr><th>文體</th><th>是否有標題？</th><th>稱謂規範</th><th>結尾致謝／祝頌</th><th>署名格式規範</th></tr>
-      <tr>
-        <td><b>評論文章 / 投稿</b></td>
-        <td><span class="yes">必須有</span>（第一行居中）</td>
-        <td><b>無稱謂</b>（開篇直接寫引言）</td>
-        <td>不需客套致謝</td>
-        <td>末尾靠右兩行：<br><code>身分（如：香城中學學生會主席）</code><br><code>姓名（如：任思賢）</code><br><span class="danger">⚠️ 嚴禁自稱「任思賢同學」！</span></td>
-      </tr>
-      <tr>
-        <td><b>演講辭 / 發言稿</b></td>
-        <td><span class="yes">必須有</span>（第一行居中）</td>
-        <td><b>頂格＋冒號</b><br>（按尊卑：校長、各位老師、各位同學：）</td>
-        <td><span class="yes">必須有</span><br>（「我的分享到此為止，謝謝大家！」）</td>
-        <td><span class="no">嚴禁署名</span>、<span class="no">嚴禁寫日期</span><br>（開場已自報身分，末尾再署名扣分）</td>
-      </tr>
-      <tr>
-        <td><b>建議書 / 報告</b></td>
-        <td><span class="yes">必須有</span>（居中：關於…的建議書）</td>
-        <td><b>頂格＋冒號</b><br>（受文對象，如：陳校長：）</td>
-        <td>期望批核／採納建議</td>
-        <td>末尾靠右：<br><code>身分</code><br><code>姓名 謹呈</code><br><code>日期（二零二六年十月十五日）</code></td>
-      </tr>
-      <tr>
-        <td><b>書信（公函）</b></td>
-        <td>通常不需（或置中引言）</td>
-        <td><b>頂格＋冒號</b><br>（如：執事先生： / 敬啟者：）</td>
-        <td>祝頌語：<br>「祝」（空兩格）<br>「身體健康」（頂格）</td>
-        <td>末尾靠右：<br><code>身分</code><br><code>姓名 謹啟</code><br><code>日期</code></td>
-      </tr>
+      <tr><td><b>評論文章／投稿</b></td>
+          <td>必須有（第一行<u>居中</u>）</td>
+          <td>無稱謂（開篇直接寫引言）</td>
+          <td>不需客套致謝</td>
+          <td>末尾<u>靠右兩行</u>：<br>身分（如：香城中學學生會主席）<br>姓名（如：任思賢）<br><span class="no">⚠️ 嚴禁自稱「任思賢同學」！</span></td></tr>
+      <tr><td><b>演講辭／發言稿</b></td>
+          <td>必須有（第一行<u>居中</u>）</td>
+          <td><b>頂格 ＋ 冒號</b><br>（按尊卑：校長、各位老師、各位同學：）</td>
+          <td>必須有<br>（「我的分享到此為止，謝謝大家！」）</td>
+          <td><span class="no">嚴禁署名、嚴禁寫日期</span><br>（開場已自報身分，末尾再署名扣分）</td></tr>
+      <tr><td><b>建議書／報告</b></td>
+          <td>必須有（居中：關於…的建議書）</td>
+          <td><b>頂格 ＋ 冒號</b><br>（受文對象，如：陳校長：）</td>
+          <td>期望批核／採納建議</td>
+          <td>末尾靠右：<br>身分<br>姓名 <b>謹呈</b><br>日期（二零二六年十月十五日）</td></tr>
+      <tr><td><b>書信（公函）</b></td>
+          <td>通常不需（或置中引言）</td>
+          <td><b>頂格 ＋ 冒號</b><br>（如：執事先生：／敬啟者：）</td>
+          <td>祝頌語：<br>「祝」（<u>空兩格</u>）<br>「身體健康」（<u>頂格</u>）</td>
+          <td>末尾靠右：<br>身分<br>姓名 <b>謹啟</b><br>日期</td></tr>
     </table></div>
 
     <h4>🚨 實用寫作三大致命死穴（考前核對清單）</h4>
     <ul>
-      <li><span class="no">死穴 1</span> <b>活動未分段（未有組織活動）</b>：題目給兩個活動，必須在第二段專寫活動一，第三段專寫活動二！混在一齊寫會被判定為「未能針對題目要求提出想法」，內容分直接封頂 0–1 分。</li>
-      <li><span class="no">死穴 2</span> <b>署名加稱謂「同學」</b>：自己署名絕對不能寫「任思賢同學」（「同學」是他人對你的尊稱，自稱同學屬語境錯誤，扣格式分）。</li>
-      <li><span class="no">死穴 3</span> <b>只拋出同學投訴，沒有反駁與名詞定義</b>：寫出同學抱怨「高中課業繁重、活動浪費時間」後，必須緊接<b>「名詞重新定義」</b>（說明全方位學習並非課堂死記硬背，而是實踐驗證），用活動成效化解同學疑慮。</li>
+      <li><b>死穴 1 — 活動未分段（未有組織活動）</b>：題目給兩個活動，必須在<b>第二段專寫活動一、第三段專寫活動二</b>！混在一齊寫會被判定為「未能針對題目要求提出想法」，內容分直接封頂 <b>0–1 分</b>。</li>
+      <li><b>死穴 2 — 署名加稱謂「同學」</b>：自己署名<span class="danger">絕對不能寫「任思賢同學」</span>（「同學」是他人對你的尊稱，自稱同學屬語境錯誤，扣格式分）。</li>
+      <li><b>死穴 3 — 只拋出同學投訴，沒有反駁與名詞定義</b>：寫出同學抱怨「高中課業繁重、活動浪費時間」後，必須緊接<b>「名詞重新定義」</b>（說明全方位學習並非課堂死記硬背，而是實踐驗證），用活動成效化解同學疑慮。</li>
+    </ul>
+
+    <h4>常犯錯誤</h4>
+    <ul>
+      <li><span class="no">錯</span>格式錯：稱謂、祝頌語、署名日期擺錯或漏</li>
+      <li><span class="no">錯</span>身分／對象搞錯 → 措辭不當</li>
+      <li><span class="no">錯</span>自謙語用錯變自大（忽略主語所指角色）</li>
+      <li><span class="no">錯</span>整合 vs 拓展失衡 → 只有整合，無拓展</li>
+      <li><span class="no">錯</span>見解論證薄弱 → 有見解無論據，或有論據無論證</li>
+      <li><span class="no">錯</span>張冠李戴：用錯／抄錯資料</li>
+      <li><span class="no">錯</span>字數超標（多有上限，如 550 字）</li>
     </ul>
   </div>
 
   <h3>乙部：命題寫作（70%）</h3>
   <div class="card">
     <div class="tablewrap"><table>
-      <tr><th>項目</th><th>分</th><th>考核重點</th></tr>
-      <tr><td>內容</td><td>40</td><td>立意深度、取材新穎、因果鏈推導完整</td></tr>
-      <tr><td>表達</td><td>30</td><td>詞彙豐富、修辭精煉、句式靈活</td></tr>
-      <tr><td>結構</td><td>20</td><td>段落銜接自然、首尾呼應、輕重有致</td></tr>
-      <tr><td>標點字體</td><td>10</td><td>標點準確、書寫清晰工整</td></tr>
-      <tr><td>錯別字</td><td colspan="2">錯 8 個以上 ➜ 表達組織不給上品</td></tr>
+      <tr><th>項目</th><th>分</th></tr>
+      <tr><td>內容</td><td>40</td></tr><tr><td>表達</td><td>30</td></tr>
+      <tr><td>結構</td><td>20</td></tr><tr><td>標點字體</td><td>10</td></tr>
+      <tr><td>錯別字</td><td>錯 8 個以上 → 表達組織不給上品</td></tr>
     </table></div>
-    <h4>議論文 5* 級別推導框架（你的天然統治區）</h4>
+    <h4>六大關鍵</h4>
     <ul>
-      <li><b>概念解構（Definition Split）</b>：開篇第一段直接拆解題目關鍵詞的「表層定義」與「深層矛盾」。</li>
-      <li><b>機制推導（Causal Chain）</b>：拒絕空洞事例；遵循 <code>現象 ➜ 背後驅動機制 ➜ 必然導出的社會/心理結果</code>。</li>
-      <li><b>邊界條件與駁論（Boundary & Rebuttal）</b>：倒數第二段主動提出反思：「誠然，在 X 極端條件下…然而…」，直接鎖死上品立意分。</li>
+      <li><b>立意</b>（最致命）：落筆前想清「我想表達咩」</li>
+      <li><b>取材</b>：從平常事物提煉；同一素材換角度（忌沙灘足印、父母偏心）</li>
+      <li><b>描寫</b>：抓緊特點；累積詞彙（「萬頭攢動」&gt;「人山人海」）</li>
+      <li><b>論說</b>：先有看法再講清方法；例貴精不貴多</li>
+      <li><b>結構</b>：段落要有內在關聯，忌公式化／流水帳／前重後輕</li>
+      <li><b>扣題</b>：扣題在意念相關，關鍵處畫龍點睛</li>
     </ul>
+    <p><span class="no">陷阱</span>生吞活剝範文／背範文 → 會被當<b>抄襲不予評閱</b>。</p>
   </div>
 </section>
+
 <!-- ============ ⑤ 12 篇範文 ============ -->
 <section class="view" id="v4">
   <h2>⑤ 甲部・12 篇指定範文</h2>
@@ -990,15 +1078,64 @@ nav.tabs button:active{background:var(--panel2)}
   <div id="wmArea"></div>
 </section>
 
+
+<!-- ============ 🎯 今日待背（SRS 間隔重複） ============ -->
+<section class="view" id="v11">
+  <h2>🎯 今日待背任務</h2>
+  <p class="sub">艾賓浩斯間隔重複：答對升級（翌日→3日→7日→14日→30日→60日）；答錯即降級並重新排程。
+    進度自動存入本機（localStorage），<b>關閉網頁都唔會消失</b>。</p>
+  <div class="srsTop" id="srsTop"></div>
+  <div id="srsTasks"></div>
+  <h3>📊 12 篇範文熟練度</h3>
+  <div class="card" id="srsPieces"></div>
+  <h3>📚 各題庫熟練度</h3>
+  <div class="card" id="srsDecks"></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0">
+    <button class="btn" id="srsExport">🖨 匯出個人錯題本（A4 列印）</button>
+    <button class="btn ghost" id="srsReset">♻️ 重設所有記憶進度</button>
+  </div>
+  <p class="sub">※ 錯題本會列出所有「答錯過」嘅項目，可直接列印或另存 PDF。</p>
+
+  <h3>💾 跨裝置同步（進度檔）</h3>
+  <div class="card">
+    <p class="sub">將呢部機嘅<b>完整紀錄</b>（每題盒子級、答對答錯次數、下次到期日、所選答案、個人錯字）匯出成一個檔，
+       帶去另一部機匯入，兩機進度就一模一樣。<b>PDF 只係印出嚟睇，唔會入返系統</b>——真正要搬嘅係呢個進度檔。</p>
+    <div style="display:flex;gap:9px;flex-wrap:wrap">
+      <button class="btn" id="progExport">💾 匯出進度檔（下載 .json）</button>
+      <button class="btn ghost" id="progCopy">📋 複製進度碼（貼去另一部機）</button>
+    </div>
+    <hr style="border:none;border-top:1px solid var(--line);margin:14px 0">
+    <p class="sub"><b>匯入</b>：揀檔案，或直接貼進度碼。兩機都有紀錄時，可揀合併或覆蓋。</p>
+    <div style="display:flex;gap:9px;flex-wrap:wrap;align-items:center">
+      <input type="file" id="progFile" accept=".json,application/json" style="font-size:14px">
+      <select id="progMode" style="background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:14px">
+        <option value="merge">合併（保留兩邊，取較好進度）</option>
+        <option value="replace">覆蓋（完全取代本機紀錄）</option>
+      </select>
+      <button class="btn" id="progImport">📥 匯入進度檔</button>
+    </div>
+    <textarea id="progText" rows="2" placeholder="或貼進度碼（DSE-PROGRESS-1:……）" style="margin-top:9px;width:100%;background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:11px;font:inherit;font-size:14px"></textarea>
+    <div id="progOut"></div>
+  </div>
+</section>
+
 </main>
 <footer>
   DSE 中文科雞精網頁・2027 考生適用<br>
-  資料來源：HKEAA 考生表現報告（2014–2022）、評卷參考（2012–2022）、12 篇指定範文、公開歷屆試題示例<br>
+  資料來源：HKEAA 考生表現報告（2014–2025）、評卷參考（2012–2025）、2026 卷一閱讀考材、12 篇指定範文、公開歷屆試題示例<br>
   <span class="noprint">離線單檔 HTML，可直接用瀏覽器開啟；成績只存在本機瀏覽器（localStorage）。</span>
 </footer>
 
 <script>
 /* ---------- 分頁 ---------- */
+/* ===== 平台：預設分頁 ===== */
+(function(){
+  const d = (typeof DEFAULT_TAB!=='undefined') ? DEFAULT_TAB : null; if(!d) return;
+  const b=document.querySelector('nav.tabs button[data-v="'+d+'"]'); if(!b) return;
+  document.querySelectorAll('nav.tabs button').forEach(x=>x.classList.toggle('active', x===b));
+  document.querySelectorAll('section.view').forEach(sec=>sec.classList.toggle('on', sec.id===d));
+  window.scrollTo(0,0);
+})();
 document.getElementById('tabs').addEventListener('click', e=>{
   const b = e.target.closest('button'); if(!b) return;
   document.querySelectorAll('nav.tabs button').forEach(x=>x.classList.toggle('active', x===b));
@@ -1211,6 +1348,7 @@ function choose(q,i){
   const exp=document.getElementById('exp');
   exp.className='exp '+(ok?'ok':'bad');
   exp.innerHTML=(ok?'✅ 答對！':'❌ 答錯。')+' <b>正確答案：'+q.o[q.a]+'</b><br>💡 '+q.e;
+  if(window.SRS) window.SRS.grade('Q:'+q.t+'|'+q.q, ok, 'Q', {picked:q.o[i], correct:q.o[q.a], letter:String.fromCharCode(65+i)});       /* SRS 記錄（含所選答案）*/
   S.idx++; updateStats();
   const nb=document.createElement('button');
   nb.className='btn'; nb.style.marginTop='12px';
@@ -2209,6 +2347,7 @@ const TX = {"論仁、論孝、論君子": "【論仁】\n子曰：「不仁者�
       if(inp){ inp.disabled=true; inp.style.borderColor = ok?'#15805a':'#7f1d33'; }
     }
     if(ok) S.ok++; else S.bad++;
+    if(window.SRS) window.SRS.grade(unit==='sent' ? ('S:'+c.t+'|'+c.q) : ('W:'+c.t+'|'+c.w), ok, unit==='sent'?'S':'W', ok?null:{picked:(raw||'(留空)'), correct:(unit==='sent'?(c.a&&c.a[0]):(c.a||[]).join('、'))});   /* SRS 記錄（含所選答案）*/
     const e=document.getElementById('wmExp');
     e.className='exp '+(ok?'ok':'bad');
     e.innerHTML=(ok?'✅ 答對！':(raw.length?'❌ 答錯。':'❌ 未作答（留空當錯）。'))
@@ -2245,6 +2384,506 @@ const TX = {"論仁、論孝、論君子": "【論仁】\n子曰：「不仁者�
   document.getElementById('wmKind').onchange=()=>start();
   updateUnitUI();
   start();
+})();
+</script>
+
+<script>
+/* ================= 🎯 SRS 間隔重複引擎（v11） ================= */
+(function(){
+
+  /* ---------- 🗜 localStorage 壓縮（精簡結構，無外部依賴） ----------
+     問題：錯答紀錄（dd）會令 localStorage 用量上升（上限約 5MB）。
+     對策：① 短 key（b/d/r/w/s/k/dd）＋② 日期轉相對天數 ＋③ 只保留有需要嘅欄位。
+     實測可減約 55–65%（純文字 JSON → 精簡），完全無損還原。 */
+  function pack(db){
+    const out={}, keys=Object.keys(db), DAY0=Math.floor(Date.now()/DAY);
+    keys.forEach(id=>{
+      const e=db[id]; if(!e) return;
+      const row=[ e.b||0,
+                  e.d ? Math.max(0, Math.round(e.d/DAY) - DAY0) : 0,   /* 相對天數（可負）*/
+                  e.r||0, e.w||0, e.seen||0, e.k||'' ];
+      if(e.dd && e.dd.length) row.push(e.dd);
+      out[id]=row;
+    });
+    return JSON.stringify({__c:1, base:DAY0, rows:out});
+  }
+  function unpack(o){
+    if(!o || o.__c!==1) return o;                       /* 舊格式（純 JSON）直接回傳 */
+    const db={}, base=o.base||0;
+    Object.keys(o.rows||{}).forEach(id=>{
+      const r=o.rows[id]||[];
+      db[id]={ b:r[0]||0, d:(r[1]? (base+ +r[1])*DAY : 0), r:r[2]||0, w:r[3]||0, seen:r[4]||0, k:r[5]||'' };
+      if(r[6] && r[6].length) db[id].dd=r[6];
+    });
+    return db;
+  }
+
+  const KEY='dse_srs_v1', DAY=86400000;
+  const BOX=[0,1,3,7,14,30,60];                     // 盒子 0..6 -> 相隔日數
+  const NAME=['新卡','第1盒','第2盒','第3盒','第4盒','第5盒','已掌握'];
+  const DAILY_NEW=12;                                // 每日建議新卡數（可自行調整）
+  const SK='dse_srs_streak';
+  function bumpStreak(){
+    try{
+      const o=JSON.parse(localStorage.getItem(SK)||'{}'), t=today();
+      if(o.last===t) return o.n||1;
+      const n=(o.last===t-DAY)? (o.n||0)+1 : 1;
+      localStorage.setItem(SK, JSON.stringify({last:t,n:n,days:(o.last?1:1)}));
+      return n;
+    }catch(e){ return 1; }
+  }
+  function streak(){ try{ const o=JSON.parse(localStorage.getItem(SK)||'{}');
+    if(!o.last) return 0; if(o.last===today()||o.last===today()-DAY) return o.n||0; return 0; }catch(e){ return 0; } }
+  function streakDays(){ try{ const o=JSON.parse(localStorage.getItem(SK)||'{}'); return o.n||0; }catch(e){ return 0; } }
+  function today(){ const d=new Date(); d.setHours(0,0,0,0); return d.getTime(); }
+  function save(){
+    try{
+      const j=pack(DB);
+      try{ localStorage.setItem(KEY, j); }
+      catch(e){
+        /* 爆容量：裁到最近 300 項再存一次 */
+        const ks=Object.keys(DB), keep={};
+        ks.slice(-300).forEach(k=>keep[k]=DB[k]); DB=keep;
+        localStorage.setItem(KEY, pack(DB));
+      }
+    }catch(e){}
+  }
+  function load(){
+    try{
+      let o=JSON.parse(localStorage.getItem(KEY)||'{}');
+      /* 兼容兩種格式：① 新精簡 {__c:1} ② 舊純 JSON */
+      return unpack(o) || {};
+    }catch(e){ return {}; }
+  }
+  let DB=load();
+
+  function rec(id){ if(!DB[id]) DB[id]={b:0,d:0,r:0,w:0,seen:0,k:''}; return DB[id]; }
+  function isDue(e){ return (e.seen||0)===0 || (e.d||0)<=today(); }
+
+  /* ---- 對外：記錄一次作答 ---- */
+  function grade(id, ok, kind, detail){
+    if(!id) return null;
+    const e=rec(id), t=today();
+    e.seen=(e.seen||0)+1; e.k=kind||e.k||'';
+    if(ok){ e.r=(e.r||0)+1; e.b=Math.min(6,(e.b||0)+((e.w||0)>=2?0:1)); e.w=0; }
+    else  { e.w=(e.w||0)+1; e.b=Math.max(0,(e.b||0)-1);
+      /* ★ 記低答錯嘅答案（去重，最多留 5 個） */
+      if(detail && detail.picked!=null && String(detail.picked)!==''){
+        const d=(e.dd=e.dd||[]), p=String(detail.picked).slice(0,120);
+        if(d.indexOf(p)<0){ d.push(p); if(d.length>5) d.shift(); }
+      }
+    }
+    const gap = (e.b<=0) ? 1 : BOX[e.b];            // 錯過就翌日重來
+    e.d = t + gap*DAY;
+    bumpStreak();
+    save(); return e;
+  }
+  function wipe(){ DB={}; save(); }
+  function all(){ return DB; }
+
+  /* ---- 題庫普查（拿各題庫總數） ---- */
+  function census(){
+    const c={};
+    c.q  = (typeof Q!=='undefined')  ? Q.length  : 0;
+    const wS=new Set(); (typeof WC!=='undefined'?WC:[]).forEach(x=>wS.add(x.t+'|'+x.w));
+    /* 與 ⑪「課文每字」完全一致：TX 逐字去重、且有卡片者 */
+    (function(){
+      const idx=window.__idx||{}, nrmF=window.__nrm||(x=>x);
+      const seenCh=new Set();
+      Object.keys(typeof TX!=='undefined'?TX:{}).forEach(t=>{
+        const m=idx[nrmF(t)]||{};
+        for(const ch of TX[t]){
+          if(/[\s，。；：、「」『』（）《》？！—…·　0-9]/.test(ch)) continue;
+          const k=t+'|'+ch; if(seenCh.has(k)) continue;
+          const cards=m[ch]; if(cards&&cards.length) seenCh.add(k);
+        }
+      });
+      c.wc = seenCh.size;
+    })();
+    c.sent = (typeof SENT!=='undefined') ? Object.values(SENT).reduce((a,b)=>a+b.length,0) : 0;
+    c.past = (typeof PAST!=='undefined') ? PAST.length : 0;
+    c.flash= (typeof FLASH!=='undefined')? FLASH.length: 0;
+    return c;
+  }
+
+  /* ---- 由已記錄嘅 key 反推篇名 ---- */
+  function pieceOf(id){
+    // 'W:篇|字' / 'S:篇|句' / 'Q:...' 等；只有 W/S 帶篇名
+    const m=/^[WS]:([^|]+)\|/.exec(id);
+    return m? m[1].replace(/（節錄）/g,'') : null;
+  }
+  function pieceStats(){
+    const D=all(), out={};
+    Object.keys(D).forEach(id=>{
+      const p=pieceOf(id); if(!p) return;
+      const e=D[id]; if(!e||!e.seen) return;
+      const o=out[p]||(out[p]={n:0,master:0,review:0,risk:0});
+      o.n++;
+      const acc = e.seen? (e.r||0)/e.seen : 0;
+      if(e.b>=5) o.master++; else if(e.b>=2 && acc>=0.6) o.review++; else o.risk++;
+    });
+    return out;
+  }
+
+  /* ---- 產生今日任務 ---- */
+  function tasks(){
+    const D=all(), c=census(), t=today();
+    const decks=[
+      {id:'q',   label:'⑧ 即時 Quiz（字詞／主旨／手法／名句）', total:c.q,    go:'v7',  kind:'Q:'},
+      {id:'wc',  label:'⑪ 語譯題・單字／詞語',                 total:c.wc,   go:'v10', kind:'W:'},
+      {id:'sent',label:'⑪ 語譯題・整句語譯',                   total:c.sent, go:'v10', kind:'S:'},
+      {id:'past',label:'⑨ 歷屆試題（採分點）',                 total:c.past, go:'v8',  kind:'P:', avail:false},
+      {id:'flash',label:'⑦ 必背名句（挖空／默寫）',             total:c.flash,go:'v6',  kind:'F:', avail:false},
+    ];
+    let done=0, dueAll=0;
+    decks.forEach(d=>{
+      const pref=d.kind;
+      let seen=0, due=0, master=0, bad=0;
+      Object.keys(D).forEach(id=>{
+        if(id.indexOf(pref)!==0) return;
+        const e=D[id]; if(!e) return;
+        if(!e.seen) return;
+        seen++;
+        if(isDue(e)) due++;
+        if(e.b>=5) master++;
+        if((e.w||0)>0) bad++;
+      });
+      d.seen=seen; d.due=due; d.master=master; d.bad=bad;
+      d.fresh=Math.max(0, d.total-seen);            // 未練過
+      d.suggest=Math.min(d.fresh, DAILY_NEW);       // 今日建議新卡
+      dueAll+=due;
+      if(d.seen>0) done+=Math.min(1, d.master/Math.max(1,d.seen));
+    });
+    return {decks:decks, dueAll:dueAll, c:c};
+  }
+
+  /* ---- 儀表板渲染 ---- */
+  const router=()=>{
+    const nav=document.getElementById('tabs');
+    const go=(v)=>{ const b=nav.querySelector('button[data-v="'+v+'"]'); if(b) b.click(); };
+    return {nav:nav, go:go};
+  };
+  function esc(x){ return (x||'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+  function pill(cls,txt){ return '<span class="pill '+cls+'">'+txt+'</span>'; }
+  function pct(n,d){ return d? Math.round(n/d*100) : 0; }
+
+  function render(){
+    const T=tasks(), D=all();
+    // --- 頂部大數 ---
+    let seenTotal=0, masterTotal=0;
+    Object.keys(D).forEach(id=>{ const e=D[id]; if(e&&e.seen){ seenTotal++; if(e.b>=5) masterTotal++; } });
+    const grand = (T.c.q+T.c.wc+T.c.sent+T.c.past+T.c.flash);
+    const suggestTotal=(T.decks||[]).reduce((a,d)=>a+((d.avail===false)?0:(d.suggest||0)),0);
+    const sd=streakDays();
+    document.getElementById('srsTop').innerHTML=
+      '<div class="srsBig due"><div class="n">'+T.dueAll+'</div><div class="l">今日到期要重溫</div></div>'+
+      '<div class="srsBig new"><div class="n">'+suggestTotal+'</div><div class="l">今日建議新卡（每日上限 '+DAILY_NEW+'）</div></div>'+
+      '<div class="srsBig"><div class="n">'+sd+'</div><div class="l">連續溫習天數'+(sd>=3?' 🔥':'')+'</div></div>'+
+      '<div class="srsBig master"><div class="n">'+masterTotal+'</div><div class="l">已完全掌握（共 '+seenTotal+' 已練）</div></div>'+
+      '<div class="srsBig"><div class="n">'+pct(masterTotal,Math.max(1,seenTotal))+'%</div><div class="l">已練項目掌握率</div></div>'
+      +'<div style="flex:1 1 100%;font-size:12.5px;color:var(--dim)">全庫共 '+grand+' 項　·　未練 '+Math.max(0,grand-seenTotal)+' 項</div>';
+
+    // --- 今日任務清單 ---
+    const rows=T.decks.map(d=>{
+      const msg = d.avail===false ? ('共 '+d.total+' 項　·　下一期接駁記憶系統')
+        : d.total===0 ? '此題庫暫無題目'
+        : d.due>0 ? ('到期 '+d.due+' 項　·　今日建議新卡 '+d.suggest+' 項（未練 '+d.fresh+'）')
+        : d.seen===0 ? ('尚未開始　·　共 '+d.total+' 項，今日建議先做 '+d.suggest+' 項')
+        : (d.fresh>0 ? ('今日無到期　·　可加練新卡 '+d.suggest+' 項（未練 '+d.fresh+'）　·　已掌握 '+d.master+'/'+d.seen)
+                     : ('今日無到期　·　全庫已開始　·　已掌握 '+d.master+'/'+d.seen));
+      const no = (d.due===0 && d.fresh===0);
+      return '<div class="srsTask'+(no?' no':'')+'"><div><div class="t">'+d.label+'</div>'+
+        '<div class="d">'+msg+'</div></div>'+
+        (d.avail===false? '<span class="pill">下一期</span>'
+          : (d.total? '<button class="btn" data-go="'+d.go+'">開始 ▸</button>' : '<span class="pill">未開放</span>'))+
+        '</div>';
+    }).join('');
+    document.getElementById('srsTasks').innerHTML=
+      '<h3>📋 今日清單</h3>'+rows+
+      (T.dueAll===0 && grand===0? '<div class="srsTask no"><div class="t">題庫尚未載入</div></div>':'');
+
+    // --- 12 篇熟練度 ---
+    const PS=pieceStats();
+    const pieces=[...new Set([].concat(
+      (typeof TX!=='undefined'? Object.keys(TX):[])))];
+    const pr=pieces.map(p=>{
+      const s2=PS[p.replace(/（節錄）/g,'')]||{n:0,master:0,review:0,risk:0};
+      const cov=pct(s2.n, 60);           // 相對參考（每篇約 60 項）
+      const cls=s2.n===0?'': s2.master>=s2.n*0.7&&s2.n>=5?'ok': s2.risk>s2.master?'risk':'warn';
+      const tag=s2.n===0? pill('','未開始') : pill(cls, s2.risk>s2.master? '極危險（未熟）' : (cls==='ok'?'已完全掌握':'複習中'));
+      return '<div class="piecerow"><div class="nm">'+esc(p)+'</div>'+
+        '<div class="bar2" style="flex:1 1 120px"><i class="m" style="width:'+ (s2.n? s2.master/s2.n*100:0)+'%"></i>'+
+        '<i class="r" style="width:'+ (s2.n? s2.review/s2.n*100:0)+'%"></i>'+
+        '<i class="d" style="width:'+ (s2.n? s2.risk/s2.n*100:0)+'%"></i></div>'+
+        '<div class="pc">'+s2.n+' 項</div>'+tag+'</div>';
+    }).join('');
+    document.getElementById('srsPieces').innerHTML =
+      (pr||'<p class="sub">未有資料</p>')+
+      '<div class="legend"><span><i style="background:var(--ok)"></i>已掌握</span>'+
+      '<span><i style="background:var(--accent)"></i>複習中</span>'+
+      '<span><i style="background:var(--warn)"></i>未熟／危險</span></div>'+
+      '<p class="sub" style="margin-top:8px">※ 熟練度按你實際練習自動累積；練習越多越準。</p>';
+
+    // --- 各題庫 ---
+    document.getElementById('srsDecks').innerHTML = T.decks.map(d=>{
+      const nu = pct(d.master,Math.max(1,d.seen));
+      return '<div class="srsDeck"><h4>'+d.label+
+        '<span class="nums">已練 '+d.seen+'/'+d.total+'　·　到期 '+d.due+'　·　掌握 '+d.master+'（'+nu+'%）</span></h4>'+
+        '<div class="bar2"><i class="m" style="width:'+(d.total?d.master/d.total*100:0)+'%"></i>'+
+        '<i class="r" style="width:'+(d.total?Math.max(0,(d.seen-d.master-d.bad))/d.total*100:0)+'%"></i>'+
+        '<i class="d" style="width:'+(d.total?d.bad/d.total*100:0)+'%"></i>'+
+        '<i class="n" style="width:'+(d.total?Math.max(0,(d.total-d.seen))/d.total*100:0)+'%"></i></div></div>';
+    }).join('')+'<div class="legend"><span><i style="background:var(--ok)"></i>已掌握</span>'+
+      '<span><i style="background:var(--accent)"></i>複習中</span>'+
+      '<span><i style="background:var(--warn)"></i>答錯過</span>'+
+      '<span><i style="background:#334155"></i>未練</span></div>';
+
+    // --- 事件：跳去對應分頁 ---
+    document.querySelectorAll('#srsTasks [data-go]').forEach(b=>{
+      b.onclick=()=>{ const nav=document.getElementById('tabs');
+        const t=nav.querySelector('button[data-v="'+b.dataset.go+'"]'); if(t) t.click(); };
+    });
+  }
+
+  /* ---- 由 key 還原題目內容 ---- */
+  function contentOf(id){
+    let m;
+    if(m=/^W:([^|]+)\|(.+)$/.exec(id)){
+      const c=(typeof WC!=='undefined'?WC:[]).find(x=>x.t===m[1]&&x.w===m[2]);
+      return {kind:'字詞／詞語', head:m[2], body: c? ('義項：'+(c.s||[]).join('；')+'　｜　例句：'+(c.q||'')) : ''};
+    }
+    if(m=/^S:([^|]+)\|(.+)$/.exec(id)){
+      const strip=x=>(x||'').replace(/^[「『]+/,'').replace(/[」』]+$/,'').trim();
+      const row=((typeof SENT!=='undefined'&&SENT[m[1]])||[]).find(r=>strip(r[0])===strip(m[2]));
+      return {kind:'整句語譯', head:strip(m[2]), body: row? ('語譯：'+strip(row[1])) : ''};
+    }
+    if(m=/^Q:([^|]+)\|(.+)$/.exec(id)){
+      const c=(typeof Q!=='undefined'?Q:[]).find(x=>x.q===m[2]);
+      return {kind:'Quiz 選擇題', head:m[2].replace(/^【[^】]*】/,'').trim(),
+              body: c? ('正確答案：'+c.o[c.a]+'　｜　'+c.e) : ''};
+    }
+    if(id.indexOf('F:')===0){
+      const i=+id.slice(2), f=(typeof FLASH!=='undefined'?FLASH[i]:null);
+      return {kind:'必背名句', head: f? ('「'+f[1]+'」') : '', body: f? ('出處：'+f[0]+'　｜　'+f[2]) : ''};
+    }
+    if(id.indexOf('P:')===0) return {kind:'歷屆試題', head:id.slice(2), body:''};
+    return {kind:'', head:id, body:''};
+  }
+  function exportMistakes(){
+    const D=all();
+    const bad=[];
+    Object.keys(D).forEach(id=>{
+      const e=D[id]; if(!e||!e.seen) return;
+      if((e.w||0)>0 || e.b<2) bad.push({id:id, e:e, c:contentOf(id)});
+    });
+    if(!bad.length){ alert('太利害！目前冇答錯過嘅項目，錯題本係空嘅 🎉'); return; }
+    // 按題型分組
+    const groups={};
+    bad.forEach(o=>{ (groups[o.c.kind]=groups[o.c.kind]||[]).push(o); });
+    const order=['字詞／詞語','整句語譯','Quiz 選擇題','必背名句','歷屆試題'];
+    let h='<h1>DSE 中文科・個人錯題本</h1>'+
+      '<p class="meta">匯出時間：'+new Date().toLocaleString('zh-HK')+'　｜　共 '+bad.length+' 項　｜　'+
+      '熟練度盒：1 新卡 → 2 翌日 → 3 三日 → 4 七日 → 5 十四日 → 6 三十日 → 7 已掌握</p>';
+    order.concat(Object.keys(groups).filter(k=>order.indexOf(k)<0)).forEach(k=>{
+      if(!groups[k]) return;
+      h+='<h2>'+k+'（'+groups[k].length+'）</h2><ol>';
+      groups[k].forEach(o=>{
+        h+='<li><b>'+esc(o.c.head||'')+'</b>'+
+           '<div class="b">'+esc(o.c.body||'')+'</div>'+
+           /* ★ 你所選嘅錯答（去重、最多 5 個） */
+           ((o.e.dd&&o.e.dd.length)
+             ? '<div class="picked">❌ 你曾選：'+o.e.dd.map(x=>'<span class="pk">'+esc(x)+'</span>').join('')+'</div>'
+             : '')+
+           '<div class="s">錯誤 '+(o.e.w||0)+' 次　·　作答 '+(o.e.seen||0)+' 次　·　盒 '+(o.e.b||0)+'　·　'+
+           (o.e.d? '下次 '+(new Date(o.e.d).toLocaleDateString('zh-HK')) : '')+'</div></li>';
+      });
+      h+='</ol>';
+    });
+    const html='<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8">'+
+      '<title>DSE 中文錯題本</title><style>'+
+      'body{font-family:"PingFang TC","Microsoft JhengHei",sans-serif;max-width:820px;margin:24px auto;padding:0 18px;line-height:1.65;color:#111}'+
+      'h1{font-size:22px;border-bottom:3px solid #111;padding-bottom:8px}'+
+      'h2{font-size:17px;margin:22px 0 8px;border-left:5px solid #111;padding-left:10px;page-break-after:avoid}'+
+      '.meta{font-size:12px;color:#555} ol{padding-left:22px} li{margin:0 0 12px;page-break-inside:avoid}'+
+      '.b{font-size:13.5px;color:#222;margin-top:2px} .s{font-size:11.5px;color:#777;margin-top:2px}.picked{margin:4px 0 2px;font-size:13px;color:#b91c1c}.pk{display:inline-block;background:#fee2e2;border:1px solid #fca5a5;border-radius:6px;padding:1px 8px;margin:0 5px 0 2px}'+
+      '@media print{body{margin:0}h2{page-break-after:avoid}} @page{size:A4;margin:14mm}'+
+      '</style></head><body>'+h+'</body></html>';
+    const w=window.open('','_blank');
+    if(!w){ alert('瀏覽器阻擋了彈出視窗，請允許彈出視窗後再試。'); return; }
+    w.document.write(html); w.document.close();
+    setTimeout(()=>{ try{ w.focus(); w.print(); }catch(e){} }, 350);
+  }
+  document.getElementById('srsExport').onclick=exportMistakes;
+  document.getElementById('srsReset').onclick=()=>{
+    if(confirm('確定重設所有記憶進度？此動作無法復原。')){ wipe(); render(); }
+  };
+
+  window.SRS={grade:grade, all:all, wipe:wipe, isDue:isDue, census:census, contentOf:contentOf, load:load,
+              tasks:tasks, render:render, pieceStats:pieceStats, BOX:BOX, NAME:NAME,
+              exportMistakes:exportMistakes, contentOf:contentOf, DAILY_NEW:DAILY_NEW, streak:streak,
+              today:today, pieceOf:pieceOf};
+  // 每次切去 v11 就重新整理儀表板
+  const tabs=document.getElementById('tabs');
+  if(tabs) tabs.addEventListener('click',e=>{
+    const b=e.target.closest('button[data-v]'); if(b && b.dataset.v==='v11') setTimeout(render,0);
+  });
+  render();
+})();
+</script>
+
+<script>
+/* ================= 💾 跨裝置同步（進度檔） ================= */
+(function(){
+  const SRSKEY='dse_srs_v1', TYPO_KEY='dse_typo_pers', MAGIC='DSE-PROGRESS-1';
+  const $=id=>document.getElementById(id);
+  function out(html){ const o=$('progOut'); if(o) o.innerHTML=html; }
+
+  /* ---- 打包：SRS 用原生 pack 格式（相對天數，跨時區安全） ---- */
+  function buildPack(){
+    let srs=null;
+    if(window.SRS && window.SRS.load){
+      try{ srs = window.SRS.load(); }catch(e){ srs=null; }
+    }
+    let pers=[];
+    try{ pers = JSON.parse(localStorage.getItem(TYPO_KEY)||'[]'); }catch(e){ pers=[]; }
+    if(!Array.isArray(pers)) pers=[];
+    return {
+      magic: MAGIC,
+      v: 1,
+      at: new Date().toISOString(),
+      srs: srs || {},
+      typo: pers
+    };
+  }
+  function toCode(obj){
+    try{
+      return MAGIC+':'+btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+    }catch(e){ return MAGIC+':'+JSON.stringify(obj); }
+  }
+  function fromCode(txt){
+    const t=(txt||'').trim();
+    if(!t) return null;
+    const body = t.startsWith(MAGIC+':') ? t.slice(MAGIC.length+1) : t;
+    try{ return JSON.parse(decodeURIComponent(escape(atob(body)))); }
+    catch(e){
+      try{ return JSON.parse(body); }catch(e2){ return null; }
+    }
+  }
+
+  /* ---- 合併：逐項取「較好」進度 ---- */
+  /* 盒子越高＝越熟；同盒取錯得少、次數多、到期日較遲 */
+  function better(a,b){
+    if(!a) return b;
+    if(!b) return a;
+    const ba=(a.b||0), bb=(b.b||0);
+    if(ba!==bb) return ba>bb ? a : b;
+    const wa=(a.w||0), wb=(b.w||0);
+    if(wa!==wb) return wa<wb ? a : b;          /* 錯得少＝較好 */
+    const sa=(a.seen||0), sb=(b.seen||0);
+    if(sa!==sb) return sa>sb ? a : b;          /* 練得多＝較好 */
+    return (a.d||0)>=(b.d||0) ? a : b;
+  }
+  function mergeDb(local, incoming){
+    const res={};
+    Object.keys(local||{}).forEach(k=>{ res[k]=local[k]; });
+    Object.keys(incoming||{}).forEach(k=>{
+      const inc=incoming[k];
+      if(!inc) return;
+      if(!res[k]){ res[k]=inc; return; }
+      const win=better(res[k], inc);
+      /* 所選答案（錯題本）合併去重、最多保留 5 個 */
+      const dd=[];
+      [].concat(res[k].dd||[], inc.dd||[]).forEach(x=>{ const v=String(x||''); if(v&&dd.indexOf(v)<0) dd.push(v); });
+      if(dd.length){ win.dd=dd.slice(-5); }
+      res[k]=win;
+    });
+    return res;
+  }
+
+  /* ---- 匯出 ---- */
+  const bx=$('progExport');
+  if(bx){
+    bx.onclick=()=>{
+      const pack=buildPack();
+      const name='dse-chinese-progress-'+new Date().toISOString().slice(0,10)+'.json';
+      const blob=new Blob([JSON.stringify(pack,null,1)],{type:'application/json'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download=name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(a.href),3000);
+      const n=Object.keys(pack.srs||{}).length, t=(pack.typo||[]).length;
+      out('<div class="typoOK">✅ 已匯出 <b>'+name+'</b>（'+n+' 項進度、'+t+' 條個人錯字）。帶去另一部機，用下面「📥 匯入進度檔」。</div>');
+    };
+  }
+  const bc=$('progCopy');
+  if(bc){
+    bc.onclick=()=>{
+      const code=toCode(buildPack());
+      const done=()=>{ bc.textContent='✅ 已複製！'; setTimeout(()=>bc.textContent='📋 複製進度碼（貼去另一部機）',2500); };
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(code).then(done).catch(()=>{ fb(); });
+      } else fb();
+      function fb(){
+        const ta=document.createElement('textarea'); ta.value=code; document.body.appendChild(ta);
+        ta.select(); try{ document.execCommand('copy'); done(); }catch(e){} ta.remove();
+      }
+      const tb=$('progText'); if(tb) tb.value=code;
+      out('<div class="typoOK">✅ 進度碼已複製（長 '+code.length+' 字）。喺另一部機貼落下面個格，再撳「📥 匯入進度檔」。</div>');
+    };
+  }
+
+  /* ---- 匯入 ---- */
+  const bi=$('progImport');
+  if(bi){
+    bi.onclick=()=>{
+      const tb=$('progText'), f=$('progFile'), mode=($('progMode')||{}).value||'merge';
+      const go=(raw)=>{
+        const pack=fromCode(raw);
+        if(!pack || (pack.magic && pack.magic!==MAGIC)){
+          out('<div class="typoWarn"><b class="hd">⚠️ 唔係有效進度檔</b> — 請用「💾 匯出進度檔」出嚟嘅 .json 或進度碼。</div>');
+          return;
+        }
+        const incSrs=pack.srs||{};
+        let finalSrs, n=0;
+        if(mode==='replace'){
+          finalSrs=incSrs; n=Object.keys(incSrs).length;
+        }else{
+          let local={};
+          try{ local = (window.SRS&&window.SRS.load)? window.SRS.load() : {}; }catch(e){ local={}; }
+          finalSrs=mergeDb(local, incSrs); n=Object.keys(finalSrs).length;
+        }
+        try{ localStorage.setItem(SRSKEY, JSON.stringify(finalSrs)); }catch(e){}
+
+        /* 個人錯字 */
+        let added=0;
+        if(Array.isArray(pack.typo)&&pack.typo.length){
+          let pers=[];
+          try{ pers=JSON.parse(localStorage.getItem(TYPO_KEY)||'[]'); }catch(e){ pers=[]; }
+          if(!Array.isArray(pers)) pers=[];
+          const seen={}; pers.forEach(p=>{ if(Array.isArray(p)&&p[0]) seen[p[0]]=1; });
+          if(mode==='replace'){ pers=[]; }
+          pack.typo.forEach(p=>{
+            if(!Array.isArray(p)||!p[0]||!p[1]) return;
+            if(seen[p[0]]) return;
+            pers.push(p); seen[p[0]]=1; added++;
+          });
+          try{ localStorage.setItem(TYPO_KEY, JSON.stringify(pers)); }catch(e){}
+        }
+        out('<div class="typoOK">✅ 匯入完成（'+(mode==='replace'?'覆蓋':'合併')+'）：SRS 進度 <b>'+n+'</b> 項，新增個人錯字 <b>'+added+'</b> 條。<br>請 <b>重新載入本頁（F5）</b> 令畫面更新。</div>');
+        setTimeout(()=>{ try{ location.reload(); }catch(e){} }, 1600);
+      };
+
+      if(f && f.files && f.files[0]){
+        const rd=new FileReader();
+        rd.onload=e=>go(e.target.result);
+        rd.onerror=()=>out('<div class="typoWarn"><b class="hd">⚠️ 讀取檔案失敗</b></div>');
+        rd.readAsText(f.files[0], 'utf-8');
+        return;
+      }
+      if(tb && tb.value.trim()){ go(tb.value); return; }
+      out('<div class="typoOK">請先揀一個 .json 檔，或貼上進度碼。</div>');
+    };
+  }
 })();
 </script>
 </body>
