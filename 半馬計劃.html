@@ -1,0 +1,127 @@
+<!DOCTYPE html><html lang="zh-Hant-HK"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#0B1220"><title>半馬 70 日計劃 · 2027-01-17</title><style>
+:root{--ink:#0F172A;--muted:#64748B;--line:#E7ECF3;--bg:#F6F8FB;--card:#fff;
+--blue:#2563EB;--green:#10B981;--amber:#F59E0B;--red:#EF4444;--violet:#7C3AED}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7;
+font-family:"Inter","Segoe UI","Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+header{background:linear-gradient(150deg,#0B1220,#1A2B4A 55%,#0E3A3A);color:#E6EEF8;padding:28px 0 24px}
+header .kick{font-size:10.5px;letter-spacing:.2em;color:#7DD3FC;font-weight:700}
+header h1{margin:8px 0 6px;font-size:25px;line-height:1.25;font-weight:800;letter-spacing:-.4px}
+header h1 span{background:linear-gradient(90deg,#38BDF8,#34D399);-webkit-background-clip:text;background-clip:text;color:transparent}
+header p{margin:0;color:#9FB3C8;font-size:12.8px}
+.count{display:flex;align-items:baseline;gap:8px;margin-top:16px;padding:12px 14px;
+background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px}
+.count b{font-size:32px;font-weight:800;letter-spacing:-1px;color:#7DD3FC;line-height:1}
+.count span{font-size:12.5px;color:#9FB3C8}
+.sticky{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);
+border-bottom:1px solid var(--line);padding:10px 0}
+.weekbar{display:flex;align-items:center;gap:8px}
+.weekbar button{width:38px;height:38px;flex:0 0 38px;border-radius:12px;border:1px solid var(--line);
+background:#fff;font-size:17px;color:var(--blue);cursor:pointer;font-weight:700}
+.weekbar button:active{background:#EEF4FF}
+.weekbar .lab{flex:1;min-width:0;text-align:center}
+.weekbar .lab b{font-size:15px}
+.weekbar .lab span{display:block;font-size:11px;color:var(--muted);margin-top:-3px;
+white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prog{height:6px;background:#E7ECF3;border-radius:4px;overflow:hidden;margin-top:9px}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#38BDF8,#10B981);transition:width .25s}
+section{padding:24px 0 4px}
+h2{font-size:18.5px;margin:0 0 4px;letter-spacing:-.2px}
+.sub{color:var(--muted);font-size:12.8px;margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px;
+box-shadow:0 1px 2px rgba(15,23,42,.04)}
+.wk{padding:11px 0;border-bottom:1px solid #F1F5F9}
+.wk:last-child{border-bottom:none}
+.wk.hi{background:#ECFDF5;margin:0 -14px;padding:11px 14px;border-radius:8px;border-bottom-color:#A7F3D0}
+.wk.race{background:#FEF3C7;margin:0 -14px;padding:11px 14px;border-radius:8px;border-bottom-color:#FDE68A}
+.wk-h{display:flex;align-items:center;gap:8px;font-size:13.5px}
+.wk-b{font-size:12.4px;color:#475569;margin-top:2px}
+.wk-note{font-size:11.8px;color:var(--muted);margin-top:2px}
+.chk{display:flex;align-items:center;gap:12px;padding:12px 2px;border-bottom:1px solid #F1F5F9;cursor:pointer}
+.chk:last-of-type{border-bottom:none}
+.chk input{width:22px;height:22px;accent-color:#10B981;flex:0 0 22px;cursor:pointer}
+.chk span{font-size:13.8px;flex:1;min-width:0}
+.chk input:checked + span{color:var(--muted);text-decoration:line-through}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;
+padding:8px 6px;border-bottom:1px solid var(--line)}
+td{padding:8px 6px;border-bottom:1px solid #F1F5F9;vertical-align:top}
+td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pill{display:inline-block;font-size:10.5px;padding:1px 7px;border-radius:999px;font-weight:700}
+.pill.g{background:#E7F8F1;color:#047857}.pill.a{background:#FEF3C7;color:#B45309}
+.callout{border-left:3px solid var(--blue);background:#F5F9FF;border-radius:0 10px 10px 0;
+padding:11px 13px;margin-top:12px;font-size:13.3px}
+.callout.ok{border-color:var(--green);background:#F0FDF9}
+.callout.warn{border-color:var(--amber);background:#FFFBEB}
+.callout.bad{border-color:var(--red);background:#FEF2F2}
+.callout b.t{display:block;margin-bottom:3px;font-size:12.8px}
+.btn{display:inline-block;padding:10px 16px;border-radius:11px;border:1px solid var(--line);
+background:#fff;font-size:13.5px;font-weight:600;color:var(--ink);cursor:pointer;text-decoration:none}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.grid2{grid-template-columns:1fr}}
+.kpi .lab{font-size:11px;color:var(--muted);letter-spacing:.04em;font-weight:600}
+.kpi .val{font-size:23px;font-weight:800;letter-spacing:-.5px;line-height:1.15;margin:3px 0}
+.kpi .note{font-size:11.5px;color:var(--muted);line-height:1.45}
+footer{padding:34px 0 60px;color:var(--muted);font-size:12px;text-align:center}
+</style></head><body><header><div class="wrap"><div class="kick">STANDARD CHARTERED HK MARATHON · HALF</div><h1>半馬 70 日計劃<br><span>2027-01-17（日）</span></h1><p>21.1 km · 九龍／新界起步 · 起跑 7:45am · 之前跑過一次 2:30 半馬</p><div class="count"><b id="days">70</b><span>日<br><span id="weeksNote">約 10 週</span></span></div></div></header><div class="sticky"><div class="wrap"><div class="weekbar"><button id="prev">‹</button><div class="lab"><b id="weekTitle">第 1 週</b><span id="weekNote">建立長課習慣</span></div><button id="next">›</button></div><div class="prog"><i id="progBar"></i></div></div></div><div class="wrap"><section><h2>先睇清楚差距</h2><p class="sub">70 日內把「近期連續跑」由 7–8 km 推返上 21.1 km。你之前做到過，所以係練返，唔係由零開始。</p><div class="grid2"><div class="card kpi" style="margin:0"><div class="lab">之前半馬（買錶前）</div><div class="val" style="color:var(--amber)">2:30</div><div class="note">你已經完成過 21.1 km —— 跑得完</div></div><div class="card kpi" style="margin:0"><div class="lab">巡航速度</div><div class="val" style="color:var(--green)">5:30 /km</div><div class="note">11/4 暖身 2.67 km · 心率只 133</div></div><div class="card kpi" style="margin:0"><div class="lab">5K</div><div class="val" style="color:var(--green)">23:40</div><div class="note">2026-10-12 · 4:43/km</div></div><div class="card kpi" style="margin:0"><div class="lab">近 8 週連續跑能力</div><div class="val" style="color:var(--amber)">7–7.6 km</div><div class="note">24 次跑 · 中位數 1.95 km</div></div></div><div class="callout warn"><b class="t">所以問題唔係「你跑唔跑到」，而係「你練返未」</b>你完成過半馬（2:30）、5K 23:40、巡航 5:30/km —— 底子喺度。但過去 8 週你嘅連續跑最長只 7.6 km，身體已經「忘記」咗長距離。<b>10 週長課就係把 2:30 嘅底子重新激活。</b><br>以你嘅巡航速度，半馬用 <b>5:41/km（sub-2:00）</b>係能力範圍內；問題只係你有冇練到「唔停跑 2 個鐘」。</div><div class="callout warn"><b class="t">好消息：你嘅總量上過 11.82 km</b>2026-04-20 你一日跑咗 <b>11.82 km</b>（分 4 場），10/12 亦有 9.63 km。而買錶之前你更完成過一次半馬 —— 所以身體係識嘅。<br><b>問題係：</b>近半年你冇用單一場去突破 8 km，身體「忘記」咗長距離。所以由今日開始，星期六長課係全週最重要嘅一課，其他都可以讓路，長課唔可以。</div><div class="callout ok"><b class="t">目標：sub-2:00（5:41/km）</b>你巡航 5:30/km，即係比賽配速只比你「可以講嘢」快 11 秒 —— 呢個係非常可持續嘅強度。真正嘅變數係「21 km 嘅肌肉負荷」，唔係心肺。<br><b>保底</b> 2:10（6:10/km，跑走都得）· <b>進取</b> 1:55（5:27/km，要長課全部做齊）。</div></section><section><h2>每週結構</h2><p class="sub">跑步由 2 日變 3 日。第三日就係星期六長課，冇得揀。</p><div class="card"><div class="wk" style="display:flex;gap:10px;align-items:flex-start"><div style="flex:0 0 32px;height:32px;border-radius:10px;background:#EEF4FF;color:#2563EB;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center">一</div><div style="flex:1;min-width:0;font-size:13.6px">跑步班（質量課）<div style="color:#64748B;font-size:11.6px">照舊，唔改</div></div><div style="max-width:96px;text-align:right;font-size:10.5px;color:#64748B;padding-top:5px">全週最辛苦嗰日</div></div><div class="wk" style="display:flex;gap:10px;align-items:flex-start"><div style="flex:0 0 32px;height:32px;border-radius:10px;background:#EEF4FF;color:#2563EB;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center">二</div><div style="flex:1;min-width:0;font-size:13.6px">核心 10 分鐘<div style="color:#64748B;font-size:11.6px">屋企，唔使換衫</div></div><div style="max-width:96px;text-align:right;font-size:10.5px;color:#64748B;padding-top:5px">保護膝同脛骨</div></div><div class="wk" style="display:flex;gap:10px;align-items:flex-start"><div style="flex:0 0 32px;height:32px;border-radius:10px;background:#EEF4FF;color:#2563EB;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center">三</div><div style="flex:1;min-width:0;font-size:13.6px">跑步班（較輕）<div style="color:#64748B;font-size:11.6px">照舊，但真輕鬆</div></div><div style="max-width:96px;text-align:right;font-size:10.5px;color:#64748B;padding-top:5px">唔好變成第二個質量日</div></div><div class="wk" style="display:flex;gap:10px;align-items:flex-start"><div style="flex:0 0 32px;height:32px;border-radius:10px;background:#EEF4FF;color:#2563EB;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center">四</div><div style="flex:1;min-width:0;font-size:13.6px">流動性 8 分鐘<div style="color:#64748B;font-size:11.6px">放鬆</div></div><div style="max-width:96px;text-align:right;font-size:10.5px;color:#64748B;padding-top:5px"></div></div><div class="wk" style="display:flex;gap:10px;align-items:flex-start"><div style="flex:0 0 32px;height:32px;border-radius:10px;background:#EEF4FF;color:#2563EB;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center">五</div><div style="flex:1;min-width:0;font-size:13.6px">全休<div style="color:#64748B;font-size:11.6px">唔好偷偷加</div></div><div style="max-width:96px;text-align:right;font-size:10.5px;color:#64748B;padding-top:5px">為星期六留力</div></div><div class="wk" style="display:flex;gap:10px;align-items:flex-start"><div style="flex:0 0 32px;height:32px;border-radius:10px;background:#EEF4FF;color:#2563EB;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center">六</div><div style="flex:1;min-width:0;font-size:13.6px">長課 ★<div style="color:#64748B;font-size:11.6px">全週最重要</div></div><div style="max-width:96px;text-align:right;font-size:10.5px;color:#64748B;padding-top:5px">可以慢，唔可以跳</div></div><div class="wk" style="display:flex;gap:10px;align-items:flex-start"><div style="flex:0 0 32px;height:32px;border-radius:10px;background:#EEF4FF;color:#2563EB;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center">日</div><div style="flex:1;min-width:0;font-size:13.6px">全休 + 睡前 3 分鐘<div style="color:#64748B;font-size:11.6px"></div></div><div style="max-width:96px;text-align:right;font-size:10.5px;color:#64748B;padding-top:5px"></div></div></div><div class="callout bad"><b class="t">最重要嘅一句</b>如果一個星期只能做一件事，做<b>星期六長課</b>。情願放棄星期一或星期三嗰堂，都唔好跳長課 —— 因為半馬嘅成績 90% 由長課決定。</div></section><section><h2>「恢復時間會累加」——唔會</h2><p class="sub">用你自己嘅數據睇：輕鬆跑幾乎唔加，只有大課先會推高。</p><div class="card"><table><thead><tr><th>課節</th><th class="n">翌日剩餘恢復</th></tr></thead><tbody><tr><td>9/09 · 長課 7.6 km（輕鬆）</td><td class="n"><b>0 小時</b></td></tr><tr><td>10/31 · 長課 6.36 km（輕鬆）</td><td class="n"><b>3.7 小時</b></td></tr><tr><td>10/05 · 4.81 km（中等）</td><td class="n"><b>15.7 小時</b></td></tr><tr><td>10/12 · 5K 全力 23:40</td><td class="n"><b>16.2 小時</b></td></tr><tr><td>11/04 · 大課（6 段）</td><td class="n"><b>28.8 小時 → 兩日後 0</b></td></tr></tbody></table></div><div class="callout"><b class="t">三個要點</b>① <b>佢係倒數，唔係累加</b> —— 唔會 24+24+24 咁疊上去，每次重新計。<br>② <b>輕鬆跑幾乎唔加</b> —— 你 9/09 同 10/31 兩課長課，翌日分別係 0 同 3.7 小時。<br>③ <b>佢限制嘅係「下一次高強度」，唔係「下一次跑」</b>。恢復 20 小時都可以去慢跑 30 分鐘。</div><div class="callout ok"><b class="t">咁幾時要改計劃？</b>恢復 &lt; 24 小時 → 照計劃做。<br>恢復 &gt; 24 小時 + 精神 OK → 照做，但強度減一級。<br>恢復 &gt; 24 小時 + 睡少過 6 小時 → 唔做質量，改輕鬆或散步。<br>長課翌日恢復時間通常最高，所以星期日一定要全休 —— 呢個已經排咗喺計劃入面。</div></section><section><h2>10 週長課階梯</h2><p class="sub">每週六。綠色 = 高峰，黃色 = 比賽週。距離唔可以自己加。</p><div class="card"><div class="wk"><div class="wk-h"><b>第 1 週</b><span style="color:#64748B;font-size:11.5px">11/09 起</span></div><div class="wk-b">星期六 11/14 · 長課 8 km（約 51 分鐘）</div><div class="wk-note">建立長課習慣。用最慢嘅速度，可以講嘢</div></div><div class="wk"><div class="wk-h"><b>第 2 週</b><span style="color:#64748B;font-size:11.5px">11/16 起</span></div><div class="wk-b">星期六 11/21 · 長課 10 km（約 64 分鐘）</div><div class="wk-note">第一次雙位數。最後 1 km 可以慢過頭 1 km</div></div><div class="wk"><div class="wk-h"><b>第 3 週</b><span style="color:#64748B;font-size:11.5px">11/23 起</span></div><div class="wk-b">星期六 11/28 · 長課 11 km（約 70 分鐘）</div><div class="wk-note">開始習慣「不停跑 70 分鐘」</div></div><div class="wk"><div class="wk-h"><b>第 4 週</b><span style="color:#64748B;font-size:11.5px">11/30 起</span></div><div class="wk-b">星期六 12/05 · 長課 9 km（約 57 分鐘）</div><div class="wk-note">減量週。刻意減 20%，畀身體吸收</div></div><div class="wk"><div class="wk-h"><b>第 5 週</b><span style="color:#64748B;font-size:11.5px">12/07 起</span></div><div class="wk-b">星期六 12/12 · 長課 13 km（約 83 分鐘）</div><div class="wk-note">進入半馬區。途中補一次水</div></div><div class="wk"><div class="wk-h"><b>第 6 週</b><span style="color:#64748B;font-size:11.5px">12/14 起</span></div><div class="wk-b">星期六 12/19 · 長課 14 km（約 89 分鐘）</div><div class="wk-note">呢兩週最攰，屬正常</div></div><div class="wk"><div class="wk-h"><b>第 7 週</b><span style="color:#64748B;font-size:11.5px">12/21 起</span></div><div class="wk-b">星期六 12/26 · 長課 11 km（約 70 分鐘）</div><div class="wk-note">聖誕減量週。唔好因為得閒就跑多</div></div><div class="wk hi"><div class="wk-h"><b>第 8 週</b><span class="pill g">高峰</span><span style="color:#64748B;font-size:11.5px">12/28 起</span></div><div class="wk-b">星期六 01/02 · 長課 16 km（約 102 分鐘）</div><div class="wk-note">【高峰】最長一課。跑唔到 16 就做 14，唔好勉強</div></div><div class="wk"><div class="wk-h"><b>第 9 週</b><span style="color:#64748B;font-size:11.5px">01/04 起</span></div><div class="wk-b">星期六 01/09 · 長課 10 km（約 64 分鐘）</div><div class="wk-note">開始減量。呢週要開始早睡早起</div></div><div class="wk race"><div class="wk-h"><b>第 10 週</b><span class="pill a">比賽</span><span style="color:#64748B;font-size:11.5px">01/11 起</span></div><div class="wk-b">1/17（日）· 21.1 km · 7:45am</div><div class="wk-note">【比賽週】1/17 半馬 21.1 km</div></div></div><p style="font-size:12px;color:var(--muted);margin-top:8px">長課配速用 5:50–6:20/km 就夠（你嘅巡航係 5:30，慢 20–50 秒）。慢唔緊要，跑到里數先重要。途中可以 9 分鐘跑 + 1 分鐘行。</p></section><section><h2>本週打勾</h2><p class="sub">自動儲存喺你部電話，唔使登入。</p><div class="card" id="checkCard"></div><div style="display:flex;gap:10px;margin-top:12px"><button class="btn" id="resetWeek">清除本週</button><button class="btn" id="resetAll">清除全部</button></div></section><section><h2>比賽日流程（7:45 起跑）</h2><p class="sub">Garmin 日曆寫 05:40（最早一批），以你嘅報名通知為準。</p><div class="card"><table><tbody><tr><td class="n" style="width:84px"><b>05:15</b></td><td class="small">起床，飲 300–500 ml 水</td></tr><tr><td class="n" style="width:84px"><b>05:30</b></td><td class="small">早餐：白飯／麵包／香蕉（熟悉嘅食物，唔好試新嘢）</td></tr><tr><td class="n" style="width:84px"><b>06:20</b></td><td class="small">出門，帶號碼布、釘鞋/跑鞋、雨衣（保暖）</td></tr><tr><td class="n" style="width:84px"><b>07:00</b></td><td class="small">到場，去廁所（排隊要時間）</td></tr><tr><td class="n" style="width:84px"><b>07:20</b></td><td class="small">熱身 10 分鐘慢跑 + 動態伸展</td></tr><tr><td class="n" style="width:84px"><b>07:40</b></td><td class="small">入閘／企位，食第一包 gel（如果習慣）</td></tr><tr><td class="n" style="width:84px"><b>07:45</b></td><td class="small">起跑 —— 頭 2 km 刻意慢，唔好跟人衝</td></tr><tr><td class="n" style="width:84px"><b>08:45</b></td><td class="small">約 9–10 km：第二包 gel + 水</td></tr><tr><td class="n" style="width:84px"><b>09:15</b></td><td class="small">約 15 km：如果仲有力，開始微微加速</td></tr><tr><td class="n" style="width:84px"><b>09:40–09:50</b></td><td class="small">衝線（目標 2:00）</td></tr></tbody></table></div><h2 style="margin-top:22px">配速卡</h2><div class="card"><table><thead><tr><th>目標</th><th class="n">每 km</th><th class="n">10 km</th><th class="n">20 km</th></tr></thead><tbody><tr><td><b>1:55</b></td><td class="n">5:27</td><td class="n">54:30</td><td class="n">1:49:00</td></tr><tr><td><b>2:00 ★</b></td><td class="n">5:41</td><td class="n">56:50</td><td class="n">1:53:40</td></tr><tr><td><b>2:05</b></td><td class="n">5:55</td><td class="n">59:10</td><td class="n">1:58:20</td></tr><tr><td><b>2:10</b></td><td class="n">6:10</td><td class="n">61:40</td><td class="n">2:03:20</td></tr><tr><td><b>2:15</b></td><td class="n">6:24</td><td class="n">64:00</td><td class="n">2:08:00</td></tr></tbody></table><p class="small" style="color:var(--muted);margin:8px 0 0;font-size:12px">★ 建議目標。頭 5 km 用慢 10 秒嘅速度（5:50），最後 5 km 用快 10 秒 —— negative split 係最唔痛嘅跑法。</p></div><h2 style="margin-top:22px">你嘅真實配速習慣</h2><p class="sub">10/12 嗰場 23:40 嘅 400m 分段 —— 你講「時間會加」，數據話你知加咗喺邊。</p><div class="card"><table style="text-align:center"><thead><tr><th></th><th class="n">1</th><th class="n">2</th><th class="n">3</th><th class="n">4</th><th class="n">5</th><th class="n">6</th></tr></thead><tbody><tr><td class="n"><b>每 400m</b></td><td class="n">4:50</td><td class="n">4:35</td><td class="n">4:37</td><td class="n">4:38</td><td class="n">4:41</td><td class="n">4:44</td></tr><tr><td class="n"><b>心率</b></td><td class="n">135</td><td class="n">155</td><td class="n">160</td><td class="n">158</td><td class="n">152</td><td class="n">146</td></tr></tbody></table><table style="text-align:center;margin-top:2px"><thead><tr><th></th><th class="n">7</th><th class="n">8</th><th class="n">9</th><th class="n">10</th><th class="n">11</th><th class="n">12</th></tr></thead><tbody><tr><td class="n"><b>每 400m</b></td><td class="n">4:47</td><td class="n">4:52</td><td class="n">4:51</td><td class="n">5:02</td><td class="n">4:59</td><td class="n">5:00</td></tr><tr><td class="n"><b>心率</b></td><td class="n">150</td><td class="n">152</td><td class="n">151</td><td class="n">152</td><td class="n">145</td><td class="n">147</td></tr></tbody></table><div class="callout bad" style="margin-top:14px"><b class="t">你嘅問題唔係「攰」，係「開頭太快」</b>頭 400m 4:50（刻意慢，啱）→ 然後一連 4 個 400m 跑 4:35–4:41（比 5K PB 配速 4:43 仲快）→ 最後 1.2 km 跌到 <b>4:59–5:02</b>，慢咗約 <b>5.8%</b>。<br>但睇心率：全程 135→160→152→147，<b>冇一路升</b>。即係你唔係心肺頂唔順，係開頭用咗未來嘅力。如果全程跑 4:47 均速，時間會係 23:55 —— 同你 23:40 差唔多，但你會舒服好多，而且最後有力衝。</div><div class="callout ok"><b class="t">半馬策略：刻意慢開 3 km</b>目標 sub-2:00（5:41/km）→<br>· 頭 3 km：<b>6:05/km</b>（比目標慢 24 秒）<br>· 4–15 km：<b>5:45/km</b>，睇錶穩定<br>· 16–21 km：有力就 <b>5:30</b>，冇力就保持 5:45<br>你嘅天性係前面快，所以「刻意慢」對你嚟講係最唔自然、但回報最大嘅一件事。</div><section><h2>幾時要停 / 要走捷徑</h2><div class="card"><table><tbody><tr><td><b>痛（膝、脛骨、腳跟、髖）</b><br><span class="small">即刻停。半馬可以遲一年，骨膜炎要休 6–8 週</span></td></tr><tr><td><b>長課中途頂唔順</b><br><span class="small">改 9 跑 1 行，唔好硬撐</span></td></tr><tr><td><b>漏咗一星期長課</b><br><span class="small">下一週照原本距離，唔好補課、唔好雙倍</span></td></tr><tr><td><b>第 8 週 16 km 跑唔完</b><br><span class="small">比賽目標改 2:20，用 9:1 跑走策略</span></td></tr><tr><td><b>比賽前一星期病</b><br><span class="small">唔好跑，睇醫生。退出好過帶病上線</span></td></tr><tr><td><b>比賽日天氣差／太熱</b><br><span class="small">減速 10–15 秒/km，補水加密</span></td></tr></tbody></table></div><div class="callout ok"><b class="t">半馬完成 = 成功，唔係時間</b>第一次跑 21.1 km，目標只有一個：<b>無傷完成</b>。時間係第二次先講嘅事。如果當日跑到 2:20 但開心，好過 2:05 但腳痛三個月。</div></section><section><h2>其他頁面</h2><a class="btn primary" href="訓練計劃.html" style="margin-right:8px">5K 速度支線（舊計劃）</a><a class="btn" href="體能分析報告.html">回分析報告</a></section></div><footer>基於 Garmin Forerunner 265S 紀錄同 Garmin 日曆賽事（2027-01-17 · 21,098 m）設計。訓練計劃唔構成醫療建議；如有痛症請停止並諮詢醫生。</footer><script>const WEEKS=[{w:1,long:8,note:"建立長課習慣。用最慢嘅速度，可以講嘢"},{w:2,long:10,note:"第一次雙位數。最後 1 km 可以慢過頭 1 km"},{w:3,long:11,note:"開始習慣「不停跑 70 分鐘」"},{w:4,long:9,note:"減量週。刻意減 20%，畀身體吸收"},{w:5,long:13,note:"進入半馬區。途中補一次水"},{w:6,long:14,note:"呢兩週最攰，屬正常"},{w:7,long:11,note:"聖誕減量週。唔好因為得閒就跑多"},{w:8,long:16,note:"【高峰】最長一課。跑唔到 16 就做 14，唔好勉強"},{w:9,long:10,note:"開始減量。呢週要開始早睡早起"},{w:10,long:0,note:"【比賽週】1/17 半馬 21.1 km"}];</script><script>
+(function(){
+  const store=(function(){try{localStorage.setItem('__p','1');localStorage.removeItem('__p');return localStorage;}
+    catch(e){const m={};return{getItem:k=>(k in m?m[k]:null),setItem:(k,v)=>{m[k]=String(v)},
+    removeItem:k=>{delete m[k]},keys:()=>Object.keys(m)};}})();
+  const TOTAL=5;
+  let week=parseInt(store.getItem('hm_week')||'1',10);
+  if(!(week>=1&&week<=10)) week=1;
+  const $=s=>document.querySelector(s);
+  const key=(w,i)=>`hm_w${w}_i${i}`;
+
+  // countdown
+  const race=new Date('2027-01-17T07:45:00+08:00');
+  const now=new Date();
+  const d=Math.max(0,Math.ceil((race-now)/86400000));
+  $('#days').textContent=d;
+  $('#weeksNote').textContent=(d<=0?'比賽日！':'約 '+Math.ceil(d/7)+' 週');
+
+  function items(w){
+    const x=WEEKS[w-1];
+    const longTxt = x.long===0 ? '比賽日 1/17 · 半馬 21.1 km'
+                               : `星期六 · 長課 ${x.long} km`;
+    return [
+      '星期一 · 跑步班（質量課）',
+      '星期三 · 跑步班（較輕）＋課後加 15 分鐘',
+      longTxt,
+      '星期二 · 核心 10 分鐘',
+      '星期四 · 流動性 8 分鐘'
+    ];
+  }
+  function render(){
+    store.setItem('hm_week',week);
+    $('#weekTitle').textContent='第 '+week+' 週';
+    $('#weekNote').textContent=WEEKS[week-1].note;
+    let html='';
+    items(week).forEach((t,i)=>{
+      const on=store.getItem(key(week,i))==='1'?'checked':'';
+      html+=`<label class="chk"><input type="checkbox" data-i="${i}" ${on}><span>${t}</span></label>`;
+    });
+    $('#checkCard').innerHTML=html;
+    $('#checkCard').querySelectorAll('input').forEach(cb=>{
+      cb.addEventListener('change',e=>{
+        store.setItem(key(week,+e.target.dataset.i),e.target.checked?'1':'0');updateProg();});
+    });
+    updateProg();
+  }
+  function updateProg(){
+    const n=$('#checkCard').querySelectorAll('input:checked').length;
+    $('#progBar').style.width=(n/TOTAL*100)+'%';
+  }
+  $('#prev').onclick=()=>{if(week>1){week--;render();}};
+  $('#next').onclick=()=>{if(week<10){week++;render();}};
+  $('#resetWeek').onclick=()=>{if(!confirm('清除第 '+week+' 週？'))return;
+    for(let i=0;i<TOTAL;i++)store.removeItem(key(week,i));render();};
+  $('#resetAll').onclick=()=>{if(!confirm('清除全部？'))return;
+    store.keys().filter(k=>k.startsWith('hm_')).forEach(k=>store.removeItem(k));render();};
+  render();
+})();
+</script></body></html>
